@@ -85,14 +85,14 @@ public class PostWriter
 	 *  Send POST data from Entry to the open connection.
 	 *
 	 *@param  connection       Description of Parameter
-	 *@param  url              !ToDo (Parameter description)
+	 *@param  sampler          http sampler
 	 *@exception  IOException  Description of Exception
 	 ***********************************************************/
 	public void sendPostData(URLConnection connection, HTTPSampler sampler)
 			 throws IOException
 	{
 		// If filename was specified then send the post using multipart syntax
-		String filename = sampler.getFilename();
+		String filename = sampler.getFileName();
 		if ((filename != null) && (filename.trim().length() > 0))
 		{
 			OutputStream out = connection.getOutputStream();//new FileOutputStream("c:\\data\\experiment.txt");//new ByteArrayOutputStream();//
@@ -104,8 +104,8 @@ public class PostWriter
 				writeFormMultipartStyle(out, arg.getName(), (String)arg.getValue());
 				writeln(out,"--" + BOUNDARY);
 			}
-			writeFileToURL(out, filename, sampler.getFileField(),
-					 getFileStream(filename),sampler.getMimetype());
+			writeFileToURL(out, filename, sampler.getFileParameter(),
+					 getFileStream(filename),sampler.getFileMIMEType());
 
 			writeln(out,"--" + BOUNDARY+"--");
 			out.flush();
@@ -127,7 +127,7 @@ public class PostWriter
 		((HttpURLConnection)connection).setRequestMethod("POST");
 
 		// If filename was specified then send the post using multipart syntax
-		String filename = sampler.getFileField();
+		String filename = sampler.getFileParameter();
 		if ((filename != null) && (filename.trim().length() > 0))
 		{
 			connection.setRequestProperty("Content-type", "multipart/form-data; boundary=" + BOUNDARY);
@@ -177,12 +177,12 @@ public class PostWriter
 	/************************************************************
 	 *  Writes out the contents of a file in correct multipart format.
 	 *
-	 *@param  o                Description of Parameter
-	 *@param  filename         Description of Parameter
-	 *@param  fieldname        Description of Parameter
-	 *@param  in               Description of Parameter
-	 *@param  mimetype         Description of Parameter
-	 *@exception  IOException  Description of Exception
+	 *@param  out
+	 *@param  filename
+	 *@param  fieldname
+	 *@param  in
+	 *@param  mimetype
+	 *@exception  IOException  
 	 ***********************************************************/
 	private void writeFileToURL(OutputStream out, String filename, String fieldname,
 			InputStream in, String mimetype) throws IOException

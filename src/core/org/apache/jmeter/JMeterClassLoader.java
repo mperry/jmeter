@@ -52,41 +52,56 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.protocol.http.modifier.gui;
+package org.apache.jmeter;
 
 
-import org.apache.jmeter.config.gui.AbstractResponseBasedModifierGui;
-import org.apache.jmeter.protocol.http.modifier.AnchorModifier;
-import org.apache.jmeter.testelement.TestElement;
+import java.net.URLClassLoader;
+import java.net.URL;
 
 
-/****************************************
- * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
+/**
+ * Singleton to hold the JMeter-global class loader.
  *
- * @author    Kevin Hammond
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created   $Date$
- * @version   $Revision$
- ***************************************/
-
-public class AnchorModifierGui extends AbstractResponseBasedModifierGui
+ * @version $Revision$
+ */
+public final class JMeterClassLoader extends URLClassLoader
 {
 
-    public AnchorModifierGui()
+    private static JMeterClassLoader classLoader;
+
+
+    public static final Class classForName(String name) throws ClassNotFoundException
     {
+        return getClassLoader().loadClass(name);
     }
 
 
-    public String getStaticLabel()
+    static final synchronized JMeterClassLoader getClassLoader()
     {
-        return "anchor_modifier_title";
+        if (classLoader == null)
+        {
+            classLoader = new JMeterClassLoader(new URL[0], JMeterClassLoader.class.getClassLoader());
+        }
+        return classLoader;
+    }
+
+    public static final void addURLs(URL[] urls)
+    {
+        getClassLoader().add(urls);
+    }
+
+    JMeterClassLoader(URL[] urls, ClassLoader parent)
+    {
+        super(urls, parent);
     }
 
 
-    public TestElement createTestElement()
+    private void add(URL[] urls)
     {
-        AnchorModifier modifier = new AnchorModifier();
-        configureTestElement(modifier);
-        return modifier;
+        for (int i = 0; i < urls.length; i++)
+        {
+            this.addURL(urls[i]);
+        }
     }
 }

@@ -74,7 +74,7 @@ public class HttpRequestHdr
 		boolean first = true;
 		ByteArrayOutputStream clientRequest = new ByteArrayOutputStream();
 		ByteArrayOutputStream line = new ByteArrayOutputStream();
-		int x;
+		int x = -1;
 		while ((inHeaders || readLength < dataLength) && ((x = in.read()) != -1))
 		{
 			line.write(x);
@@ -159,7 +159,7 @@ public class HttpRequestHdr
 		tempGui.configure(createSampler());
 		HTTPSampler result = (HTTPSampler) tempGui.createTestElement();
 		result.setFollowRedirects(false);
-		result.setUseKeepAlive(true);
+		result.setKeepAlive(true);
 		return result;
 	}
 	public String getContentType()
@@ -217,9 +217,9 @@ public class HttpRequestHdr
 		{
 			urlConfig.parseArguments(postData);
 			sampler.setArguments(urlConfig.getArguments());
-			sampler.setFileField(urlConfig.getFileFieldName());
-			sampler.setFilename(urlConfig.getFilename());
-			sampler.setMimetype(urlConfig.getMimeType());
+			sampler.setFileParameter(urlConfig.getFileFieldName());
+			sampler.setFileName(urlConfig.getFilename());
+			sampler.setFileMIMEType(urlConfig.getMimeType());
 		}
 		else
 		{

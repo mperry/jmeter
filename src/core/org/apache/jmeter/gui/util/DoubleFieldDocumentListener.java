@@ -52,41 +52,61 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.protocol.http.modifier.gui;
+
+package org.apache.jmeter.gui.util;
 
 
-import org.apache.jmeter.config.gui.AbstractResponseBasedModifierGui;
-import org.apache.jmeter.protocol.http.modifier.AnchorModifier;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.*;
+
 import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.gui.JMeterGUIComponent;
 
-
-/****************************************
- * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
+/**
+ * DocumentListener implementation for long fields.
  *
- * @author    Kevin Hammond
- * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created   $Date$
- * @version   $Revision$
- ***************************************/
-
-public class AnchorModifierGui extends AbstractResponseBasedModifierGui
+ * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ */
+public class DoubleFieldDocumentListener implements DocumentListener
 {
+    private JMeterGUIComponent gui;
+    private String property;
+    private JTextField field;
 
-    public AnchorModifierGui()
+
+    public DoubleFieldDocumentListener(String property, JTextField field, JMeterGUIComponent gui)
     {
+        this.property = property;
+        this.field = field;
+        this.gui = gui;
     }
 
 
-    public String getStaticLabel()
+    public void insertUpdate(DocumentEvent e)
     {
-        return "anchor_modifier_title";
+        setValue();
     }
 
 
-    public TestElement createTestElement()
+    public void removeUpdate(DocumentEvent e)
     {
-        AnchorModifier modifier = new AnchorModifier();
-        configureTestElement(modifier);
-        return modifier;
+        setValue();
+    }
+
+
+    public void changedUpdate(DocumentEvent e)
+    {
+        //
+    }
+
+
+    private void setValue()
+    {
+        try {
+            gui.getElement().setProperty(property, new Double(field.getText()));
+        } catch (NumberFormatException e) {
+            //
+        }
     }
 }

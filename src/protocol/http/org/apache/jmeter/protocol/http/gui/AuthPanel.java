@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,549 +53,523 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.protocol.http.gui;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import java.util.List;
+import java.io.*;
+
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
 
 import org.apache.jmeter.config.gui.AbstractConfigGui;
+import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.gui.util.FileDialoger;
+import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.protocol.http.control.AuthManager;
 import org.apache.jmeter.protocol.http.control.Authorization;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jmeter.util.LocaleChangeEvent;
+
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
-import org.apache.jorphan.gui.layout.VerticalLayout;
+
 
 /****************************************
  * Handles input for determining if authentication services are required for a
  * Sampler. It also understands how to get AuthManagers for the files that the
  * user selects.
  *
- *@author    $Author$
- *@created   $Date$
- *@version   $Revision$
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   $Date$
+ * @version   $Revision$
  ***************************************/
-public class AuthPanel extends AbstractConfigGui implements ActionListener
+// todo: rename this to AuthManagerGui
+
+public class AuthPanel extends AbstractConfigGui implements ActionListener, ListSelectionListener, FocusListener
 {
-	transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor(
-			"jmeter.protocol.http");
-	InnerTableModel tableModel;
 
-	/****************************************
-	 * A table to show the authentication information
-	 ***************************************/
-	JTable authTable;
-	JButton addButton;
-	JButton deleteButton;
-	JButton loadButton;
-	JButton saveButton;
-	JPanel authManagerPanel;
+    transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor("jmeter.protocol.http");
 
-	/****************************************
-	 * Default Constructor
-	 ***************************************/
-	public AuthPanel()
-	{
-		tableModel = new InnerTableModel();
-		init();
-	}
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public TestElement createTestElement()
-	{
-		AuthManager authMan = tableModel.manager;
-		configureTestElement(authMan);
-		return (TestElement)authMan.clone();
-	}
+    private static String ADD = "add";
+    private static String REMOVE = "remove";
+    private static String LOAD = "load";
+    private static String SAVE = "save";
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param el  !ToDo (Parameter description)
-	 ***************************************/
-	public void configure(TestElement el)
-	{
-		super.configure(el);
-		tableModel.manager = (AuthManager)el;
-	}
+    private JButton removeButton;
+    private JButton addButton;
+    private JButton loadButton;
+    private JButton saveButton;
+    private JTable authTable;
+    private AuthorizationTableModel tableModel;
+    private JLabel tableLabel;
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public String getStaticLabel()
-	{
-		return JMeterUtils.getResString("auth_manager_title");
-	}
 
-	/****************************************
-	 * Shows the main authentication panel for this object
-	 ***************************************/
-	public void init()
-	{
-		// set the layout of the control panel
-		this.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
+    public AuthPanel()
+    {
+    }
 
-		authManagerPanel = new JPanel();
 
-		Border margin = new EmptyBorder(10, 10, 5, 10);
-		authManagerPanel.setBorder(margin);
+    public TestElement createTestElement()
+    {
+//        AuthManager authMan = tableModel.manager;
+//        configureTestElement(authMan);
+//        return (TestElement)authMan.clone();
+        return null;
+    }
 
-		authManagerPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
 
-		JLabel panelTitleLabel = new JLabel(JMeterUtils.getResString("auth_manager_title"));
-		Font curFont = panelTitleLabel.getFont();
-		int curFontSize = curFont.getSize();
-		curFontSize += 4;
-		panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
-		authManagerPanel.add(panelTitleLabel);
+    public void configure(TestElement element)
+    {
+        super.configure(element);
+        tableModel = new AuthorizationTableModel((List)element.getProperty(AuthManager.AUTHORIZATIONS));
+        authTable.setModel(tableModel);
+        TableColumn passwordColumn = authTable.getColumnModel().getColumn(2);
+        DefaultCellEditor editor = new DefaultCellEditor(new JPasswordField());
+        editor.setClickCountToStart(1);
 
-		authManagerPanel.add(getNamePanel());
+        passwordColumn.setCellEditor(editor);
+        passwordColumn.setCellRenderer(new PasswordCellRenderer());
 
-		JPanel authTablePanel = createAuthTablePanel();
-		authManagerPanel.add(authTablePanel);
+        editor = new DefaultCellEditor(new JTextField());
+        editor.setClickCountToStart(1);
 
-		this.add(authManagerPanel);
-	}
+        for (int i = 0; i < 2; i++)
+        {
+            authTable.getColumnModel().getColumn(i).setCellEditor(editor);
+        }
+        setButtonState();
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param e  !ToDo (Parameter description)
-	 ***************************************/
-	public void actionPerformed(ActionEvent e)
-	{
-		String action = e.getActionCommand();
 
-		if(action.equals("Delete"))
-		{
-			if(tableModel.getRowCount() > 0)
-			{
-				// If a table cell is being edited, we must cancel the editing before
-				// deleting the row
-				if(authTable.isEditing())
-				{
-					TableCellEditor cellEditor = authTable.getCellEditor(authTable.getEditingRow(), authTable.getEditingColumn());
-					cellEditor.cancelCellEditing();
-				}
+    private void setButtonState()
+    {
+        addButton.setEnabled(true);
+        removeButton.setEnabled(authTable.getSelectedRow() != -1);
+        loadButton.setEnabled(true);
+        saveButton.setEnabled(false);
+        if (tableModel != null)
+        {
+            saveButton.setEnabled(tableModel.getRowCount() > 0);
+        }
+    }
 
-				int rowSelected = authTable.getSelectedRow();
 
-				if(rowSelected != -1)
-				{
-					tableModel.removeRow(rowSelected);
-					tableModel.fireTableDataChanged();
+    public String getStaticLabel()
+    {
+        return "auth_manager_title";
+    }
 
-					// Disable the DELETE and SAVE buttons if no rows remaining after delete
-					if(tableModel.getRowCount() == 0)
-					{
-						deleteButton.setEnabled(false);
-						saveButton.setEnabled(false);
-					}
 
-					// Table still contains one or more rows, so highlight (select)
-					// the appropriate one.
-					else
-					{
-						int rowToSelect = rowSelected;
+    public void actionPerformed(ActionEvent e)
+    {
+        String action = e.getActionCommand();
 
-						if(rowSelected >= tableModel.getRowCount())
-						{
-							rowToSelect = rowSelected - 1;
-						}
+        if (action.equals(REMOVE))
+        {
+            if (tableModel.getRowCount() > 0)
+            {
+                // If a table cell is being edited, we must cancel the editing before
+                // deleting the row
+                if (authTable.isEditing())
+                {
+                    TableCellEditor cellEditor = authTable.getCellEditor(authTable.getEditingRow(), authTable.getEditingColumn());
+                    cellEditor.cancelCellEditing();
+                }
 
-						authTable.setRowSelectionInterval(rowToSelect, rowToSelect);
-					}
-				}
-			}
-		}
-		else if(action.equals("Add"))
-		{
-			// If a table cell is being edited, we should accept the current value
-			// and stop the editing before adding a new row.
-			if(authTable.isEditing())
-			{
-				TableCellEditor cellEditor = authTable.getCellEditor(authTable.getEditingRow(), authTable.getEditingColumn());
-				cellEditor.stopCellEditing();
-			}
+                int rowSelected = authTable.getSelectedRow();
 
-			tableModel.addNewRow();
-			tableModel.fireTableDataChanged();
+                if (rowSelected != -1)
+                {
+                    tableModel.removeAuthorization(rowSelected);
 
-			// Enable the DELETE and SAVE buttons if they are currently disabled.
-			if(!deleteButton.isEnabled())
-			{
-				deleteButton.setEnabled(true);
-			}
-			if(!saveButton.isEnabled())
-			{
-				saveButton.setEnabled(true);
-			}
+                    if (tableModel.getRowCount() > 0)
+                    {
+                        int rowToSelect = rowSelected;
 
-			// Highlight (select) the appropriate row.
-			int rowToSelect = tableModel.getRowCount() - 1;
-			authTable.setRowSelectionInterval(rowToSelect, rowToSelect);
-		}
-		else if(action.equals("Load"))
-		{
-			try
-			{
-				File tmp = FileDialoger.promptToOpenFile().getSelectedFile();
-				if(tmp != null)
-				{
-					tableModel.manager.addFile(tmp.getAbsolutePath());
-					tableModel.fireTableDataChanged();
+                        if (rowSelected >= tableModel.getRowCount())
+                        {
+                            rowToSelect = rowSelected - 1;
+                        }
+                        authTable.clearSelection();
+                        authTable.setRowSelectionInterval(rowToSelect, rowToSelect);
+                    }
+                }
+            }
+        } else if (action.equals(ADD))
+        {
+            // If a table cell is being edited, we should accept the current value
+            // and stop the editing before adding a new row.
+            if (authTable.isEditing())
+            {
+                TableCellEditor cellEditor = authTable.getCellEditor(authTable.getEditingRow(), authTable.getEditingColumn());
+                cellEditor.stopCellEditing();
+            }
 
-					if(tableModel.getRowCount() > 0)
-					{
-						deleteButton.setEnabled(true);
-						saveButton.setEnabled(true);
-					}
-				}
-			}
-			catch(IOException ex)
-			{
-				log.error("",ex);
-			}
-			catch(NullPointerException err){}
-		}
-		else if(action.equals("Save"))
-		{
-			try
-			{
-				File tmp = FileDialoger.promptToSaveFile(null).getSelectedFile();
-				if(tmp != null)
-				{
-					tableModel.manager.save(tmp.getAbsolutePath());
-				}
-			}
-			catch(IOException ex)
-			{
-				log.error("",ex);
-			}
-			catch(NullPointerException err){}
-		}
-	}
+            tableModel.addAuthorization();
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public JPanel createAuthTablePanel()
-	{
-		Border margin = new EmptyBorder(5, 10, 10, 10);
+            // Highlight (select) the appropriate row.
+            int rowToSelect = tableModel.getRowCount() - 1;
+            authTable.clearSelection();
+            authTable.setRowSelectionInterval(rowToSelect, rowToSelect);
+        } else if (action.equals(LOAD))
+        {
+            try
+            {
+                JFileChooser chooser = FileDialoger.promptToOpenFile();
 
-		JPanel tempPanel = new JPanel();
-		tempPanel.setLayout(new VerticalLayout(0, VerticalLayout.CENTER));
-		tempPanel.setBorder(new CompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), JMeterUtils.getResString("auths_stored")), margin));
+                if (chooser != null)
+                {
+                    Collection authorizations = AuthManager.loadAuthorizations(chooser.getSelectedFile().getAbsolutePath());
+                    tableModel.addAuthorizations(authorizations);
+                }
+            } catch (IOException ex)
+            {
+                log.error("", ex);
+            }
+        } else if (action.equals(SAVE))
+        {
+            if (authTable.isEditing())
+            {
+                TableCellEditor cellEditor = authTable.getCellEditor(authTable.getEditingRow(), authTable.getEditingColumn());
+                cellEditor.stopCellEditing();
+            }
+            try
+            {
+                JFileChooser chooser = FileDialoger.promptToSaveFile(null);
 
-		// create the JTable that holds auth per row
-		authTable = new JTable(tableModel);
-		authTable.setCellSelectionEnabled(true);
-		authTable.setRowSelectionAllowed(true);
-		authTable.setColumnSelectionAllowed(false);
-		authTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                if (chooser != null)
+                {
+                    AuthManager.saveAuthorizations(tableModel.getAuthorizations(), chooser.getSelectedFile().getAbsolutePath());
+                }
+            } catch (IOException ex)
+            {
+                log.error("", ex);
+            }
+        }
+        setButtonState();
+    }
 
-		TableColumn passwordColumn = authTable.getColumnModel().getColumn(2);
-		passwordColumn.setCellEditor(new DefaultCellEditor(new JPasswordField()));
-		passwordColumn.setCellRenderer(new PasswordCellRenderer());
 
-		// create a JScrollPane and place the auth JTable inside it
-		JScrollPane scroller = new JScrollPane(authTable);
-		authTable.setPreferredScrollableViewportSize(new Dimension(520, 150));
-		JTableHeader tableHeader = authTable.getTableHeader();
-		scroller.setColumnHeaderView(tableHeader);
+    protected void initComponents()
+    {
+        super.initComponents();
 
-		tempPanel.add(scroller);
+        JPanel panel = GUIFactory.createPanel();
+        panel.setLayout(new GridBagLayout());
+        JMeterGridBagConstraints constraints;
 
-		// ADD button
-		addButton = new JButton(JMeterUtils.getResString("add"));
-		addButton.setMnemonic('A');
-		addButton.setActionCommand("Add");
-		addButton.addActionListener(this);
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridBagLayout());
+        constraints = new JMeterGridBagConstraints();
+        constraints.fillHorizontal(1.0);
+        addButton = new JButton(JMeterUtils.getResString("add"));
+        addButton.setActionCommand(ADD);
+        addButton.addActionListener(this);
+        addButton.setName("add");
+        buttonPanel.add(addButton, constraints);
+        removeButton = new JButton(JMeterUtils.getResString("remove"));
+        removeButton.setName("remove");
+        removeButton.setActionCommand(REMOVE);
+        removeButton.addActionListener(this);
+        constraints = constraints.nextRow();
+        buttonPanel.add(removeButton, constraints);
+        loadButton = new JButton(JMeterUtils.getResString("load"));
+        loadButton.setName("load");
+        loadButton.setActionCommand(LOAD);
+        loadButton.addActionListener(this);
+        constraints = constraints.nextRow();
+        buttonPanel.add(loadButton, constraints);
+        saveButton = new JButton(JMeterUtils.getResString("save"));
+        saveButton.setName("save");
+        saveButton.setActionCommand(SAVE);
+        saveButton.addActionListener(this);
+        saveButton.setMnemonic('S');
+        constraints = constraints.nextRow();
+        buttonPanel.add(saveButton, constraints);
 
-		// DELETE button
-		deleteButton = new JButton(JMeterUtils.getResString("delete"));
+        tableLabel = new JLabel(JMeterUtils.getResString("auths_stored"));
+        tableLabel.setName("auths_stored");
+        constraints = new JMeterGridBagConstraints();
+        panel.add(tableLabel, constraints);
+        authTable = new JTable(tableModel);
+        authTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        authTable.getTableHeader().setReorderingAllowed(false);
+        authTable.getSelectionModel().addListSelectionListener(this);
+        authTable.addFocusListener(this);
+        JScrollPane scroller = new JScrollPane(authTable);
+        Dimension tableDim = scroller.getPreferredSize();
+        tableDim.height = 140;
+        tableDim.width = (int)(tableDim.width * 1.5);
+        authTable.setPreferredScrollableViewportSize(tableDim);
+        scroller.setColumnHeaderView(authTable.getTableHeader());
+        constraints = constraints.nextRow();
+        constraints.fillHorizontal(1.0);
+        constraints.fillVertical(1.0);
+        panel.add(scroller, constraints);
+        constraints = constraints.incrementX();
+        constraints.fillNone();
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+        panel.add(buttonPanel, constraints);
 
-		if(tableModel.getRowCount() == 0)
-		{
-			deleteButton.setEnabled(false);
-		}
-		else
-		{
-			deleteButton.setEnabled(true);
-		}
+        add(panel);
+    }
 
-		deleteButton.setMnemonic('D');
-		deleteButton.setActionCommand("Delete");
-		deleteButton.addActionListener(this);
 
-		// LOAD button
-		loadButton = new JButton(JMeterUtils.getResString("load"));
-		loadButton.setMnemonic('L');
-		loadButton.setActionCommand("Load");
-		loadButton.addActionListener(this);
+    public void focusGained(FocusEvent e)
+    {
+    }
 
-		// SAVE button
-		saveButton = new JButton(JMeterUtils.getResString("save"));
 
-		if(tableModel.getRowCount() == 0)
-		{
-			saveButton.setEnabled(false);
-		}
-		else
-		{
-			saveButton.setEnabled(true);
-		}
+    public void focusLost(FocusEvent e)
+    {
+//        if (authTable.isEditing()) {
+//            TableCellEditor cellEditor = authTable.getCellEditor(authTable.getEditingRow(), authTable.getEditingColumn());
+//            cellEditor.stopCellEditing();
+//        }
+    }
 
-		saveButton.setMnemonic('S');
-		saveButton.setActionCommand("Save");
-		saveButton.addActionListener(this);
+    public void localeChanged(LocaleChangeEvent event)
+    {
+        super.localeChanged(event);
+        updateLocalizedStrings(new JComponent[]{tableLabel, addButton, removeButton, loadButton, saveButton});
+        if (tableModel != null)
+        {
+            updateLocalizedTableHeaders(authTable, tableModel);
+        }
+    }
 
-		// Button Panel
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.add(addButton);
-		buttonPanel.add(deleteButton);
-		buttonPanel.add(loadButton);
-		buttonPanel.add(saveButton);
 
-		tempPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-		tempPanel.add(buttonPanel);
+    public void valueChanged(ListSelectionEvent e)
+    {
+        setButtonState();
+    }
 
-		return tempPanel;
-	}
 
-	/****************************************
-	 * !ToDo (Class description)
-	 *
-	 *@author    $Author$
-	 *@created   $Date$
-	 *@version   $Revision$
-	 ***************************************/
-	private class InnerTableModel extends AbstractTableModel
-	{
-		AuthManager manager;
+    DefaultTableCellRenderer getRend()
+    {
+        return null;
+    }
 
-		/****************************************
-		 * !ToDo (Constructor description)
-		 *
-		 *@param man  !ToDo (Parameter description)
-		 ***************************************/
-		public InnerTableModel(AuthManager man)
-		{
-			manager = man;
-		}
+    private static class PasswordCellRenderer extends JPasswordField implements TableCellRenderer
+    {
 
-		/****************************************
-		 * !ToDo (Constructor description)
-		 ***************************************/
-		public InnerTableModel()
-		{
-			manager = new AuthManager();
-		}
+        protected static Border noFocusBorder = new EmptyBorder(1, 1, 1, 1);
 
-		/****************************************
-		 * !ToDo (Method description)
-		 *
-		 *@param row  !ToDo (Parameter description)
-		 ***************************************/
-		public void removeRow(int row)
-		{
-			manager.remove(row);
-		}
 
-		/****************************************
-		 * !ToDo
-		 ***************************************/
-		public void addNewRow()
-		{
-			manager.addAuth();
-		}
+        private Color foreground;
+        private Color background;
 
-		/****************************************
-		 * !ToDoo (Method description)
-		 *
-		 *@param row     !ToDo (Parameter description)
-		 *@param column  !ToDo (Parameter description)
-		 *@return        !ToDo (Return description)
-		 ***************************************/
-		public boolean isCellEditable(int row, int column)
-		{
-			// all table cells are editable
-			return true;
-		}
 
-		/****************************************
-		 * !ToDoo (Method description)
-		 *
-		 *@param column  !ToDo (Parameter description)
-		 *@return        !ToDo (Return description)
-		 ***************************************/
-		public Class getColumnClass(int column)
-		{
-			return getValueAt(0, column).getClass();
-		}
+        public PasswordCellRenderer()
+        {
+            super();
+            setOpaque(true);
+            setBorder(noFocusBorder);
+        }
 
-		/****************************************
-		 * required by table model interface
-		 *
-		 *@return   !ToDo (Return description)
-		 ***************************************/
-		public int getRowCount()
-		{
-			return manager.getAuthObjects().size();
-		}
 
-		/****************************************
-		 * required by table model interface
-		 *
-		 *@return   !ToDo (Return description)
-		 ***************************************/
-		public int getColumnCount()
-		{
-			return manager.getColumnCount();
-		}
+        public void updateUI()
+        {
+            super.updateUI();
+            setForeground(null);
+            setBackground(null);
+        }
 
-		/****************************************
-		 * required by table model interface
-		 *
-		 *@param column  !ToDo (Parameter description)
-		 *@return        !ToDo (Return description)
-		 ***************************************/
-		public String getColumnName(int column)
-		{
-			return manager.getColumnName(column);
-		}
 
-		/****************************************
-		 * required by table model interface
-		 *
-		 *@param row     !ToDo (Parameter description)
-		 *@param column  !ToDo (Parameter description)
-		 *@return        !ToDo (Return description)
-		 ***************************************/
-		public Object getValueAt(int row, int column)
-		{
-			Authorization auth = manager.getAuthObjectAt(row);
+        public void setForeground(Color fg)
+        {
+            super.setForeground(fg);
+            foreground = fg;
+        }
 
-			if(column == 0)
-			{
-				return auth.getURL();
-			}
-			else if(column == 1)
-			{
-				return auth.getUser();
-			}
-			else if(column == 2)
-			{
-				return auth.getPass();
-			}
-			return null;
-		}
 
-		/****************************************
-		 * !ToDo (Method description)
-		 *
-		 *@param value   !ToDo (Parameter description)
-		 *@param row     !ToDo (Parameter description)
-		 *@param column  !ToDo (Parameter description)
-		 ***************************************/
-		public void setValueAt(Object value, int row, int column)
-		{
-			Authorization auth = manager.getAuthObjectAt(row);
+        public void setBackground(Color bg)
+        {
+            super.setBackground(bg);
+            background = bg;
+        }
 
-			if(column == 0)
-			{
-				auth.setURL((String)value);
-			}
-			else if(column == 1)
-			{
-				auth.setUser((String)value);
-			}
-			else if(column == 2)
-			{
-				auth.setPass((String)value);
-			}
-		}
-	}
 
-	/****************************************
-	 * !ToDo (Class description)
-	 *
-	 *@author    $Author$
-	 *@created   $Date$
-	 *@version   $Revision$
-	 ***************************************/
-	private class PasswordCellRenderer extends JPasswordField implements TableCellRenderer
-	{
-		private Border myBorder;
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+        {
+            if (isSelected)
+            {
+                System.out.println(row + " selected");
+                super.setForeground(table.getSelectionForeground());
+                super.setBackground(table.getSelectionBackground());
+            } else
+            {
+                System.out.println(row + " not selected");
+                if (foreground != null)
+                {
+                    super.setForeground(foreground);
+                } else
+                {
+                    super.setForeground(table.getForeground());
+                }
+                if (background != null)
+                {
+                    super.setBackground(background);
+                } else
+                {
+                    super.setBackground(table.getBackground());
+                }
+            }
 
-		/****************************************
-		 * !ToDo (Constructor description)
-		 ***************************************/
-		public PasswordCellRenderer()
-		{
-			super();
-			myBorder = new EmptyBorder(1, 2, 1, 2);
-			setOpaque(true);
-			setBorder(myBorder);
-		}
+            setFont(table.getFont());
 
-		/****************************************
-		 * !ToDoo (Method description)
-		 *
-		 *@param table       !ToDo (Parameter description)
-		 *@param value       !ToDo (Parameter description)
-		 *@param isSelected  !ToDo (Parameter description)
-		 *@param hasFocus    !ToDo (Parameter description)
-		 *@param row         !ToDo (Parameter description)
-		 *@param column      !ToDo (Parameter description)
-		 *@return            !ToDo (Return description)
-		 ***************************************/
-		public Component getTableCellRendererComponent(JTable table,
-				Object value, boolean isSelected, boolean hasFocus,
-				int row, int column)
-		{
-			setText((String)value);
+            if (hasFocus)
+            {
+                setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
+                if (table.isCellEditable(row, column))
+                {
+                    super.setForeground(UIManager.getColor("Table.focusCellForeground"));
+                    super.setBackground(UIManager.getColor("Table.focusCellBackground"));
+                }
+            } else
+            {
+                setBorder(noFocusBorder);
+            }
 
-			setBackground(isSelected && !hasFocus ?
-					table.getSelectionBackground() : table.getBackground());
-			setForeground(isSelected && !hasFocus ?
-					table.getSelectionForeground() : table.getForeground());
+            System.out.println("Value = " + value);
+            if (value == null)
+            {
+                setText("");
+            } else
+            {
+                setText(value.toString());
+            }
 
-			setFont(table.getFont());
+            return this;
+        }
+    }
 
-			return this;
-		}
-	}
+
+    private static class AuthorizationTableModel extends AbstractTableModel
+    {
+
+        private List authorizations;
+
+
+        public AuthorizationTableModel(List parameters)
+        {
+            this.authorizations = parameters;
+        }
+
+
+        public int getRowCount()
+        {
+            return authorizations.size();
+        }
+
+
+        public int getColumnCount()
+        {
+            return 3;
+        }
+
+
+        public Object getValueAt(int rowIndex, int columnIndex)
+        {
+            Authorization authorization = (Authorization)authorizations.get(rowIndex);
+
+            switch (columnIndex)
+            {
+                case 0:
+                    return authorization.getUrl();
+                case 1:
+                    return authorization.getUsername();
+                case 2:
+                    return authorization.getPassword();
+                default:
+                    return "";
+            }
+        }
+
+
+        public void setValueAt(Object value, int rowIndex, int columnIndex)
+        {
+            Authorization authorization = (Authorization)authorizations.get(rowIndex);
+
+            switch (columnIndex)
+            {
+                case 0:
+                    authorization.setUrl((String)value);
+                    break;
+                case 1:
+                    authorization.setUsername((String)value);
+                    break;
+                case 2:
+                    authorization.setPassword((String)value);
+                    break;
+                default:
+                    ;
+            }
+        }
+
+
+        public boolean isCellEditable(int rowIndex, int columnIndex)
+        {
+            return true;
+        }
+
+
+        public String getColumnName(int column)
+        {
+            switch (column)
+            {
+                case 0:
+                    return JMeterUtils.getResString("auth_base_url");
+                case 1:
+                    return JMeterUtils.getResString("username_column");
+                case 2:
+                    return JMeterUtils.getResString("password_column");
+                default:
+                    return "";
+            }
+        }
+
+
+        public Class getColumnClass(int columnIndex)
+        {
+            return String.class;
+        }
+
+
+        public void addAuthorization()
+        {
+            authorizations.add(new Authorization());
+            fireTableRowsInserted(authorizations.size() - 1, authorizations.size() - 1);
+        }
+
+
+        public void removeAuthorization(int index)
+        {
+            authorizations.remove(index);
+            fireTableRowsDeleted(index, index);
+        }
+
+
+        public void addAuthorizations(Collection authorizations)
+        {
+            int startIndex = authorizations.size();
+
+            this.authorizations.addAll(authorizations);
+            fireTableRowsInserted(startIndex, authorizations.size() - 1);
+        }
+
+
+        public Collection getAuthorizations()
+        {
+            return authorizations;
+        }
+    }
+
 }

@@ -52,41 +52,112 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.protocol.http.modifier.gui;
+package org.apache.jmeter.protocol.http.config;
 
 
-import org.apache.jmeter.config.gui.AbstractResponseBasedModifierGui;
-import org.apache.jmeter.protocol.http.modifier.AnchorModifier;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.BindException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.*;
+
+import org.apache.jmeter.config.Arguments;
+import org.apache.jmeter.config.ConfigTestElement;
+import org.apache.jmeter.protocol.http.control.AuthManager;
+import org.apache.jmeter.protocol.http.control.CookieManager;
+import org.apache.jmeter.protocol.http.control.Header;
+import org.apache.jmeter.protocol.http.control.HeaderManager;
+import org.apache.jmeter.protocol.http.util.HTTPArgument;
+import org.apache.jmeter.protocol.http.sampler.PostWriter;
+import org.apache.jmeter.protocol.http.sampler.HTTPSampler;
+import org.apache.jmeter.samplers.AbstractSampler;
+import org.apache.jmeter.samplers.Entry;
+import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.AbstractTestElement;
+import org.apache.jmeter.testelement.category.ConfigCategory;
+import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jmeter.util.SSLManager;
+import org.apache.log.Hierarchy;
+import org.apache.log.Logger;
 
 
-/****************************************
- * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
+/**
+ * HTTP requests defaults
  *
- * @author    Kevin Hammond
- * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created   $Date$
- * @version   $Revision$
- ***************************************/
-
-public class AnchorModifierGui extends AbstractResponseBasedModifierGui
+ *@author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ */
+public class HTTPDefaults extends ConfigTestElement implements ConfigCategory
 {
 
-    public AnchorModifierGui()
+    public final static String DOMAIN = "domain";
+    public final static String PORT = "port";
+    public final static String PATH = "path";
+    public final static String ARGUMENTS = "arguments";
+
+    public static final int USE_DEFAULT_PORT = -1;
+
+    private String domain = "";
+    private int port = USE_DEFAULT_PORT;
+    private String path = "";
+    private Arguments arguments = new Arguments();
+
+
+    public HTTPDefaults()
     {
     }
 
 
-    public String getStaticLabel()
+    public String getDomain()
     {
-        return "anchor_modifier_title";
+        return domain;
     }
 
 
-    public TestElement createTestElement()
+    public void setDomain(String domain)
     {
-        AnchorModifier modifier = new AnchorModifier();
-        configureTestElement(modifier);
-        return modifier;
+        this.domain = domain;
     }
+
+
+    public int getPort()
+    {
+        return port;
+    }
+
+
+    public void setPort(int port)
+    {
+        this.port = port;
+    }
+
+
+    public String getPath()
+    {
+        return path;
+    }
+
+
+    public void setPath(String path)
+    {
+        this.path = path;
+    }
+
+
+    public Arguments getArguments()
+    {
+        return arguments;
+    }
+
+
+    public void setArguments(Arguments arguments)
+    {
+        this.arguments = arguments;
+    }
+
 }

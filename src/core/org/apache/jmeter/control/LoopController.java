@@ -132,9 +132,11 @@ public class LoopController extends GenericController implements Serializable
 
     protected void resetLoopCount()
     {
-        if (!getLoopForever() && getLoopCount() > -1) {
+        if (!getLoopForever() && getLoopCount() > -1)
+        {
             this.setShortCircuit(true);
-        } else {
+        } else
+        {
             loopCount = 0;
         }
     }
@@ -144,9 +146,11 @@ public class LoopController extends GenericController implements Serializable
     {
         resetCurrent();
         incrementLoopCount();
-        if (endOfLoop()) {
+        if (endOfLoop())
+        {
             return false;
-        } else {
+        } else
+        {
             return hasNext();
         }
     }
@@ -165,56 +169,65 @@ public class LoopController extends GenericController implements Serializable
     }
 
 
-	public static class Test extends junit.framework.TestCase
-	{
-		public Test(String name)
-		{
-			super(name);
-		}
+    public static class Test extends junit.framework.TestCase
+    {
 
-		public void testProcessing() throws Exception
-		{
-			GenericController controller = new GenericController();
-			GenericController sub_1 = new GenericController();
-			sub_1.addTestElement(makeSampler("one"));
-			sub_1.addTestElement(makeSampler("two"));
-			controller.addTestElement(sub_1);
-			controller.addTestElement(makeSampler("three"));
-			LoopController sub_2 = new LoopController();
-			sub_2.setLoopCount(3);
-			GenericController sub_3 = new GenericController();
-			sub_2.addTestElement(makeSampler("four"));
-			sub_3.addTestElement(makeSampler("five"));
-			sub_3.addTestElement(makeSampler("six"));
-			sub_2.addTestElement(sub_3);
-			sub_2.addTestElement(makeSampler("seven"));
-			controller.addTestElement(sub_2);
-			String[] order = new String[]{"one","two","three","four","five","six","seven",
-						"four","five","six","seven","four","five","six","seven"};
-			int counter = 15;
-			for (int i = 0; i < 2; i++)
-			{
-				assertEquals(15,counter);
-				counter = 0;
-				while(controller.hasNext())
-				{
-					TestElement sampler = controller.next();
-					assertEquals(order[counter++],sampler.getProperty(TestElement.NAME));
-				}
-			}
-		}
+        public Test(String name)
+        {
+            super(name);
+        }
 
-		private TestElement makeSampler(String name)
-		{
-		  	TestSampler s= new TestSampler();
-			s.setName(name);
-			return s;
-		}
+        public void testProcessing() throws Exception
+        {
+            GenericController controller = new GenericController();
+            GenericController sub_1 = new GenericController();
+            sub_1.addChildElement(makeSampler("one"));
+            sub_1.addChildElement(makeSampler("two"));
+            controller.addChildElement(sub_1);
+            controller.addChildElement(makeSampler("three"));
+            LoopController sub_2 = new LoopController();
+            sub_2.setLoopCount(3);
+            GenericController sub_3 = new GenericController();
+            sub_2.addChildElement(makeSampler("four"));
+            sub_3.addChildElement(makeSampler("five"));
+            sub_3.addChildElement(makeSampler("six"));
+            sub_2.addChildElement(sub_3);
+            sub_2.addChildElement(makeSampler("seven"));
+            controller.addChildElement(sub_2);
+            String[] order = new String[]{"one", "two", "three", "four", "five", "six", "seven",
+                                          "four", "five", "six", "seven", "four", "five", "six", "seven"};
+            int counter = 15;
+            for (int i = 0; i < 2; i++)
+            {
+                assertEquals(15, counter);
+                counter = 0;
+                while (controller.hasNext())
+                {
+                    TestElement sampler = controller.next();
+                    assertEquals(order[counter++], sampler.getProperty(TestElement.NAME));
+                }
+            }
+        }
 
-      
-		class TestSampler extends AbstractSampler {
-		  public void addCustomTestElement(TestElement t) { }
-		  public org.apache.jmeter.samplers.SampleResult sample(org.apache.jmeter.samplers.Entry e) { return null; }
-		}
-	}
+        private TestElement makeSampler(String name)
+        {
+            TestSampler s = new TestSampler();
+            s.setName(name);
+            return s;
+        }
+
+
+        class TestSampler extends AbstractSampler
+        {
+
+            public void addCustomTestElement(TestElement t)
+            {
+            }
+
+            public org.apache.jmeter.samplers.SampleResult sample(org.apache.jmeter.samplers.Entry e)
+            {
+                return null;
+            }
+        }
+    }
 }

@@ -176,13 +176,13 @@ public class UrlConfigTest extends TestCase
 
 		config.setName("Full Config");
 
-		config.setProperty(HTTPSampler.DOMAIN,"www.lazer.com");
+		config.setDomain("www.lazer.com");
 
-		config.setProperty(HTTPSampler.PATH,"login.jsp");
+		config.setPath("login.jsp");
 
-		config.setProperty(HTTPSampler.METHOD,HTTPSampler.POST);
+		config.setMethod(HTTPSampler.METHOD_POST);
 
-		config.setProperty(HTTPSampler.ARGUMENTS,args);
+		config.setArguments(args);
 
 
 
@@ -200,7 +200,7 @@ public class UrlConfigTest extends TestCase
 
 		partialConfig.setProperty(HTTPSampler.PATH,"main.jsp");
 
-		partialConfig.setProperty(HTTPSampler.METHOD,HTTPSampler.GET);
+		partialConfig.setProperty(HTTPSampler.METHOD,HTTPSampler.METHOD_GET);
 
 	}
 
@@ -221,7 +221,7 @@ public class UrlConfigTest extends TestCase
 	public void testOverRide()
 	{
 		this.assertNull(partialConfig.getProperty(HTTPSampler.DOMAIN));
-		partialConfig.addTestElement(defaultConfig);
+		partialConfig.addChildElement(defaultConfig);
 		assertEquals(partialConfig.getProperty(HTTPSampler.DOMAIN),"www.xerox.com");
 		assertEquals(partialConfig.getProperty(HTTPSampler.PATH),"main.jsp");
 	}

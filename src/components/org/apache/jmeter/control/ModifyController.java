@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,8 +53,11 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.control;
+
+
 import java.io.*;
 import java.util.*;
+
 import org.apache.jmeter.config.ConfigElement;
 import org.apache.jmeter.config.Modifier;
 import org.apache.jmeter.config.ResponseBasedModifier;
@@ -63,79 +66,68 @@ import org.apache.jmeter.gui.util.MenuFactory;
 import org.apache.jmeter.samplers.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.control.gui.ModifyControllerGui;
+
 
 /****************************************
  * !ToDo (Class description)
  *
- *@author    $Author$
- *@created   $Date$
- *@version   $Revision$
+ * @author mstover
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   $Date$
+ * @version   $Revision$
  ***************************************/
+// todo: remove ????
 
 public class ModifyController extends GenericController implements SampleListener,
-		Serializable
+    Serializable
 {
-	SampleResult currentResult;
-	private String currentResponse;
 
-	/****************************************
-	 * Constructor for the GeneratorManager object
-	 ***************************************/
-	public ModifyController()
-	{
-	}
+    SampleResult currentResult;
+    private String currentResponse;
 
-	/****************************************
-	 * Methods to satisfy SampleListener interface.
-	 *
-	 *@param event  !ToDo (Parameter description)
-	 ***************************************/
-	public void sampleStarted(SampleEvent event) { }
+    public ModifyController()
+    {
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param event  !ToDo (Parameter description)
-	 ***************************************/
-	public void sampleStopped(SampleEvent event) { }
+    public void sampleStarted(SampleEvent event)
+    {
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param event  !ToDo (Parameter description)
-	 ***************************************/
-	public void sampleOccurred(SampleEvent event)
-	{
-		this.currentResult = event.getResult();
-	}
+    public void sampleStopped(SampleEvent event)
+    {
+    }
 
-	/****************************************
-	 * Adds a feature to the ConfigElements attribute of the GenericController
-	 * object
-	 *
-	 *@param entry  The feature to be added to the ConfigElements attribute
-	 ***************************************/
-	protected void addConfigElements(Sampler entry)
-	{
-		if(entry != null)
-		{
-			Iterator iter = this.getConfigElements().iterator();
-			while(iter.hasNext())
-			{
-				Object item = iter.next();
-				if(item instanceof Modifier)
-				{
-					((Modifier)item).modifyEntry(entry);
-				}
-				else if(item instanceof ResponseBasedModifier)
-				{
-					((ResponseBasedModifier)item).modifyEntry(entry, currentResult);
-				}
-				else
-				{
-					entry.addChildElement((TestElement)item);
-				}
-			}
-		}
-	}
+    public void sampleOccurred(SampleEvent event)
+    {
+        this.currentResult = event.getResult();
+    }
+
+    /****************************************
+     * Adds a feature to the ConfigElements attribute of the GenericController
+     * object
+     *
+     *@param entry  The feature to be added to the ConfigElements attribute
+     ***************************************/
+    protected void addConfigElements(Sampler entry)
+    {
+        if (entry != null)
+        {
+            Iterator iter = this.getConfigElements().iterator();
+            while (iter.hasNext())
+            {
+                Object item = iter.next();
+                if (item instanceof Modifier)
+                {
+                    ((Modifier)item).modifyEntry(entry);
+                } else if (item instanceof ResponseBasedModifier)
+                {
+                    ((ResponseBasedModifier)item).modifyEntry(entry, currentResult);
+                } else
+                {
+                    entry.addChildElement((TestElement)item);
+                }
+            }
+        }
+    }
 }

@@ -81,13 +81,13 @@ import org.apache.jmeter.util.LocaleChangeEvent;
  * @version   1.0
  ***************************************/
 // todo: rename to LoopControllerGui
+
 public class LoopControlPanel extends AbstractControllerGui implements KeyListener, ActionListener
 {
 
 
-	private static String INFINITE = "Infinite Field";
-	private static String LOOPS = "Loops Field";
-
+    private static String INFINITE = "Infinite Field";
+    private static String LOOPS = "Loops Field";
 
 
     private JLabel loopsLabel;
@@ -97,9 +97,9 @@ public class LoopControlPanel extends AbstractControllerGui implements KeyListen
     private JLabel timesLabel;
 
 
-	public LoopControlPanel()
-	{
-	}
+    public LoopControlPanel()
+    {
+    }
 
 
     public void configure(org.apache.jmeter.testelement.TestElement element)
@@ -107,24 +107,26 @@ public class LoopControlPanel extends AbstractControllerGui implements KeyListen
         loopInput.setText(String.valueOf(element.getProperty(LoopController.LOOP_COUNT)));
         boolean forever = ((Boolean)element.getProperty(LoopController.LOOP_FOREVER)).booleanValue();
 
-        if (forever) {
+        if (forever)
+        {
             rbForever.setSelected(true);
             loopInput.setEnabled(false);
-        } else {
+        } else
+        {
             rbCount.setSelected(true);
             loopInput.setEnabled(true);
         }
     }
 
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public TestElement createTestElement()
-	{
-		LoopController lc = new LoopController();
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public TestElement createTestElement()
+    {
+        LoopController lc = new LoopController();
 //		configureTestElement(lc);
 //		if(loops.getText().length() > 0)
 //		{
@@ -134,71 +136,76 @@ public class LoopControlPanel extends AbstractControllerGui implements KeyListen
 //		{
 //			lc.setLoopCount(-1);
 //		}
-		return lc;
-	}
+        return lc;
+    }
 
 
     public void actionPerformed(ActionEvent e)
     {
-        if (e.getActionCommand().equals("infinite")) {
+        if (e.getActionCommand().equals("infinite"))
+        {
             loopInput.setEnabled(false);
             getElement().setProperty(LoopController.LOOP_FOREVER, Boolean.TRUE);
-        } else {
+        } else
+        {
             loopInput.setEnabled(true);
             getElement().setProperty(LoopController.LOOP_FOREVER, Boolean.FALSE);
         }
     }
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void keyPressed(KeyEvent e) { }
+    /****************************************
+     * Description of the Method
+     *
+     *@param e  Description of Parameter
+     ***************************************/
+    public void keyPressed(KeyEvent e)
+    {
+    }
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void keyTyped(KeyEvent e) { }
+    /****************************************
+     * Description of the Method
+     *
+     *@param e  Description of Parameter
+     ***************************************/
+    public void keyTyped(KeyEvent e)
+    {
+    }
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void keyReleased(KeyEvent e)
-	{
-        // todo: use special input field
-		String temp = e.getComponent().getName();
-		if(temp.equals(LOOPS))
-		{
-			try
-			{
-				Integer.parseInt(loopInput.getText());
-			}
-			catch(NumberFormatException ex)
-			{
-				if(loopInput.getText().length() > 0)
-				{
-					// We need a standard warning/error dialog. The problem with
-					// having it here is that the dialog is centered over this
-					// LoopControlPanel instead of begin centered in the entire
-					// JMeter GUI window.
-					JOptionPane.showMessageDialog(this, "You must enter a valid number",
-							"Invalid data", JOptionPane.WARNING_MESSAGE);
-					loopInput.setText("");
-				}
-			}
-		}
-	}
+    /****************************************
+     * Description of the Method
+     *
+     *@param e  Description of Parameter
+     ***************************************/
+    public void keyReleased(KeyEvent e)
+    {
+// todo: use special input field
+        String temp = e.getComponent().getName();
+        if (temp.equals(LOOPS))
+        {
+            try
+            {
+                Integer.parseInt(loopInput.getText());
+            } catch (NumberFormatException ex)
+            {
+                if (loopInput.getText().length() > 0)
+                {
+                    // We need a standard warning/error dialog. The problem with
+                    // having it here is that the dialog is centered over this
+                    // LoopControlPanel instead of begin centered in the entire
+                    // JMeter GUI window.
+                    JOptionPane.showMessageDialog(this, "You must enter a valid number",
+                                                  "Invalid data", JOptionPane.WARNING_MESSAGE);
+                    loopInput.setText("");
+                }
+            }
+        }
+    }
 
 
-	public String getStaticLabel()
-	{
-		return "loop_controller_title";
-	}
+    public String getStaticLabel()
+    {
+        return "loop_controller_title";
+    }
 
 
     protected void initComponents()

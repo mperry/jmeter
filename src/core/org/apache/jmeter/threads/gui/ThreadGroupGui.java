@@ -65,6 +65,7 @@ import org.apache.jorphan.gui.layout.VerticalLayout;
 
 import org.apache.jmeter.gui.AbstractJMeterGuiComponent;
 import org.apache.jmeter.gui.GUIFactory;
+import org.apache.jmeter.gui.action.AddElement;
 import org.apache.jmeter.gui.util.*;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.*;
@@ -118,7 +119,7 @@ public class ThreadGroupGui extends AbstractJMeterGuiComponent implements Locale
 
     public JPopupMenu createPopupMenu(TestElement element)
     {
-        ActionListener addListener = new org.apache.jmeter.gui.action.AddElement(element);
+        ActionListener addListener = new AddElement(element);
         JPopupMenu pop = new JPopupMenu();
         pop.add(MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
                                                    MenuFactory.LISTENERS, MenuFactory.SAMPLERS, MenuFactory.TIMERS,
@@ -148,6 +149,7 @@ public class ThreadGroupGui extends AbstractJMeterGuiComponent implements Locale
         threadInput.setText("1");
         threadInput.addFocusListener(NumberFieldErrorListener.getNumberFieldErrorListener());
         threadInput.setName("numberOfThreads");
+        threadInput.setHorizontalAlignment(JTextField.RIGHT);
         threadInput.getDocument().addDocumentListener(new IntegerFieldDocumentListener(org.apache.jmeter.threads.ThreadGroup.NUMBER_OF_THREADS, threadInput, this));
         constraints = constraints.incrementX();
         threadPanel.add(threadInput, constraints);
@@ -166,6 +168,7 @@ public class ThreadGroupGui extends AbstractJMeterGuiComponent implements Locale
         rampInput = new JTextField(5);
         rampInput.setText("1");
         rampInput.setName("rampUpPeriod");
+        rampInput.setHorizontalAlignment(JTextField.RIGHT);
         rampInput.addFocusListener(NumberFieldErrorListener.getNumberFieldErrorListener());
         rampInput.getDocument().addDocumentListener(new IntegerFieldDocumentListener(org.apache.jmeter.threads.ThreadGroup.RAMP_UP_PERIOD, rampInput, this));
         constraints = constraints.incrementX();
@@ -203,6 +206,7 @@ public class ThreadGroupGui extends AbstractJMeterGuiComponent implements Locale
         loopGroup.add(rbForever);
         loopGroup.add(rbCount);
         loopInput = new JTextField(5);
+        loopInput.setHorizontalAlignment(JTextField.RIGHT);
         constraints = constraints.incrementX();
         threadPanel.add(loopInput, constraints);
         loopInput.setName("loopCount");

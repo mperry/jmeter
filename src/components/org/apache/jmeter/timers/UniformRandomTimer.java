@@ -65,14 +65,15 @@ import org.apache.jmeter.util.JMeterUtils;
  * an average value and a uniformly distributed variation.
  *
  * @author  <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
+ * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$ $Date$
  */
 public class UniformRandomTimer extends RandomTimer implements Serializable
 {
-	public long delay()
-	{
-		return (long) Math.abs((this.random.nextDouble() * getRange()) + super.delay());
-	}
+    public long delay()
+    {
+        return (long) Math.abs((getRandom().nextDouble() * getRange()) + getDelay());
+    }
 
 	public String toString()
 	{

@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001, 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,72 +52,92 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
- package org.apache.jmeter.protocol.http.control;
+package org.apache.jmeter.protocol.http.control;
+
 
 import org.apache.jmeter.config.*;
+
 import java.io.*;
 
 import org.apache.jmeter.testelement.AbstractTestElement;
+
+
 /**
  * This class is an Authorization encapsulator.
  *
  * @author  <a href="mailto:luta.raphael@networks.vivendi.net">Raphaël Luta</a>
+ * @author    <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  */
 public class Authorization extends AbstractTestElement implements Serializable
 {
-	 private static String URL = "Authorization.url";
-	 private static String USERNAME = "Authorization.username";
-	 private static String PASSWORD = "Authorization.password";
-	 /**
-	  * create the authorization
-	  */
-	 Authorization(String url, String user, String pass) {
-		  setURL(url);
-		  setUser(user);
-		  setPass(pass);
-	 }
 
-	 public boolean expectsModification()
-	{
-		return false;
-	}
+    private static String URL = "url";
+    private static String USERNAME = "username";
+    private static String PASSWORD = "password";
 
-	 public Authorization()
-	 {
-		  setURL("");
-		  setUser("");
-		  setPass("");
-	 }
 
-	 public String getClassLabel()
-	 {
-		return "Authorization";
-	 }
+    private String url = "";
+    private String username = "";
+    private String password = "";
 
-	 public void addConfigElement(ConfigElement config)
-	 {
-	 }
 
-	 public String getURL() {
-		  return (String)getProperty(URL);
-	 }
-	 public synchronized void setURL(String url) {
-		  setProperty(URL,url);
-	 }
-	 public String getUser() {
-		  return (String)getProperty(USERNAME);
-	 }
-	 public synchronized void setUser(String user) {
-		  setProperty(USERNAME,user);
-	 }
-	 public String getPass() {
-		  return (String)getProperty(PASSWORD);
-	 }
-	 public synchronized void setPass(String pass) {
-		  setProperty(PASSWORD,pass);
-	 }
-	 public String toString() {
-		  return getURL() + "\t" + getUser() + "\t" + getPass();
-	 }
+    public Authorization()
+    {
+    }
+
+
+    Authorization(String url, String user, String pass)
+    {
+        setUrl(url);
+        setUsername(user);
+        setPassword(pass);
+    }
+
+
+    public void addConfigElement(ConfigElement config)
+    {
+    }
+
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+
+    public void setUrl(String url)
+    {
+        this.url = url;
+    }
+
+
+    public String getUsername()
+    {
+        return username;
+    }
+
+
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+
+    public void setPassword(String password)
+    {
+        this.password = password;
+    }
+
+
+    public String toString()
+    {
+        return getUrl() + "\t" + getUsername() + "\t" + getPassword();
+    }
 }
 

@@ -58,7 +58,6 @@ package org.apache.jmeter.config;
 import java.io.*;
 
 import org.apache.jmeter.testelement.AbstractTestElement;
-import org.apache.jmeter.testelement.TestElement;
 
 
 //Mark Walsh, 2002-08-03, add metadata attribute
@@ -70,7 +69,7 @@ import org.apache.jmeter.testelement.TestElement;
  * Apache Foundation
  *
  * @author    Michael Stover
- * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @author    <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @created   March 13, 2001
  * @version   1.0
  ***************************************/

@@ -53,106 +53,45 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.control.gui;
-import java.awt.Font;
 
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 
-import org.apache.jmeter.control.InterleaveControl;
 import org.apache.jmeter.control.RandomController;
 import org.apache.jmeter.testelement.TestElement;
-import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jorphan.gui.layout.VerticalLayout;
+
 
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
- *@author    Kevin Hammond
- *@created   $Date$
- *@version   1.0
+ * @author    Kevin Hammond
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   $Date$
+ * @version   1.0
  ***************************************/
 
-public class RandomControlGui extends AbstractControllerGui
+public class RandomControlGui extends InterleaveControlGui
 {
 
-	JCheckBox style;
-	/****************************************
-	 * !ToDo (Constructor description)
-	 ***************************************/
-	public RandomControlGui()
-	{
-		init();
-	}
+    public RandomControlGui()
+    {
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public TestElement createTestElement()
-	{
-		RandomController ic = new RandomController();
-		configureTestElement(ic);
-		if(style.isSelected())
-		{
-			ic.setStyle(ic.DEFAULT_STYLE);
-		}
-		else
-		{
-			ic.setStyle(ic.NEW_STYLE);
-		}
-		return ic;
-	}
-	
-	public void configure(TestElement el)
-	{
-		super.configure(el);
-		if(((RandomController)el).getStyle() == InterleaveControl.DEFAULT_STYLE)
-		{
-			style.setSelected(true);
-		}
-		else
-		{
-			style.setSelected(false);
-		}
-	}
+    public TestElement createTestElement()
+    {
+        RandomController ic = new RandomController();
+//		configureTestElement(ic);
+//		if(style.isSelected())
+//		{
+//			ic.setStyle(ic.DEFAULT_STYLE);
+//		}
+//		else
+//		{
+//			ic.setStyle(ic.NEW_STYLE);
+//		}
+        return ic;
+    }
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public String getStaticLabel()
-	{
-		return JMeterUtils.getResString("random_control_title");
-	}
-
-	private void init()
-	{
-		this.setLayout(new VerticalLayout(5, VerticalLayout.LEFT, VerticalLayout.TOP));
-
-		// MAIN PANEL
-		JPanel mainPanel = new JPanel();
-		Border margin = new EmptyBorder(10, 10, 5, 10);
-		mainPanel.setBorder(margin);
-		mainPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
-
-		// TITLE
-		JLabel panelTitleLabel = new JLabel(JMeterUtils.getResString("random_control_title"));
-		Font curFont = panelTitleLabel.getFont();
-		int curFontSize = curFont.getSize();
-		curFontSize += 4;
-		panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
-		mainPanel.add(panelTitleLabel);
-
-		// NAME
-		mainPanel.add(getNamePanel());
-
-		this.add(mainPanel);
-		style = new JCheckBox(JMeterUtils.getResString("ignore_subcontrollers"));
-		this.add(style);
-	}
+    public String getStaticLabel()
+    {
+        return "random_control_title";
+    }
 }

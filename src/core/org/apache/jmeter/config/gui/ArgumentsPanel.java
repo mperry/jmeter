@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001, 2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -77,7 +77,7 @@ import org.apache.jmeter.util.LocaleChangeEvent;
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
  * @author    Michael Stover
- * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @author    <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @created   March 13, 2001
  * @version   1.0
  ***************************************/
@@ -152,7 +152,7 @@ public class ArgumentsPanel extends AbstractConfigGui implements ActionListener,
 
     protected ArgumentsTableModel createTableModel(TestElement element)
     {
-        return new ArgumentsTableModel(((Arguments)element).getArguments());
+        return new ArgumentsTableModel((List)element.getProperty(Arguments.ARGUMENTS));
     }
 
 

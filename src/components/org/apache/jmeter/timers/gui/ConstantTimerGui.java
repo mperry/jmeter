@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,130 +52,146 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-
 package org.apache.jmeter.timers.gui;
 
-import java.awt.Font;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.*;
 
+import javax.swing.*;
+
+import org.apache.jmeter.gui.GUIFactory;
+import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
+import org.apache.jmeter.gui.util.LongFieldDocumentListener;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.timers.ConstantTimer;
 import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jorphan.gui.layout.VerticalLayout;
+import org.apache.jmeter.util.LocaleChangeEvent;
 
-/**
- * The GUI for ConstantTimer. 
+
+/****************************************
+ * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
- * @author Michael Stover
+ * @author    Michael Stover
  * @author <a href="mailto:seade@backstagetech.com.au">Scott Eade</a>
- * @version $Id$
- */
-public class ConstantTimerGui extends AbstractTimerGui 
+ * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   $Date$
+ * @version   1.0
+ ***************************************/
+
+public class ConstantTimerGui extends AbstractTimerGui implements KeyListener
 {
-	/**
-	 * The default value for the delay.
-	 */
-	private final String DEFAULT_DELAY = "300";
 
-	private final String DELAY_FIELD = "Delay Field";
+    private JTextField delayInput;
+    private JLabel delayLabel;
+    private JLabel millisecondsLabel;
 
-	private JTextField delayField;
 
-	/**
-	 * No-arg constructor.
-	 */
-	public ConstantTimerGui()
-	{
-		init();
-	}
+    public ConstantTimerGui()
+    {
+    }
 
-	/**
-	 * Handle an error.
-	 *
-	 * @param e the Exception that was thrown.
-	 * @param thrower the JComponent that threw the Exception.
-	 */
-	public static void error(Exception e, JComponent thrower)
-	{
-		JOptionPane.showMessageDialog(thrower, e, "Error", JOptionPane.ERROR_MESSAGE);
-	}
 
-	/**
-	 * Get the title to display for this component.
-	 * 
-	 * @see org.apache.jmeter.gui.JMeterGUIComponent#getStaticLabel()
-	 */
-	public String getStaticLabel()
-	{
-		return JMeterUtils.getResString("constant_timer_title");
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@param e        !ToDo (Parameter description)
+     *@param thrower  !ToDo (Parameter description)
+     ***************************************/
+    public static void error(Exception e, JComponent thrower)
+    {
+        JOptionPane.showMessageDialog(thrower, e, "Error", JOptionPane.ERROR_MESSAGE);
+    }
 
-	/**
-	 * Create the test element underlying this GUI component.
-	 * 
-	 * @see org.apache.jmeter.gui.JMeterGUIComponent#createTestElement()
-	 */
-	public TestElement createTestElement()
-	{
-		ConstantTimer timer = new ConstantTimer();
-		this.configureTestElement(timer);
-		timer.setDelay(delayField.getText());
-		return timer;
-	}
 
-	/**
-	 * Configure this GUI component from the underlying TestElement.
-	 * 
-	 * @see org.apache.jmeter.gui.JMeterGUIComponent#configure(TestElement)
-	 */
-	public void configure(TestElement el)
-	{
-		super.configure(el);
-		delayField.setText(((ConstantTimer)el).getDelay());
-	}
+    public String getStaticLabel()
+    {
+        return "constant_timer_title";
+    }
 
-	/**
-	 * Initialize this component.
-	 */
-	private void init()
-	{
-		this.setLayout(new VerticalLayout(5, VerticalLayout.LEFT, VerticalLayout.TOP));
 
-		// MAIN PANEL
-		JPanel mainPanel = new JPanel();
-		Border margin = new EmptyBorder(10, 10, 5, 10);
-		mainPanel.setBorder(margin);
-		mainPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
+    public TestElement createTestElement()
+    {
+        ConstantTimer timer = new ConstantTimer();
+        this.configureTestElement(timer);
+//        timer.setDelay(delayInput.getText());
+        return timer;
+    }
 
-		// TITLE
-		JLabel panelTitleLabel = new JLabel(JMeterUtils.getResString("constant_timer_title"));
-		Font curFont = panelTitleLabel.getFont();
-		int curFontSize = curFont.getSize();
-		curFontSize += 4;
-		panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
-		mainPanel.add(panelTitleLabel);
 
-		// NAME
-		mainPanel.add(getNamePanel());
+    public void configure(TestElement element)
+    {
+        super.configure(element);
+        // todo: variable substitution
+        delayInput.setText(String.valueOf(((ConstantTimer)element).getDelay()));
+    }
 
-		// DELAY
-		JPanel delayPanel = new JPanel();
-		JLabel delayLabel = new JLabel(JMeterUtils.getResString("constant_timer_delay"));
-		delayPanel.add(delayLabel);
-		delayField = new JTextField(20);
-		delayField.setText(DEFAULT_DELAY);
-		delayPanel.add(delayField);
-		mainPanel.add(delayPanel);
-		delayField.setName(DELAY_FIELD);
 
-		this.add(mainPanel);
-	}
-	
+    protected void initComponents()
+    {
+        super.initComponents();
+
+        JPanel delayPanel = GUIFactory.createPanel();
+        delayPanel.setLayout(new GridBagLayout());
+        JMeterGridBagConstraints constraints = new JMeterGridBagConstraints();
+
+        delayLabel = new JLabel(JMeterUtils.getResString("constant_timer_delay"));
+        delayLabel.setName("constant_timer_delay");
+        delayPanel.add(delayLabel, constraints);
+        delayInput = new JTextField(6);
+        delayInput.addKeyListener(this);
+        delayInput.setHorizontalAlignment(JTextField.RIGHT);
+        delayInput.getDocument().addDocumentListener(new LongFieldDocumentListener(ConstantTimer.DELAY, delayInput, this));
+        constraints = constraints.incrementX();
+        delayPanel.add(delayInput, constraints);
+        millisecondsLabel = new JLabel(JMeterUtils.getResString("milliseconds"));
+        millisecondsLabel.setName("milliseconds");
+        constraints = constraints.incrementX();
+        delayPanel.add(millisecondsLabel, constraints);
+        Component filler = Box.createHorizontalGlue();
+        constraints = constraints.incrementX();
+        constraints.fillHorizontal(1.0);
+        delayPanel.add(filler, constraints);
+
+        add(delayPanel);
+    }
+
+
+    // KeyListener methods
+    public void keyReleased(KeyEvent e)
+    {
+        if (e.getComponent() == delayInput) {
+            try {
+                Long.parseLong(delayInput.getText());
+            } catch (NumberFormatException nfe) {
+                if (delayInput.getText().length() > 0) {
+                    JOptionPane.showMessageDialog(this, "You must enter a valid number",
+                                                  "Invalid data", JOptionPane.WARNING_MESSAGE);
+                    // We reset the text to be an empty string instead
+                    // of the default value. If we reset it to the
+                    // default value, then the user has to delete
+                    // that value and reenter his/her own. That's
+                    // too much trouble for the user.
+                }
+            }
+        }
+    }
+
+
+    public void keyPressed(KeyEvent e)
+    {
+    }
+
+
+    public void keyTyped(KeyEvent e)
+    {
+    }
+
+
+    // LocaleChangeListener methdo
+    public void localeChanged(LocaleChangeEvent event)
+    {
+        super.localeChanged(event);
+        updateLocalizedStrings(new JComponent[]{delayLabel, millisecondsLabel});
+    }
 }

@@ -1,9 +1,14 @@
 package org.apache.jmeter.protocol.http.sampler;
 
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
+import java.net.URL;
+import java.net.MalformedURLException;
+
+import org.apache.jmeter.protocol.http.control.gui.SoapSamplerGui;
 
 
 /**
@@ -11,52 +16,79 @@ import java.net.URLConnection;
  *
  *
  * @author Jordi Salvat i Alabart
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Id$
  */
 public class SoapSampler extends HTTPSampler
 {
-	public static final String XML_DATA = "HTTPSamper.xml_data";
 
-	public void setXmlData(String data)
-	{
-		setProperty(XML_DATA,data);
-	}
+    public static final String XML_DATA = "xmlData";
+    public static final String URL = "url";
 
-	public String getXmlData()
-	{
-		return getPropertyAsString(XML_DATA);
-	}
 
-	/****************************************
-	 * Set the HTTP request headers in preparation to open the connection
-	 * and sending the POST data:
-	 *
-	 *@param connection       <code>URLConnection</code> to set headers on
-	 *@exception IOException  if an I/O exception occurs
-	 ***************************************/
-	public void setHeaders(URLConnection connection)
-	  		throws IOException
-	{
-		((HttpURLConnection)connection).setRequestMethod("POST");
-		connection.setRequestProperty("Content-length", "" + getXmlData().length());
-		connection.setRequestProperty("Content-type", "text/xml");
-		connection.setDoOutput(true);
-	}
+    private String url = "";
+    private String xmlData = "";
 
-	/****************************************
-	 * Send POST data from <code>Entry</code> to the open connection.
-	 *
-	 *@param connection       <code>URLConnection</code> of where POST data should
-	 *      be sent
-	 *@param url              contains the query string for POST
-	 *@exception IOException  if an I/O exception occurs
-	 ***************************************/
-	public void sendPostData(URLConnection connection)
-			 throws IOException
-	{
-		PrintWriter out = new PrintWriter(connection.getOutputStream());
-		out.print(getXmlData());
-		out.close();
-	}
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+
+    public void setUrl(String url)
+    {
+        this.url = url;
+    }
+
+
+    public URL getRequestUrl() throws MalformedURLException
+    {
+        return new URL(getUrl());
+    }
+
+
+    public String getXmlData()
+    {
+        return xmlData;
+    }
+
+
+    public void setXmlData(String xmlData)
+    {
+        this.xmlData = xmlData;
+    }
+
+
+    /****************************************
+     * Set the HTTP request headers in preparation to open the connection
+     * and sending the METHOD_POST data:
+     *
+     *@param connection       <code>URLConnection</code> to set headers on
+     *@exception IOException  if an I/O exception occurs
+     ***************************************/
+    public void setHeaders(URLConnection connection)
+        throws IOException
+    {
+        ((HttpURLConnection)connection).setRequestMethod("METHOD_POST");
+        connection.setRequestProperty("Content-length", "" + getXmlData().length());
+        connection.setRequestProperty("Content-type", "text/xml");
+        connection.setDoOutput(true);
+    }
+
+    /****************************************
+     * Send METHOD_POST data from <code>Entry</code> to the open connection.
+     *
+     *@param connection       <code>URLConnection</code> of where METHOD_POST data should
+     *      be sent
+     *@exception IOException  if an I/O exception occurs
+     ***************************************/
+    public void sendPostData(URLConnection connection)
+        throws IOException
+    {
+        PrintWriter out = new PrintWriter(connection.getOutputStream());
+        out.print(getXmlData());
+        out.close();
+    }
 }
 

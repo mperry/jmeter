@@ -54,13 +54,12 @@
  */
 package org.apache.jmeter.control;
 
-import java.util.*;
+
 import java.io.*;
 
-import org.apache.jmeter.config.ConfigElement;
-import org.apache.jmeter.samplers.*;
-import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jmeter.samplers.AbstractSampler;
 import org.apache.jmeter.testelement.TestElement;
+
 
 /************************************************************
  *  Title: Apache JMeter Description: Copyright: Copyright (c) 2000 Company:
@@ -74,85 +73,97 @@ import org.apache.jmeter.testelement.TestElement;
 public class OnceOnlyController extends GenericController implements Serializable
 {
 
-	/************************************************************
-	 *  Constructor for the OnceOnlyController object
-	 ***********************************************************/
-	public OnceOnlyController()
-	{
-	}
+    /************************************************************
+     *  Constructor for the OnceOnlyController object
+     ***********************************************************/
+    public OnceOnlyController()
+    {
+    }
 
-	public void reInitialize()
-	{
-		//don't do anything
-	}
+    public void reInitialize()
+    {
+        //don't do anything
+    }
 
-	protected boolean hasNextAtEnd()
-	{
-		this.setShortCircuit(true);
-		return false;
-	}
+    protected boolean hasNextAtEnd()
+    {
+        this.setShortCircuit(true);
+        return false;
+    }
 
-	public static class Test extends junit.framework.TestCase
-	{
-		public Test(String name)
-		{
-			super(name);
-		}
 
-		public void testProcessing() throws Exception
-		{
-			GenericController controller = new GenericController();
-			GenericController sub_1 = new OnceOnlyController();
-			sub_1.addTestElement(makeSampler("one"));
-			sub_1.addTestElement(makeSampler("two"));
-			controller.addTestElement(sub_1);
-			controller.addTestElement(makeSampler("three"));
-			LoopController sub_2 = new LoopController();
-			sub_2.setLoopCount(3);
-			GenericController sub_3 = new GenericController();
-			sub_2.addTestElement(makeSampler("four"));
-			sub_3.addTestElement(makeSampler("five"));
-			sub_3.addTestElement(makeSampler("six"));
-			sub_2.addTestElement(sub_3);
-			sub_2.addTestElement(makeSampler("seven"));
-			controller.addTestElement(sub_2);
-			String[] interleaveOrder = new String[]{"one","two"};
-			String[] order = new String[]{"","","three","four","five","six","seven",
-						"four","five","six","seven","four","five","six","seven"};
-			int counter = 15;
-			for (int i = 0; i < 4; i++)
-			{
-				assertEquals(15,counter);
-				counter = 0;
-				if(i > 0)
-				{
-					counter = 2;
-				}
-				while(controller.hasNext())
-				{
-					TestElement sampler = controller.next();
-					if(i == 0 && counter < 2)
-					{
-						assertEquals(interleaveOrder[counter],sampler.getProperty(TestElement.NAME));
-					}
-					else
-					{
-						assertEquals(order[counter],sampler.getProperty(TestElement.NAME));
-					}
-					counter++;
-				}
-			}
-		}
+    public static class Test extends junit.framework.TestCase
+    {
 
-		private TestElement makeSampler(String name)
-		{
-		  	TestSampler s= new TestSampler();
-			s.setName(name);
-			return s;
-		}
-		public class TestSampler extends AbstractSampler {
-		  public void addCustomTestElement(TestElement t) { }
-		  public org.apache.jmeter.samplers.SampleResult sample(org.apache.jmeter.samplers.Entry e) { return null; }
-		}
-	}
+        public Test(String name)
+        {
+            super(name);
+        }
+
+        public void testProcessing() throws Exception
+        {
+            GenericController controller = new GenericController();
+            GenericController sub_1 = new OnceOnlyController();
+            sub_1.addChildElement(makeSampler("one"));
+            sub_1.addChildElement(makeSampler("two"));
+            controller.addChildElement(sub_1);
+            controller.addChildElement(makeSampler("three"));
+            LoopController sub_2 = new LoopController();
+            sub_2.setLoopCount(3);
+            GenericController sub_3 = new GenericController();
+            sub_2.addChildElement(makeSampler("four"));
+            sub_3.addChildElement(makeSampler("five"));
+            sub_3.addChildElement(makeSampler("six"));
+            sub_2.addChildElement(sub_3);
+            sub_2.addChildElement(makeSampler("seven"));
+            controller.addChildElement(sub_2);
+            String[] interleaveOrder = new String[]{"one", "two"};
+            String[] order = new String[]{"", "", "three", "four", "five", "six", "seven",
+                                          "four", "five", "six", "seven", "four", "five", "six", "seven"};
+            int counter = 15;
+            for (int i = 0; i < 4; i++)
+            {
+                assertEquals(15, counter);
+                counter = 0;
+                if (i > 0)
+                {
+                    counter = 2;
+                }
+                while (controller.hasNext())
+                {
+                    TestElement sampler = controller.next();
+                    if (i == 0 && counter < 2)
+                    {
+                        assertEquals(interleaveOrder[counter], sampler.getProperty(TestElement.NAME));
+                    } else
+                    {
+                        assertEquals(order[counter], sampler.getProperty(TestElement.NAME));
+                    }
+                    counter++;
+                }
+            }
+        }
+
+        private TestElement makeSampler(String name)
+        {
+            TestSampler s = new TestSampler();
+            s.setName(name);
+            return s;
+        }
+
+        public class TestSampler extends AbstractSampler
+        {
+
+            public void addCustomTestElement(TestElement t)
+            {
+            }
+
+            public org.apache.jmeter.samplers.SampleResult sample(org.apache.jmeter.samplers.Entry e)
+            {
+                return null;
+            }
+        }
+    }
+
+
 }

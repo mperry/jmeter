@@ -69,6 +69,7 @@ import org.apache.jmeter.gui.JMeterGUIComponent;
 import org.apache.jmeter.gui.tree.JMeterTreeNode;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jmeter.JMeterClassLoader;
 
 
 /**
@@ -94,7 +95,8 @@ public class AddElement implements ActionListener
     {
         try {
             String className = ((JComponent)e.getSource()).getName();
-            TestElement newElement = (TestElement)Class.forName(className).newInstance();
+            // todo: use correct classloader
+            TestElement newElement = (TestElement)JMeterClassLoader.classForName(className).newInstance();
             newElement.setName(JMeterUtils.getResString(className));
             element.addChildElement(newElement);
         } catch (Exception err) {

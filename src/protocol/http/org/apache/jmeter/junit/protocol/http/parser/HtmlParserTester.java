@@ -48,7 +48,7 @@ public class HtmlParserTester extends TestCase
 		result.setSamplerData(context);
 		parser.modifyEntry(config, result);
 		assertEquals("http://www.apache.org:80/subdir/index.html",
-				config.getUrl().toString());
+				config.getRequestUrl().toString());
 	}
 
 	public void testSimpleParse2() throws Exception
@@ -63,7 +63,7 @@ public class HtmlParserTester extends TestCase
 		result.setSampleLabel(context.toString());
 		result.setSamplerData(context);
 		parser.modifyEntry(config, result);
-		String newUrl = config.getUrl().toString();
+		String newUrl = config.getRequestUrl().toString();
 		assertTrue("http://www.apache.org:80/index.html".equals(newUrl)
 				|| "http://www.apache.org:80/subdir/lowerdir/index.html".equals(newUrl));
 
@@ -81,7 +81,7 @@ public class HtmlParserTester extends TestCase
 		result.setSampleLabel(context.toString());
 		result.setSamplerData(context);
 		parser.modifyEntry(config, result);
-		String newUrl = config.getUrl().toString();
+		String newUrl = config.getRequestUrl().toString();
 		assertEquals("http://www.apache.org:80/home/index.html?param1=value1",newUrl);
 	}
 
@@ -96,7 +96,7 @@ public class HtmlParserTester extends TestCase
 		result.setSampleLabel(context.toString());
 		result.setSamplerData(context);
 		parser.modifyEntry(config, result);
-		String newUrl = config.getUrl().toString();
+		String newUrl = config.getRequestUrl().toString();
 		assertEquals("http://www.apache.org:80/subdir/index.html",newUrl);
 	}
 
@@ -111,7 +111,7 @@ public class HtmlParserTester extends TestCase
 		result.setSampleLabel(context.toString());
 		result.setSamplerData(context);
 		parser.modifyEntry(config, result);
-		String newUrl = config.getUrl().toString();
+		String newUrl = config.getRequestUrl().toString();
 		assertEquals("http://www.apache.org:80/subdir/index.html",newUrl);
 	}
 
@@ -122,12 +122,12 @@ public class HtmlParserTester extends TestCase
 		String responseText = "<html><head><title>Test page</title></head><body>" +
 				"<a href=\"/home/index.html?param1=value1\">Goto index page</a></body></html>";
 		SampleResult result = new SampleResult();
-		String newUrl = config.getUrl().toString();
+		String newUrl = config.getRequestUrl().toString();
 		result.setResponseData(responseText.getBytes());
 		result.setSampleLabel(context.toString());
 		result.setSamplerData(context);
 		parser.modifyEntry(config, result);
-		assertEquals(newUrl,config.getUrl().toString());
+		assertEquals(newUrl,config.getRequestUrl().toString());
 	}
 	
 	public void testFailSimpleParse3() throws Exception
@@ -137,12 +137,12 @@ public class HtmlParserTester extends TestCase
 		String responseText = "<html><head><title>Test page</title></head><body>" +
 				"<a href=\"/home/index.html?param1=value1\">Goto index page</a></body></html>";
 		SampleResult result = new SampleResult();
-		String newUrl = config.getUrl().toString();
+		String newUrl = config.getRequestUrl().toString();
 		result.setResponseData(responseText.getBytes());
 		result.setSampleLabel(context.toString());
 		result.setSamplerData(context);
 		parser.modifyEntry(config, result);
-		assertEquals(newUrl+"?param1=value1",config.getUrl().toString());
+		assertEquals(newUrl+"?param1=value1",config.getRequestUrl().toString());
 	}
 
 	public void testFailSimpleParse2() throws Exception
@@ -156,9 +156,9 @@ public class HtmlParserTester extends TestCase
 		result.setSampleLabel(context.toString());
 		result.setSamplerData(context);
 		parser.modifyEntry(config, result);
-		String newUrl = config.getUrl().toString();
+		String newUrl = config.getRequestUrl().toString();
 		this.assertTrue(!"http://www.apache.org:80/home/index.html?param1=value1".equals(newUrl));
-		assertEquals(config.getUrl().toString(),newUrl);
+		assertEquals(config.getRequestUrl().toString(),newUrl);
 	}
 
 	/************************************************************
@@ -170,7 +170,7 @@ public class HtmlParserTester extends TestCase
 	{
 		HTTPSampler config = makeUrlConfig(".*index.html");
 		config.addArgument("test","g.*");
-		config.setMethod(HTTPSampler.POST);
+		config.setMethod(HTTPSampler.METHOD_POST);
 		HTTPSampler context = makeContext("http://www.apache.org/subdir/previous.html");
 		String responseText = "<html><head><title>Test page</title></head><body>" +
 				"<form action=\"index.html\" method=\"POST\"><input type=\"checkbox\" name=\"test\""+
@@ -181,7 +181,7 @@ public class HtmlParserTester extends TestCase
 		result.setSamplerData(context);
 		parser.modifyEntry(config, result);
 		assertEquals("http://www.apache.org:80/subdir/index.html",
-				config.getUrl().toString());
+				config.getRequestUrl().toString());
 		assertEquals("test=goto",config.getQueryString());
 	}
 	
@@ -194,7 +194,7 @@ public class HtmlParserTester extends TestCase
 	{
 		HTTPSampler config = makeUrlConfig(".*index.html");
 		config.addArgument("te$st","g.*");
-		config.setMethod(HTTPSampler.POST);
+		config.setMethod(HTTPSampler.METHOD_POST);
 		HTTPSampler context = makeContext("http://www.apache.org/subdir/previous.html");
 		String responseText = "<html><head><title>Test page</title></head><body>" +
 				"<form action=\"index.html\" method=\"POST\"><input type=\"checkbox\" name=\"te$st\""+
@@ -205,7 +205,7 @@ public class HtmlParserTester extends TestCase
 		result.setSamplerData(context);
 		parser.modifyEntry(config, result);
 		assertEquals("http://www.apache.org:80/subdir/index.html",
-				config.getUrl().toString());
+				config.getRequestUrl().toString());
 		assertEquals("te%24st=goto",config.getQueryString());
 	}
 	
@@ -225,7 +225,7 @@ public class HtmlParserTester extends TestCase
 	{
 		HTTPSampler config = new HTTPSampler();
 		config.setDomain("www.apache.org");
-		config.setMethod(config.GET);
+		config.setMethod(config.METHOD_GET);
 		config.setPath(path);
 		config.setPort(80);
 		config.setProtocol("http");

@@ -102,8 +102,8 @@ public class FtpTestSamplerGui extends AbstractSamplerGui
 	public TestElement createTestElement()
 	{
 		FTPSampler sampler = new FTPSampler();
-		sampler.addTestElement(ftpDefaultPanel.createTestElement());
-		sampler.addTestElement(loginPanel.createTestElement());
+		sampler.addChildElement(ftpDefaultPanel.createTestElement());
+		sampler.addChildElement(loginPanel.createTestElement());
 		this.configureTestElement(sampler);
 		return sampler;
 	}

@@ -148,7 +148,7 @@ public class JavaTestSamplerGui extends AbstractSamplerGui {
 		JavaConfig config = (JavaConfig)javaPanel.createTestElement();
 		JavaSampler sampler = new JavaSampler();
 		this.configureTestElement(sampler);
-		sampler.addTestElement(config);
+		sampler.addChildElement(config);
 		return sampler;
 	}
 	

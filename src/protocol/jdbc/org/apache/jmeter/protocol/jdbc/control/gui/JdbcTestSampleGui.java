@@ -109,9 +109,9 @@ public class JdbcTestSampleGui extends AbstractSamplerGui
 	public TestElement createTestElement()
 	{
 		JDBCSampler sampler = new JDBCSampler();
-		sampler.addTestElement(dbGui.createTestElement());
-		sampler.addTestElement(poolGui.createTestElement());
-		sampler.addTestElement(sqlGui.createTestElement());
+		sampler.addChildElement(dbGui.createTestElement());
+		sampler.addChildElement(poolGui.createTestElement());
+		sampler.addChildElement(sqlGui.createTestElement());
 		configureTestElement(sampler);
 		return sampler;
 	}

@@ -57,11 +57,13 @@ package org.apache.jmeter.plugin;
 
 
 import java.net.URL;
+import java.util.*;
 
 import javax.swing.*;
 
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.util.Resources;
+import org.apache.jmeter.JMeterClassLoader;
 
 
 /**
@@ -140,6 +142,34 @@ public class PluginManager
         for (i = 0; i < guiMappings.length; i++)
         {
             GUIFactory.registerGUI(guiMappings[i][0], guiMappings[i][1]);
+        }
+    }
+
+    /**
+     * Install plugins.
+     * @param urls map plugin classname => plugin jar url
+     */
+    public static void installPlugins(Map urls, boolean useGui)
+    {
+        URL[] urlArray = new URL[urls.size()];
+        urls.values().toArray(urlArray);
+        JMeterClassLoader.addURLs(urlArray);
+
+        Iterator iterator = urls.keySet().iterator();
+
+        while (iterator.hasNext())
+        {
+            String className = (String)iterator.next();
+            try
+            {
+                Class clazz = JMeterClassLoader.classForName(className);
+                JMeterPlugin plugin = (JMeterPlugin)clazz.newInstance();
+                install(plugin, useGui);
+            } catch (Exception e)
+            {
+                // todo: log or throw exception
+                e.printStackTrace();  //To change body of catch statement use Options | File Templates.
+            }
         }
     }
 }

@@ -66,14 +66,15 @@ import org.apache.jmeter.util.JMeterUtils;
  *
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
  * @author <a href="mailto:seade@backstagetech.com.au">Scott Eade</a>
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Id$
  */
 public class GaussianRandomTimer extends RandomTimer implements Serializable
 {
 
-	 public long delay() {
-		  return (long) Math.abs((this.random.nextGaussian() * getRange()) + super.delay());
-	 }
+    public long delay() {
+         return (long) Math.abs((getRandom().nextGaussian() * getRange()) + getDelay());
+    }
 
 	 public String toString() {
 		  return JMeterUtils.getResString("gaussian_timer_memo");

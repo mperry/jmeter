@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001, 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,66 +55,86 @@
 
 package org.apache.jmeter.protocol.http.control;
 
+
 import org.apache.jmeter.config.*;
+
 import java.io.*;
 
 import org.apache.jmeter.testelement.AbstractTestElement;
+
 
 /**
  * This class is an HTTP Header encapsulator.
  *
  * @author  <a href="mailto:giacomo@apache.org">Giacomo Pati</a>
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  */
 public class Header extends AbstractTestElement implements Serializable
 {
-	 private static String NAME = "Header.name";
-	 private static String VALUE = "Header.value";
 
-	 /**
-	  * create the headeer
-	  */
-	 public Header() {
-		  this.setName("");
-		  this.setValue("");
-	 }
+    public static String NAME = "name";
+    public static String VALUE = "value";
 
-	 /**
-	  * create the coookie
-	  */
-	 public Header(String name, String value) {
-		  this.setName(name);
-		  this.setValue(value);
-	 }
 
-	 public void addConfigElement(ConfigElement config){
-	 }
+    private String name = "";
+    private String value = "";
 
-	 public boolean expectsModification() {
-		  return false;
-	 }
 
-	 public String getClassLabel() {
-		  return "Header";
-	 }
+    public Header()
+    {
+    }
 
-	 /**
-	  * get the value for this object.
-	  */
-	 public String getValue() {
-		  return (String)this.getProperty(VALUE);
-	 }
+    /**
+     * create the coookie
+     */
+    public Header(String name, String value)
+    {
+        this.setName(name);
+        this.setValue(value);
+    }
 
-	 /**
-	  * set the value for this object.
-	  */
-	 public synchronized void setValue(String value) {
-		  this.setProperty(VALUE,value);
-	 }
+    public void addConfigElement(ConfigElement config)
+    {
+    }
 
-	 /**
-	  * creates a string representation of this header
-	  */
-	 public String toString() {
-		  return getName() + "\t" + getValue();
-	 }
+    public boolean expectsModification()
+    {
+        return false;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+
+    /**
+     * get the value for this object.
+     */
+    public String getValue()
+    {
+        return value;
+    }
+
+    /**
+     * set the value for this object.
+     */
+    public synchronized void setValue(String value)
+    {
+        this.value = value;
+    }
+
+    /**
+     * creates a string representation of this header
+     */
+    public String toString()
+    {
+        return getName() + "\t" + getValue();
+    }
 }

@@ -53,137 +53,88 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.control.gui;
-import java.awt.Font;
-import java.util.Collection;
-import java.util.LinkedList;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
+
+import java.util.*;
+
+import javax.swing.*;
 
 import org.apache.jmeter.control.ModifyController;
-import org.apache.jmeter.gui.NamePanel;
 import org.apache.jmeter.gui.util.MenuFactory;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jorphan.gui.layout.VerticalLayout;
+
 
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
- *@author    Kevin Hammond
- *@created   $Date$
- *@version   1.0
+ * @author    Kevin Hammond
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   $Date$
+ * @version   1.0
  ***************************************/
+// todo: remove ????
 
 public class ModifyControllerGui extends AbstractControllerGui
 {
-	ModifyController model;
 
-	/****************************************
-	 * !ToDo (Constructor description)
-	 ***************************************/
-	public ModifyControllerGui()
-	{
-		init();
-		setName(getStaticLabel());
-	}
-	
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public Collection getMenuCategories()
-	{
-		return new LinkedList();
-	}
+    ModifyController model;
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public JPopupMenu createPopupMenu()
-	{
-		JPopupMenu pop = new JPopupMenu();
-		pop.add(MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
-				MenuFactory.SAMPLERS, MenuFactory.CONFIG_ELEMENTS,
-				MenuFactory.MODIFIERS, MenuFactory.RESPONSE_BASED_MODIFIERS},
-				JMeterUtils.getResString("Add"),
-				"Add"));
-		MenuFactory.addEditMenu(pop, true);
-		MenuFactory.addFileMenu(pop);
-		return pop;
-	}
+    /****************************************
+     * !ToDo (Constructor description)
+     ***************************************/
+    public ModifyControllerGui()
+    {
+    }
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public String getStaticLabel()
-	{
-		return JMeterUtils.getResString("modification_controller_title");
-	}
+    /****************************************
+     * !ToDoo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public Collection getMenuCategories()
+    {
+        return new LinkedList();
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param name  !ToDo (Parameter description)
-	 ***************************************/
-	public void setName(String name)
-	{
-		super.setName(name);
-		namePanel.setName(name);
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public JPopupMenu createPopupMenu(TestElement testElement)
+    {
+        JPopupMenu pop = new JPopupMenu();
+        pop.add(MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
+                                                   MenuFactory.SAMPLERS, MenuFactory.CONFIG_ELEMENTS,
+                                                   MenuFactory.MODIFIERS, MenuFactory.RESPONSE_BASED_MODIFIERS},
+                                      JMeterUtils.getResString("Add"),
+                                      "Add"));
+        MenuFactory.addEditMenu(pop, true);
+        MenuFactory.addFileMenu(pop);
+        return pop;
+    }
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public String getName()
-	{
-		return namePanel.getName();
-	}
+    /****************************************
+     * !ToDoo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public String getStaticLabel()
+    {
+        return "modification_controller_title";
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public TestElement createTestElement()
-	{
-		ModifyController mc = new ModifyController();
-		configureTestElement(mc);
-		return mc;
-	}
 
-	private void init()
-	{
-		this.setLayout(new VerticalLayout(5, VerticalLayout.LEFT, VerticalLayout.TOP));
-
-		// MAIN PANEL
-		JPanel mainPanel = new JPanel();
-		Border margin = new EmptyBorder(10, 10, 5, 10);
-		mainPanel.setBorder(margin);
-		mainPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
-
-		// TITLE
-		JLabel panelTitleLabel = new JLabel(JMeterUtils.getResString("modification_manager_title"));
-		Font curFont = panelTitleLabel.getFont();
-		int curFontSize = curFont.getSize();
-		curFontSize += 4;
-		panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
-		mainPanel.add(panelTitleLabel);
-
-		// NAME
-		namePanel = new NamePanel();
-		mainPanel.add(namePanel);
-
-		this.add(mainPanel);
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public TestElement createTestElement()
+    {
+        ModifyController mc = new ModifyController();
+        configureTestElement(mc);
+        return mc;
+    }
 }

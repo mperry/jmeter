@@ -58,6 +58,8 @@ package org.apache.jmeter.timers;
 import java.io.Serializable;
 import java.util.Random;
 
+import org.apache.jmeter.testelement.category.TimerCategory;
+
 /***
  * This class implements a random timer with its own panel and fields for value
  * update and user interaction. Since this class does not define the delay()
@@ -65,38 +67,48 @@ import java.util.Random;
  *
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
  * @author <a href="mailto:seade@backstagetech.com.au">Scott Eade</a>
+ * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Id$
  */
-public abstract class RandomTimer extends ConstantTimer implements Timer, Serializable
+public abstract class RandomTimer extends ConstantTimer implements Timer, Serializable, TimerCategory
 {
-	public final static String RANGE = "RandomTimer.range";
 
-	protected Random random;
+    public final static String RANGE = "range";
 
-	/**
-	 * No-arg constructor.
-	 */
-	public RandomTimer()
-	{
-		this.random = new Random();
-	}
+    private Random random = new Random();
+    private double range = 100.0;
 
-	/**
-	 * Set the range value.
-	 */
-	public void setRange(double range)
-	{
-		setProperty(RANGE,new Double(range));
-	}
 
-	/**
-	 * Get the range value.
-	 * 
-	 * @return double
-	 */
-	public double getRange()
-	{
-		return this.getPropertyAsDouble(RANGE);
-	}
-	
+    /**
+     * No-arg constructor.
+     */
+    public RandomTimer()
+    {
+    }
+
+
+    /**
+     * Get the range value.
+     *
+     * @return double
+     */
+    public double getRange()
+    {
+        return range;
+    }
+
+
+    /**
+     * Set the range value.
+     */
+    public void setRange(double range)
+    {
+        this.range = range;
+    }
+
+
+    protected Random getRandom()
+    {
+        return random;
+    }
 }

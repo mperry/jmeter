@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,29 +54,20 @@
  */
 package org.apache.jmeter.protocol.http.sampler;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.w3c.dom.*;
+import org.w3c.tidy.Tidy;
+import org.xml.sax.SAXException;
+
+import org.apache.log.Hierarchy;
+import org.apache.log.Logger;
 
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
-import org.apache.log.Hierarchy;
-import org.apache.log.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.tidy.Tidy;
-import org.xml.sax.SAXException;
 
 /**
  * A sampler that downloads downloadable components such as images, applets, etc.
@@ -116,8 +107,9 @@ import org.xml.sax.SAXException;
  * <p>
  * Finally, this class does not process <b>Style Sheets</b> either.
  *
- * @author	Khor Soon Hin,
- *		<a href="mailto:mramshaw@alumni.concordia.ca">Martin Ramshaw</a>
+ * @author	Khor Soon Hin
+ * @author <a href="mailto:mramshaw@alumni.concordia.ca">Martin Ramshaw</a>
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version	1.1
  * @created	$Date$
  */
@@ -160,7 +152,7 @@ public class HTTPSamplerFull extends HTTPSampler
 	 * Note that files that are duplicated within the enclosing document will
 	 * only be downloaded once.
 	 *
-	 * @param entry	an entry to be sampled
+	 * @param e	an entry to be sampled
 	 * @return	results of the sampling
 	 */
 	public SampleResult sample(Entry e)
@@ -178,7 +170,7 @@ public class HTTPSamplerFull extends HTTPSampler
 		Document html = null;
 		try
 		{
-			baseUrl = getUrl();
+			baseUrl = getRequestUrl();
 			if(log.isDebugEnabled())
 			{
 				log.debug("baseUrl - " + baseUrl.toString());
@@ -374,7 +366,7 @@ public class HTTPSamplerFull extends HTTPSampler
 		res.setSamplerData(new HTTPSampler(url));
 		try
 		{
-			conn = setupConnection(url, GET);
+			conn = setupConnection(url, METHOD_GET);
 			connect();
 		}
 		catch(IOException ioe)
@@ -573,6 +565,8 @@ public class HTTPSamplerFull extends HTTPSampler
 		return utfEncodingName;
 	}
 
+
+
 public static class Test extends TestCase
 {
 	private HTTPSamplerFull hsf;
@@ -588,7 +582,7 @@ public static class Test extends TestCase
 	{
 		log.debug("Start : setUp1");
 		hsf = new HTTPSamplerFull();
-		hsf.setMethod(HTTPSampler.GET);
+		hsf.setMethod(HTTPSampler.METHOD_GET);
 		hsf.setProtocol("file");
 	//      urlConfigFull.setPort(8080);
 	//      urlConfigFull.setDomain("jakarta.apache.org");
@@ -614,9 +608,9 @@ public static class Test extends TestCase
 	 public void testGetUrlConfig()
 	 {
 		log.debug("Start : testGetUrlConfig");
-		assertEquals(HTTPSampler.GET, hsf.getMethod());
+		assertEquals(HTTPSampler.METHOD_GET, hsf.getMethod());
 		assertEquals("file", hsf.getProtocol());
-	//      assertEquals(8080, urlConfig.getPort());
+	//      assertEquals(8080, urlConfig.getServerPort());
 	//      assertEquals("jakarta.apache.org", urlConfig.getDomain());
 		assertEquals("HTTPSamplerFullTestFile.txt", hsf.getPath());
 		log.debug("End   : testGetUrlConfig");

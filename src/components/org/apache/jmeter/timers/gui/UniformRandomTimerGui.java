@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,205 +52,176 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
- 
 package org.apache.jmeter.timers.gui;
 
-import java.awt.Font;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.*;
 
-import org.apache.jmeter.gui.util.FocusRequester;
+import javax.swing.*;
+
+import org.apache.jmeter.gui.GUIFactory;
+import org.apache.jmeter.gui.util.DoubleFieldDocumentListener;
+import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
+import org.apache.jmeter.gui.util.LongFieldDocumentListener;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.timers.RandomTimer;
 import org.apache.jmeter.timers.UniformRandomTimer;
 import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jorphan.gui.layout.VerticalLayout;
+import org.apache.jmeter.util.LocaleChangeEvent;
 
-/**
- * Implementation of a uniform random timer.
+
+/****************************************
+ * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
  * @author    Michael Stover
  * @author <a href="mailto:seade@backstagetech.com.au">Scott Eade</a>
- * @version $Id$
- */
+ * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   $Date$
+ * @version   1.0
+ ***************************************/
+
 public class UniformRandomTimerGui extends AbstractTimerGui implements KeyListener
 {
 
-	private final String DELAY_FIELD = "Delay Field";
-	private final String RANGE_FIELD = "Range Field";
+    private JLabel rangeLabel;
+    private JTextField rangeInput;
+    private JLabel delayLabel;
+    private JTextField delayInput;
+    private JLabel millisecondsLabel1;
+    private JLabel millisecondsLabel2;
 
-	public final String DEFAULT_DELAY = "300";
-	public final String DEFAULT_RANGE = "100.0";
 
-	private JTextField delayField;
-	private JTextField rangeField;
+    /****************************************
+     * !ToDo (Constructor description)
+     ***************************************/
+    public UniformRandomTimerGui()
+    {
+    }
 
-	/**
-	 * No-arg constructor.
-	 */
-	public UniformRandomTimerGui()
-	{
-		init();
-	}
 
-	/**
-	 * Handle an error.
-	 *
-	 * @param e the Exception that was thrown.
-	 * @param thrower the JComponent that threw the Exception.
-	 */
-	public static void error(Exception e, JComponent thrower)
-	{
-		JOptionPane.showMessageDialog(thrower, e, "Error", JOptionPane.ERROR_MESSAGE);
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@param e        !ToDo (Parameter description)
+     *@param thrower  !ToDo (Parameter description)
+     ***************************************/
+    public static void error(Exception e, JComponent thrower)
+    {
+        JOptionPane.showMessageDialog(thrower, e, "Error", JOptionPane.ERROR_MESSAGE);
+    }
 
-	/**
-	 * Get the title to display for this component.
-	 * 
-	 * @see org.apache.jmeter.gui.JMeterGUIComponent#getStaticLabel()
-	 */
-	public String getStaticLabel()
-	{
-		return JMeterUtils.getResString("uniform_timer_title");
-	}
 
-	/**
-	 * Create the test element underlying this GUI component.
-	 * 
-	 * @see org.apache.jmeter.gui.JMeterGUIComponent#createTestElement()
-	 */
-	public TestElement createTestElement()
-	{
-		RandomTimer timer = new UniformRandomTimer();
-		this.configureTestElement(timer);
-		timer.setDelay(delayField.getText());
-		timer.setRange(Double.parseDouble(rangeField.getText()));
-		return timer;
-	}
+    public String getStaticLabel()
+    {
+        return "uniform_timer_title";
+    }
 
-	/**
-	 * Configure this GUI component from the underlying TestElement.
-	 * 
-	 * @see org.apache.jmeter.gui.JMeterGUIComponent#configure(TestElement)
-	 */
-	public void configure(TestElement el)
-	{
-		super.configure(el);
-		delayField.setText(el.getProperty(RandomTimer.DELAY).toString());
-		rangeField.setText(el.getProperty(RandomTimer.RANGE).toString());
-	}
 
-	/**
-	 * Process a KeyEvent.
-	 *
-	 * @param e the event to handle.
-	 */
-	public void keyReleased(KeyEvent e)
-	{
-		String temp = e.getComponent().getName();
+    public TestElement createTestElement()
+    {
+        RandomTimer timer = new UniformRandomTimer();
+        this.configureTestElement(timer);
+        timer.setDelay(Long.parseLong(delayInput.getText()));
+        timer.setRange(Double.parseDouble(rangeInput.getText()));
+        return timer;
+    }
 
-		if (temp.equals(RANGE_FIELD))
-		{
-			try
-			{
-				Double.parseDouble(rangeField.getText());
-			}
-			catch(NumberFormatException nfe)
-			{
-				if(rangeField.getText().length() > 0)
-				{
-					JOptionPane.showMessageDialog(this, "You must enter a valid number",
-							"Invalid data", JOptionPane.WARNING_MESSAGE);
-				}
-			}
-		}
-	}
 
-	/**
-	 * Process a KeyEvent.
-	 *
-	 * @param e the event to handle.
-	 */
-	public void keyPressed(KeyEvent e) 
-	{ 
-	}
+    public void configure(TestElement element)
+    {
+        super.configure(element);
+        // todo: variable substitution
+        delayInput.setText(String.valueOf(((UniformRandomTimer)element).getDelay()));
+        rangeInput.setText(String.valueOf(((UniformRandomTimer)element).getRange()));
+    }
 
-	/**
-	 * Process a KeyEvent.
-	 *
-	 * @param e the event to handle.
-	 */
-	public void keyTyped(KeyEvent e) 
-	{ 
-	}
 
-	/**
-	 * Initialize this component.
-	 */
-	private void init()
-	{
-		this.setLayout(new VerticalLayout(5, VerticalLayout.LEFT, VerticalLayout.TOP));
+    protected void initComponents()
+    {
+        super.initComponents();
 
-		// MAIN PANEL
-		JPanel mainPanel = new JPanel();
-		Border margin = new EmptyBorder(10, 10, 5, 10);
-		mainPanel.setBorder(margin);
-		mainPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
+        JPanel delayPanel = GUIFactory.createPanel();
+        delayPanel.setLayout(new GridBagLayout());
+        JMeterGridBagConstraints constraints = new JMeterGridBagConstraints();
 
-		// TITLE
-		JLabel panelTitleLabel = new JLabel(JMeterUtils.getResString("uniform_timer_title"));
-		Font curFont = panelTitleLabel.getFont();
-		int curFontSize = curFont.getSize();
-		curFontSize += 4;
-		panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
-		mainPanel.add(panelTitleLabel);
+        rangeLabel = new JLabel(JMeterUtils.getResString("uniform_timer_range"));
+        rangeLabel.setName("uniform_timer_range");
+        delayPanel.add(rangeLabel, constraints);
+        rangeInput = new JTextField(6);
+        rangeInput.addKeyListener(this);
+        rangeInput.setHorizontalAlignment(JTextField.RIGHT);
+        rangeInput.getDocument().addDocumentListener(new DoubleFieldDocumentListener(RandomTimer.RANGE, rangeInput, this));
+        constraints = constraints.incrementX();
+        delayPanel.add(rangeInput, constraints);
+        millisecondsLabel1 = new JLabel(JMeterUtils.getResString("milliseconds"));
+        millisecondsLabel1.setName("milliseconds");
+        constraints = constraints.incrementX();
+        delayPanel.add(millisecondsLabel1, constraints);
+        delayLabel = new JLabel(JMeterUtils.getResString("uniform_timer_delay"));
+        delayLabel.setName("uniform_timer_delay");
+        constraints = constraints.nextRow();
+        delayPanel.add(delayLabel, constraints);
+        delayInput = new JTextField(6);
+        delayInput.addKeyListener(this);
+        delayInput.setHorizontalAlignment(JTextField.RIGHT);
+        delayInput.getDocument().addDocumentListener(new LongFieldDocumentListener(RandomTimer.DELAY, delayInput, this));
+        constraints = constraints.incrementX();
+        delayPanel.add(delayInput, constraints);
+        millisecondsLabel2 = new JLabel(JMeterUtils.getResString("milliseconds"));
+        millisecondsLabel2.setName("milliseconds");
+        constraints = constraints.incrementX();
+        delayPanel.add(millisecondsLabel2, constraints);
+        Component filler = Box.createHorizontalGlue();
+        constraints = constraints.incrementX();
+        constraints.fillHorizontal(1.0);
+        delayPanel.add(filler, constraints);
 
-		// NAME
-		mainPanel.add(getNamePanel());
+        add(delayPanel);
+    }
 
-		// THREAD DELAY PROPERTIES
-		JPanel threadDelayPropsPanel = new JPanel();
-		margin = new EmptyBorder(5, 10, 10, 10);
-		threadDelayPropsPanel.setLayout(new VerticalLayout(0, VerticalLayout.LEFT));
-		threadDelayPropsPanel.setBorder(new CompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), JMeterUtils.getResString("thread_delay_properties")), margin));
 
-		// DELAY DEVIATION
-		JPanel delayDevPanel = new JPanel();
-		JLabel rangeLabel = new JLabel(JMeterUtils.getResString("uniform_timer_range"));
-		delayDevPanel.add(rangeLabel);
-		rangeField = new JTextField(6);
-		rangeField.setText(DEFAULT_RANGE);
-		rangeField.setName(RANGE_FIELD);
-		rangeField.addKeyListener(this);
-		delayDevPanel.add(rangeField);
-		threadDelayPropsPanel.add(delayDevPanel);
-		mainPanel.add(threadDelayPropsPanel);
+    // todo: extract to utiility class
+    public void keyReleased(KeyEvent e)
+    {
+        Object component = e.getComponent();
 
-		// AVG DELAY
-		JPanel avgDelayPanel = new JPanel();
-		JLabel delayLabel = new JLabel(JMeterUtils.getResString("uniform_timer_delay"));
-		avgDelayPanel.add(delayLabel);
-		delayField = new JTextField(20);
-		delayField.setText(DEFAULT_DELAY);
-		delayField.setName(DELAY_FIELD);
-		delayField.addKeyListener(this);
-		avgDelayPanel.add(delayField);
-		threadDelayPropsPanel.add(avgDelayPanel);
+        if (component == delayInput) {
+            try {
+                Long.parseLong(delayInput.getText());
+            } catch (NumberFormatException nfe) {
+                if (delayInput.getText().length() > 0) {
+                    JOptionPane.showMessageDialog(this, "You must enter a valid number",
+                                                  "Invalid data", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        } else if (component == rangeInput) {
+            try {
+                Double.parseDouble(rangeInput.getText());
+            } catch (NumberFormatException nfe) {
+                if (rangeInput.getText().length() > 0) {
+                    JOptionPane.showMessageDialog(this, "You must enter a valid number",
+                                                  "Invalid data", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        }
+    }
 
-		this.add(mainPanel);
 
-		// Set the initial focus to the range field
-		new FocusRequester(rangeField);
-	}
-	
+    public void keyPressed(KeyEvent e)
+    {
+    }
+
+
+    public void keyTyped(KeyEvent e)
+    {
+    }
+
+
+    // LocaleChangeListener methdo
+    public void localeChanged(LocaleChangeEvent event)
+    {
+        super.localeChanged(event);
+        updateLocalizedStrings(new JComponent[]{delayLabel, rangeLabel, millisecondsLabel1, millisecondsLabel2});
+    }
 }

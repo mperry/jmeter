@@ -52,41 +52,64 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.protocol.http.modifier.gui;
 
 
-import org.apache.jmeter.config.gui.AbstractResponseBasedModifierGui;
-import org.apache.jmeter.protocol.http.modifier.AnchorModifier;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.plugin.JMeterPlugin;
+import org.apache.jmeter.timers.*;
+import org.apache.jmeter.timers.gui.*;
+import org.apache.jmeter.control.gui.*;
+import org.apache.jmeter.control.*;
 
 
-/****************************************
- * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
- *
- * @author    Kevin Hammond
+/**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created   $Date$
- * @version   $Revision$
- ***************************************/
-
-public class AnchorModifierGui extends AbstractResponseBasedModifierGui
+ * @version $Revision$
+ */
+public class JMeterComponentsPlugin implements JMeterPlugin
 {
 
-    public AnchorModifierGui()
+    public String[][] getIconMappings()
     {
+        return new String[][]{
+            {ConstantTimer.class.getName(), "org/apache/jmeter/images/timer.gif"},
+        };
+    }
+
+    public Class[][] getGuiMappings()
+    {
+        return new Class[][]{
+            {ConstantTimer.class, ConstantTimerGui.class},
+            {GaussianRandomTimer.class, GaussianRandomTimerGui.class},
+            {UniformRandomTimer.class, UniformRandomTimerGui.class},
+            {OnceOnlyController.class, OnceOnlyControllerGui.class},
+            {InterleaveControl.class, InterleaveControlGui.class},
+            {RandomController.class, RandomControlGui.class}
+
+        };
+    }
+
+    public Class[] getElementClasses()
+    {
+        return new Class[]{
+            ConstantTimer.class,
+            GaussianRandomTimer.class,
+            UniformRandomTimer.class,
+            OnceOnlyController.class,
+            InterleaveControl.class,
+            RandomController.class
+        };
     }
 
 
-    public String getStaticLabel()
+    public Class[] getJavaSamplerClientClasses()
     {
-        return "anchor_modifier_title";
+        return new Class[0];
     }
 
 
-    public TestElement createTestElement()
+    public String[][] getResourceBundles()
     {
-        AnchorModifier modifier = new AnchorModifier();
-        configureTestElement(modifier);
-        return modifier;
+        return new String[0][0];
     }
+
 }

@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001, 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,6 +72,8 @@ import org.apache.jmeter.protocol.http.sampler.HTTPSampler;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.samplers.Sampler;
 import org.apache.jmeter.testelement.AbstractTestElement;
+import org.apache.jmeter.testelement.category.ResponseBasedModifierCategory;
+
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
 import org.w3c.dom.Document;
@@ -84,13 +86,14 @@ import org.xml.sax.SAXException;
  *  Title: Jakarta-JMeter Description: Copyright: Copyright (c) 2001 Company:
  *  Apache
  *
- *@author     Michael Stover
- *@created    $Date$
- *@version    1.0
+ * @author     Michael Stover
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created    $Date$
+ * @version    1.0
  ***********************************************************/
 
 public class AnchorModifier extends AbstractTestElement implements ResponseBasedModifier,
-		Serializable
+		Serializable, ResponseBasedModifierCategory
 {
 	transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor(
 			"jmeter.protocol.http");
@@ -106,7 +109,7 @@ public class AnchorModifier extends AbstractTestElement implements ResponseBased
 	/************************************************************
 	 *  Modifies an Entry object based on HTML response text.
 	 *
-	 *@param  entry   !ToDo (Parameter description)
+	 *@param  sam   !ToDo (Parameter description)
 	 *@param  result  !ToDo (Parameter description)
 	 *@return         !ToDo (Return description)
 	 ***********************************************************/
@@ -148,7 +151,7 @@ public class AnchorModifier extends AbstractTestElement implements ResponseBased
 			HTTPSampler url = (HTTPSampler)potentialLinks.get(rand.nextInt(potentialLinks.size()));
 			sampler.setDomain(url.getDomain());
 			sampler.setPath(url.getPath());
-			if(url.getMethod().equals(HTTPSampler.POST))
+			if(url.getMethod().equals(HTTPSampler.METHOD_POST))
 			{
 				Iterator iter = sampler.getArguments().iterator();
 				while(iter.hasNext())
@@ -221,7 +224,7 @@ public class AnchorModifier extends AbstractTestElement implements ResponseBased
 			HTTPSampler newUrl = (HTTPSampler)iter.next();
 			try
 			{
-				newUrl.setMethod(HTTPSampler.POST);
+				newUrl.setMethod(HTTPSampler.METHOD_POST);
 				if(HtmlParser.isAnchorMatched(newUrl,config))
 				{
 					potentialLinks.add(newUrl);
@@ -250,7 +253,7 @@ public class AnchorModifier extends AbstractTestElement implements ResponseBased
 			try
 			{
 				HTTPSampler newUrl = HtmlParser.createUrlFromAnchor(hrefStr, (HTTPSampler)result.getSamplerData());
-				newUrl.setMethod(HTTPSampler.GET);
+				newUrl.setMethod(HTTPSampler.METHOD_GET);
 				if (HtmlParser.isAnchorMatched(newUrl, config))
 				{
 					potentialLinks.add(newUrl);

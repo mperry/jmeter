@@ -65,6 +65,7 @@ import org.apache.log.Logger;
 import org.apache.jmeter.testelement.AbstractTestElement;
 import org.apache.jmeter.testelement.ThreadListener;
 import org.apache.jmeter.testelement.VariablesCollection;
+import org.apache.jmeter.testelement.category.TimerCategory;
 import org.apache.jmeter.threads.JMeterVariables;
 
 /**
@@ -77,12 +78,12 @@ import org.apache.jmeter.threads.JMeterVariables;
  */
 public class ConstantTimer
     extends AbstractTestElement
-    implements Timer, Serializable, ThreadListener
+    implements Timer, Serializable, ThreadListener, TimerCategory
 {
     private static Logger log =
         Hierarchy.getDefaultHierarchy().getLoggerFor("jmeter.elements");
 
-    public final static String DELAY = "ConstantTimer.delay";
+    public final static String DELAY = "delay";
     private VariablesCollection vars = new VariablesCollection();
     private JMeterVariables variables;
     private static List addableList = new LinkedList();
@@ -98,43 +99,22 @@ public class ConstantTimer
     /**
      * Set the delay for this timer.
      *  
-     * @see org.apache.jmeter.timers.Timer#setDelay(String)
      */
-    public void setDelay(String delay)
+    public void setDelay(long delay)
     {
-        setProperty(DELAY, delay);
-    }
-
-    /**
-     * Set the range (not used for this timer).
-     * 
-     * @see org.apache.jmeter.timers.Timer#setRange(double)
-     */
-    public void setRange(double range)
-    {
+        this.delay = delay;
     }
 
     /**
      * Get the delay value for display.
      * 
      * @return the delay value for display.
-     * @see org.apache.jmeter.timers.Timer#getDelay()
      */
-    public String getDelay()
+    public long getDelay()
     {
-        return (String) getProperty(DELAY);
+        return delay;
     }
 
-    /**
-     * Retrieve the range (not used for this timer).
-     * 
-     * @return the range (always zero for this timer).
-     * @see org.apache.jmeter.timers.Timer#getRange()
-     */
-    public double getRange()
-    {
-        return (double) 0;
-    }
 
     /**
      * Retrieve the delay to use during test execution.
@@ -143,7 +123,7 @@ public class ConstantTimer
      */
     public long delay()
     {
-        return delay;
+        return getDelay();
     }
 
     /**
@@ -167,8 +147,9 @@ public class ConstantTimer
 
         try
         {
-            String delayString = (String) getProperty(DELAY);
-            delay = Long.parseLong(delayString);
+            // todo: variable substitution
+//            String delayString = getDelay();
+//            delay = Long.parseLong(delayString);
         }
         catch (ClassCastException ex)
         {

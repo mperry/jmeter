@@ -54,6 +54,7 @@
  */
 package org.apache.jmeter.protocol.http.gui;
 
+
 import java.util.*;
 
 import org.apache.jmeter.config.Argument;
@@ -62,33 +63,34 @@ import org.apache.jmeter.config.gui.ArgumentsPanel;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 
+
 /**
  * @author Administrator
- * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @author    <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  *
  */
-public class HTTPArgumentsPanel extends ArgumentsPanel {
+public class HTTPArgumentsPanel extends ArgumentsPanel
+{
 
-	private static final String ENCODED_VALUE = JMeterUtils.getResString("encoded_value");
-	private static final String ENCODE_OR_NOT = JMeterUtils.getResString("encode?");
+    private static final String ENCODED_VALUE = JMeterUtils.getResString("encoded_value");
+    private static final String ENCODE_OR_NOT = JMeterUtils.getResString("encode?");
 
 
-
-	public HTTPArgumentsPanel()
-	{
-	}
+    public HTTPArgumentsPanel()
+    {
+    }
 
 
     protected ArgumentsPanel.ArgumentsTableModel createTableModel(TestElement element)
     {
-        return new HTTPArgumentsTableModel(((Arguments)element).getArguments());
+        return new HTTPArgumentsTableModel((List)element.getProperty(Arguments.ARGUMENTS));
     }
 
 
-	public TestElement createTestElement()
-	{
+    public TestElement createTestElement()
+    {
 //		Data model = tableModel.getData();
-		Arguments args = new Arguments();
+        Arguments args = new Arguments();
 //		model.reset();
 //		while(model.next())
 //		{
@@ -107,12 +109,12 @@ public class HTTPArgumentsPanel extends ArgumentsPanel {
 //			}
 //		}
 //		this.configureTestElement(args);
-		return (TestElement)args.clone();
-	}
+        return (TestElement)args.clone();
+    }
 
 
-
-    protected static class HTTPArgumentsTableModel extends ArgumentsTableModel {
+    protected static class HTTPArgumentsTableModel extends ArgumentsTableModel
+    {
 
         public HTTPArgumentsTableModel(List arguments)
         {
@@ -128,9 +130,11 @@ public class HTTPArgumentsPanel extends ArgumentsPanel {
 
         public String getColumnName(int column)
         {
-            if (column == 2) {
+            if (column == 2)
+            {
                 return JMeterUtils.getResString("encode");
-            } else {
+            } else
+            {
                 return super.getColumnName(column);
             }
         }
@@ -138,9 +142,11 @@ public class HTTPArgumentsPanel extends ArgumentsPanel {
 
         public Class getColumnClass(int columnIndex)
         {
-            if (columnIndex == 2) {
+            if (columnIndex == 2)
+            {
                 return Boolean.class;
-            } else {
+            } else
+            {
                 return super.getColumnClass(columnIndex);
             }
         }
@@ -148,11 +154,13 @@ public class HTTPArgumentsPanel extends ArgumentsPanel {
 
         public Object getValueAt(int row, int column)
         {
-            if (column == 2) {
+            if (column == 2)
+            {
                 Argument argument = (Argument)getArguments().get(row);
 
                 return argument.getMetaData();
-            } else {
+            } else
+            {
                 return super.getValueAt(row, column);
             }
         }
@@ -160,11 +168,13 @@ public class HTTPArgumentsPanel extends ArgumentsPanel {
 
         public void setValueAt(Object value, int row, int column)
         {
-            if (column == 2) {
+            if (column == 2)
+            {
                 Argument argument = (Argument)getArguments().get(row);
 
                 argument.setMetaData(value);
-            } else {
+            } else
+            {
                 super.setValueAt(value, row, column);
             }
         }

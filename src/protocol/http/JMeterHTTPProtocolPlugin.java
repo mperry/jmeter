@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,41 +52,75 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.protocol.http.modifier.gui;
 
 
-import org.apache.jmeter.config.gui.AbstractResponseBasedModifierGui;
+import org.apache.jmeter.plugin.JMeterPlugin;
+import org.apache.jmeter.protocol.http.control.gui.*;
+import org.apache.jmeter.protocol.http.control.*;
+import org.apache.jmeter.protocol.http.sampler.HTTPSamplerFull;
+import org.apache.jmeter.protocol.http.sampler.SoapSampler;
+import org.apache.jmeter.protocol.http.gui.*;
+import org.apache.jmeter.protocol.http.config.gui.HttpDefaultsGui;
+import org.apache.jmeter.protocol.http.config.HTTPDefaults;
 import org.apache.jmeter.protocol.http.modifier.AnchorModifier;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.protocol.http.modifier.URLRewritingModifier;
+import org.apache.jmeter.protocol.http.modifier.gui.URLRewritingModifierGui;
+import org.apache.jmeter.protocol.http.modifier.gui.AnchorModifierGui;
 
 
-/****************************************
- * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
- *
- * @author    Kevin Hammond
+/**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created   $Date$
- * @version   $Revision$
- ***************************************/
-
-public class AnchorModifierGui extends AbstractResponseBasedModifierGui
+ * @version $Revision$
+ */
+public class JMeterHTTPProtocolPlugin implements JMeterPlugin
 {
 
-    public AnchorModifierGui()
+    public String[][] getIconMappings()
     {
+        return new String[][]{
+        };
+    }
+
+    public Class[][] getGuiMappings()
+    {
+        return new Class[][]{
+            {SoapSampler.class, SoapSamplerGui.class},
+            {HTTPSamplerFull.class, HttpTestSampleGui.class},
+            {HTTPDefaults.class, HttpDefaultsGui.class},
+            {AuthManager.class, AuthPanel.class},
+            {CookieManager.class, CookiePanel.class},
+            {HeaderManager.class, HeaderPanel.class},
+            {RecordingController.class, RecordController.class},
+            {AnchorModifier.class, AnchorModifierGui.class},
+            {URLRewritingModifier.class, URLRewritingModifierGui.class}
+        };
+    }
+
+    public Class[] getElementClasses()
+    {
+        return new Class[]{
+            SoapSampler.class,
+            HTTPSamplerFull.class,
+            HTTPDefaults.class,
+            AuthManager.class,
+            CookieManager.class,
+            HeaderManager.class,
+            RecordingController.class,
+            AnchorModifier.class,
+            URLRewritingModifier.class
+        };
     }
 
 
-    public String getStaticLabel()
+    public Class[] getJavaSamplerClientClasses()
     {
-        return "anchor_modifier_title";
+        return new Class[0];
     }
 
 
-    public TestElement createTestElement()
+    public String[][] getResourceBundles()
     {
-        AnchorModifier modifier = new AnchorModifier();
-        configureTestElement(modifier);
-        return modifier;
+        return new String[0][0];
     }
+
 }

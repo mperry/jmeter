@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,37 +52,39 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
- 
- package org.apache.jmeter.control;
 
-import java.io.Serializable;
-import java.util.Random;
+package org.apache.jmeter.control;
+
+
+import java.io.*;
+import java.util.*;
+
 
 /**
- * @author Administrator
+ * @author mstover
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
  */
 public class RandomController
-	extends InterleaveControl
-	implements Serializable 
+    extends InterleaveControl
+    implements Serializable
 {
-	Random rand;
-	
-	public RandomController()
-	{
-		rand = new Random();
-	}
-	
-	protected void resetCurrent()
-	{
-		current = rand.nextInt(this.getSubControllers().size());
-	}
-	
-	protected void incrementCurrent()
-	{
-		setInterleave(NEW_STYLE);
-		current = rand.nextInt(this.getSubControllers().size());
-	}
+
+    Random rand;
+
+    public RandomController()
+    {
+        rand = new Random();
+    }
+
+    protected void resetCurrent()
+    {
+        current = rand.nextInt(this.getSubControllers().size());
+    }
+
+    protected void incrementCurrent()
+    {
+        setInterleave(NEW_STYLE);
+        current = rand.nextInt(this.getSubControllers().size());
+    }
 }

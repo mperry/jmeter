@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,41 +52,17 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.protocol.http.modifier.gui;
+package org.apache.jmeter.protocol.http.control;
 
 
-import org.apache.jmeter.config.gui.AbstractResponseBasedModifierGui;
-import org.apache.jmeter.protocol.http.modifier.AnchorModifier;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.control.GenericController;
 
 
-/****************************************
- * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
- *
- * @author    Kevin Hammond
+/**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created   $Date$
- * @version   $Revision$
- ***************************************/
-
-public class AnchorModifierGui extends AbstractResponseBasedModifierGui
+ * @version $Revision$
+ */
+public class RecordingController extends GenericController
 {
 
-    public AnchorModifierGui()
-    {
-    }
-
-
-    public String getStaticLabel()
-    {
-        return "anchor_modifier_title";
-    }
-
-
-    public TestElement createTestElement()
-    {
-        AnchorModifier modifier = new AnchorModifier();
-        configureTestElement(modifier);
-        return modifier;
-    }
 }

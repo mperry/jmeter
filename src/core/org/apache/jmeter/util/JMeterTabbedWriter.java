@@ -52,41 +52,56 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.protocol.http.modifier.gui;
+package org.apache.jmeter.gui.util;
 
 
-import org.apache.jmeter.config.gui.AbstractResponseBasedModifierGui;
-import org.apache.jmeter.protocol.http.modifier.AnchorModifier;
-import org.apache.jmeter.testelement.TestElement;
+import java.io.*;
 
 
-/****************************************
- * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
+/**
+ * Writes String values separated by a single tab character.
  *
- * @author    Kevin Hammond
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created   $Date$
- * @version   $Revision$
- ***************************************/
+ * @version $Revision$
+ */
+public class JMeterTabbedWriter {
 
-public class AnchorModifierGui extends AbstractResponseBasedModifierGui
-{
+    private Writer out;
 
-    public AnchorModifierGui()
+
+    public JMeterTabbedWriter(Writer out)
     {
+        this.out = out;
     }
 
 
-    public String getStaticLabel()
+    public void write(String[] values) throws IOException
     {
-        return "anchor_modifier_title";
+        for (int i = 0; i < values.length - 1; i++) {
+            out.write(values[i]);
+            out.write('\t');
+        }
+        out.write(values[values.length - 1]);
+        out.write('\n');
+    }
+
+    public void flush() throws IOException
+    {
+        out.flush();
+    }
+
+    public void close() throws IOException
+    {
+        flush();
+        out.close();
     }
 
 
-    public TestElement createTestElement()
+    public void writeLine(String s) throws IOException
     {
-        AnchorModifier modifier = new AnchorModifier();
-        configureTestElement(modifier);
-        return modifier;
+        out.write(s);
+        out.write('\n');
     }
+
+
 }

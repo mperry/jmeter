@@ -58,6 +58,9 @@ package org.apache.jmeter;
 import java.awt.event.*;
 import java.io.*;
 import java.net.Authenticator;
+import java.net.MalformedURLException;
+import java.util.*;
+import java.util.jar.*;
 
 import org.apache.avalon.excalibur.cli.*;
 import org.apache.jorphan.collections.HashTree;
@@ -109,6 +112,8 @@ public class JMeter implements JMeterPlugin
     protected static final int PROXY_PORT = 'P';
     protected static final int PROXY_USERNAME = 'u';
     protected static final int PROXY_PASSWORD = 'a';
+
+    private static final String JMETER_HOME="jmeter.home";
 
     /**
      *  Define the understood options. Each CLOptionDescriptor contains:
@@ -189,6 +194,8 @@ public class JMeter implements JMeterPlugin
     {
 
         PluginManager.install(this, true);
+        installPlugins(true);
+
         TestPlanTreeModel treeModel = new TestPlanTreeModel();
         JMeterTreeListener treeLis = new JMeterTreeListener(treeModel);
         treeLis.setActionHandler(ActionRouter.getInstance());
@@ -444,11 +451,79 @@ public class JMeter implements JMeterPlugin
     }
 
 
+
+    private void installPlugins(boolean useGui) {
+        String home = System.getProperty(JMETER_HOME);
+        String pluginDir;
+
+        if (home == null) {
+            home = ".";
+        }
+
+        pluginDir = home + "/plugin";
+        File dir = new File(pluginDir);
+        File[] jars = dir.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name)
+            {
+                return name.endsWith(".jar");
+            }
+        });
+
+        Map urls = new HashMap();
+        String plugin;
+
+        for (int i = 0; i < jars.length; i++) {
+            System.out.println("Check for plugin " + jars[i]);
+            if ((plugin = checkPlugin(jars[i])) != null) {
+                try
+                {
+                    urls.put(plugin, jars[i].toURL());
+                } catch (MalformedURLException e)
+                {
+                    // todo: log
+                    e.printStackTrace();  //To change body of catch statement use Options | File Templates.
+                }
+            }
+        }
+        PluginManager.installPlugins(urls, useGui);
+
+    }
+
+    private String checkPlugin(File jar)
+    {
+        try
+        {
+            JarFile jarFile = new JarFile(jar);
+            Enumeration entries = jarFile.entries();
+
+            try
+            {
+                while(entries.hasMoreElements()) {
+                    JarEntry entry = (JarEntry)entries.nextElement();
+                    System.out.println(entry.getName());
+                    String name = entry.getName();
+                    if (name.endsWith("Plugin.class")) {
+                        System.out.println("Found plugin " + entry.getName());
+                        return name.substring(0, name.length() - 6).replace('/', '.');
+                    }
+                }
+            } finally
+            {
+                jarFile.close();
+            }
+            return null;
+        } catch (IOException e)
+        {
+            e.printStackTrace();  //To change body of catch statement use Options | File Templates.
+            return null;
+        }
+    }
+
+
     public String[][] getIconMappings()
     {
         return new String[][] {
             { TestPlan.class.getName(), "org/apache/jmeter/images/beaker.gif"},
-//            { ConstantTimer.class.getName(), "org/apache/jmeter/images/timer.gif"},
             { org.apache.jmeter.threads.ThreadGroup.class.getName(), "org/apache/jmeter/images/thread.gif"},
             { AbstractListenerElement.class.getName(), "org/apache/jmeter/images/meter.png"},
             { ConfigTestElement.class.getName(), "org/apache/jmeter/images/testtubes.png"},
@@ -464,31 +539,19 @@ public class JMeter implements JMeterPlugin
             {org.apache.jmeter.threads.ThreadGroup.class, ThreadGroupGui.class},
             // controller
             {GenericController.class, LogicControllerGui.class},
-            {LoopController.class, LoopControlPanel.class},
-//            {OnceOnlyController.class, OnceOnlyControllerGui.class},
-//            {InterleaveControl.class, InterleaveControlGui.class},
-//            {RandomController.class, RandomControlGui.class}
+            {LoopController.class, LoopControlPanel.class}
 //            {RecordingController.class, RecordController.class},
             // sampler
 //            {JavaSampler.class, JavaTestSamplerGui.class},
 //            {FTPSampler.class, FtpTestSamplerGui.class},
 //            {JDBCSampler.class, JdbcTestSampleGui.class},
-//            {SoapSampler.class, SoapSamplerGui.class},
-//            {HTTPSamplerFull.class, HttpTestSampleGui.class},
 //            // timer
-//            {ConstantTimer.class, ConstantTimerGui.class},
-//            {GaussianRandomTimer.class, GaussianRandomTimerGui.class},
-//            {UniformRandomTimer.class, UniformRandomTimerGui.class},
 //            // config
 //            {CounterConfig.class, CounterConfigGui.class},
 //            {UserParameters.class, UserParametersGui.class},
 //            {FtpConfig.class, FtpConfigGui.class},
 //            {JavaConfig.class, JavaConfigGui.class},
 //            {JDBCConfig.class, JDBCConfigGui.class},
-//            {HTTPDefaults.class, HttpDefaultsGui.class},
-//            {AuthManager.class, AuthPanel.class},
-//            {CookieManager.class, CookiePanel.class},
-//            {HeaderManager.class, HeaderPanel.class},
 //            // assertion
 //            {DurationAssertion.class, DurationAssertionGui.class},
 //            {ResponseAssertion.class, AssertionGui.class},
@@ -505,36 +568,21 @@ public class JMeter implements JMeterPlugin
             // controller
             GenericController.class,
             LoopController.class,
-//            OnceOnlyController.class,
-//            InterleaveControl.class,
-//            RandomController.class
-//            RecordingController.class,
 //            // sampler
 //            JavaSampler.class,
 //            FTPSampler.class,
 //            JDBCSampler.class,
-//            SoapSampler.class,
-//            HTTPSamplerFull.class,
 //            // timer
-//            ConstantTimer.class,
-//            GaussianRandomTimer.class,
-//            UniformRandomTimer.class,
 //            // config
 //            CounterConfig.class,
 //            UserParameters.class,
 //            FtpConfig.class,
 //            JavaConfig.class,
 //            JDBCConfig.class,
-//            HTTPDefaults.class,
-//            AuthManager.class,
-//            CookieManager.class,
-//            HeaderManager.class,
 //            // assertions
 //            DurationAssertion.class,
 //            ResponseAssertion.class,
 //            // response-based modifier
-//            AnchorModifier.class,
-//            URLRewritingModifier.class
         };
     }
 

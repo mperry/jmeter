@@ -55,32 +55,31 @@
 package org.apache.jmeter.gui.util;
 
 
+import java.awt.event.*;
 import java.util.*;
-import java.awt.event.ActionListener;
 
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.MenuElement;
+import javax.swing.*;
+
+import org.apache.jorphan.reflect.ClassFinder;
+import org.apache.jorphan.util.JOrphanUtils;
+import org.apache.log.Hierarchy;
+import org.apache.log.Logger;
 
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.JMeterGUIComponent;
 import org.apache.jmeter.gui.action.ActionRouter;
-import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jmeter.gui.action.AddElement;
 import org.apache.jmeter.plugin.ElementClassRegistry;
-
-import org.apache.log.Hierarchy;
-import org.apache.log.Logger;
-import org.apache.jorphan.reflect.ClassFinder;
-import org.apache.jorphan.util.JOrphanUtils;
+import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.util.JMeterUtils;
 
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
- *@author    Michael Stover
+ * @author    Michael Stover
  * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- *@created   $Date$
- *@version   1.0
+ * @created   $Date$
+ * @version   1.0
  ***************************************/
 
 public class MenuFactory
@@ -253,27 +252,7 @@ public class MenuFactory
         return addMenu;
     }
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public static JPopupMenu getDefaultControllerMenu()
-	{
-		JPopupMenu pop = new JPopupMenu();
-		pop.add(MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
-				MenuFactory.SAMPLERS, MenuFactory.CONFIG_ELEMENTS,
-				MenuFactory.MODIFIERS,MenuFactory.RESPONSE_BASED_MODIFIERS,
-				MenuFactory.TIMERS,
-				MenuFactory.LISTENERS},
-				JMeterUtils.getResString("Add"),
-				"Add"));
-		pop.add(makeMenus(new String[]{MenuFactory.CONTROLLERS},
-				JMeterUtils.getResString("insert_parent"),"Add Parent"));
-		MenuFactory.addEditMenu(pop, true);
-		MenuFactory.addFileMenu(pop);
-		return pop;
-	}
+
 
 	/****************************************
 	 * !ToDoo (Method description)
@@ -454,90 +433,15 @@ public class MenuFactory
 
 	private static void initializeMenus()
 	{
-		try
-		{
-
-            List timers, controllers, samplers,
-                    configElements, modifiers, responseBasedModifiers,
-                    assertions, listeners, nonTestElements;
-
-			List guiClasses = ClassFinder.findClassesThatExtend(
-					JMeterUtils.getSearchPaths(),
-					new Class[]
-					{JMeterGUIComponent.class});
-			timers = new LinkedList();
-			controllers = new LinkedList();
-			samplers = new LinkedList();
-			configElements = new LinkedList();
-			modifiers = new LinkedList();
-			responseBasedModifiers = new LinkedList();
-			assertions = new LinkedList();
-			listeners = new LinkedList();
-			nonTestElements = new LinkedList();
-			menuMap.put(TIMERS, timers);
-			menuMap.put(ASSERTIONS, assertions);
-			menuMap.put(CONFIG_ELEMENTS, configElements);
-			menuMap.put(CONTROLLERS, controllers);
-			menuMap.put(LISTENERS, listeners);
-			menuMap.put(MODIFIERS, modifiers);
-			menuMap.put(NON_TEST_ELEMENTS, nonTestElements);
-			menuMap.put(RESPONSE_BASED_MODIFIERS, responseBasedModifiers);
-			menuMap.put(SAMPLERS, samplers);
-			Collections.sort(guiClasses);
-			Iterator iter = guiClasses.iterator();
-			while(iter.hasNext())
-			{
-				JMeterGUIComponent item;
-				try
-				{
-					item = (JMeterGUIComponent)Class.forName(
-						(String)iter.next()).newInstance();
-				}
-				catch(Throwable e)
-				{
-					continue;
-				}
-				if(elementsToSkip.contains(item.getClass().getName()) ||
-						elementsToSkip.contains(item.getStaticLabel()))
-				{
-					continue;
-				}
-				Collection categories = item.getMenuCategories();
-				if(categories == null)
-				{
-					continue;
-				}
-
-				if(categories.contains(NON_TEST_ELEMENTS))
-				{
-					nonTestElements.add(new MenuInfo(item.getStaticLabel(),
-							item.getClass().getName()));
-				}
-
-				if(categories.contains(MODIFIERS))
-				{
-					modifiers.add(new MenuInfo(item.getStaticLabel(),
-							item.getClass().getName()));
-				}
-
-				if(categories.contains(LISTENERS))
-				{
-					listeners.add(new MenuInfo(item.getStaticLabel(),
-							item.getClass().getName()));
-				}
-
-			}
-		}
-		catch(Exception e)
-		{
-			log.error("",e);
-		}
         menuMap.put(CONTROLLERS, initCategoryMenu(ElementClassRegistry.CONTROLLER));
         menuMap.put(SAMPLERS, initCategoryMenu(ElementClassRegistry.SAMPLER));
         menuMap.put(TIMERS, initCategoryMenu(ElementClassRegistry.TIMER));
         menuMap.put(CONFIG_ELEMENTS, initCategoryMenu(ElementClassRegistry.CONFIG));
         menuMap.put(ASSERTIONS, initCategoryMenu(ElementClassRegistry.ASSERTION));
         menuMap.put(RESPONSE_BASED_MODIFIERS, initCategoryMenu(ElementClassRegistry.RESPONSEBASEDMODIFIER));
+        menuMap.put(MODIFIERS, initCategoryMenu(ElementClassRegistry.MODIFIER));
+        menuMap.put(LISTENERS, initCategoryMenu(ElementClassRegistry.LISTENER));
+        menuMap.put(NON_TEST_ELEMENTS, initCategoryMenu(ElementClassRegistry.NONTEST));
 	}
 
 

@@ -53,129 +53,114 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.control.gui;
-import java.awt.Font;
 
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
+
+import java.awt.*;
+import java.awt.event.*;
+
+import javax.swing.*;
 
 import org.apache.jmeter.control.InterleaveControl;
-import org.apache.jmeter.gui.NamePanel;
+import org.apache.jmeter.gui.GUIFactory;
+import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jorphan.gui.layout.VerticalLayout;
+import org.apache.jmeter.util.LocaleChangeEvent;
+
 
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
  *@author    Kevin Hammond
+ *  @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  *@created   $Date$
  *@version   1.0
  ***************************************/
+// todo: rename to InterleaveControllerGui
 
-public class InterleaveControlGui extends AbstractControllerGui
+public class InterleaveControlGui extends AbstractControllerGui implements ItemListener
 {
-	InterleaveControl model;
-	JCheckBox style;
 
-	/****************************************
-	 * !ToDo (Constructor description)
-	 ***************************************/
-	public InterleaveControlGui()
-	{
-		init();
-		setName(getStaticLabel());
-	}
+    InterleaveControl model;
+    JCheckBox style;
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param name  !ToDo (Parameter description)
-	 ***************************************/
-	public void setName(String name)
-	{
-		namePanel.setName(name);
-	}
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public String getName()
-	{
-		return namePanel.getName();
-	}
-	
-	public void configure(TestElement el)
-	{
-		super.configure(el);
-		if(((InterleaveControl)el).getStyle() == InterleaveControl.DEFAULT_STYLE)
-		{
-			style.setSelected(true);
-		}
-		else
-		{
-			style.setSelected(false);
-		}
-	}
+    public InterleaveControlGui()
+    {
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public TestElement createTestElement()
-	{
-		InterleaveControl ic = new InterleaveControl();
-		configureTestElement(ic);
-		if(style.isSelected())
-		{
-			ic.setStyle(ic.DEFAULT_STYLE);
-		}
-		else
-		{
-			ic.setStyle(ic.NEW_STYLE);
-		}
-		return ic;
-	}
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public String getStaticLabel()
-	{
-		return JMeterUtils.getResString("interleave_control_title");
-	}
+    public void configure(TestElement element)
+    {
+        super.configure(element);
+        int styleValue = ((Integer)element.getProperty(InterleaveControl.STYLE)).intValue();
 
-	private void init()
-	{
-		this.setLayout(new VerticalLayout(5, VerticalLayout.LEFT, VerticalLayout.TOP));
+        if (styleValue == InterleaveControl.DEFAULT_STYLE)
+        {
+            style.setSelected(true);
+        } else
+        {
+            style.setSelected(false);
+        }
+    }
 
-		// MAIN PANEL
-		JPanel mainPanel = new JPanel();
-		Border margin = new EmptyBorder(10, 10, 5, 10);
-		mainPanel.setBorder(margin);
-		mainPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
+    public TestElement createTestElement()
+    {
+        InterleaveControl ic = new InterleaveControl();
+        configureTestElement(ic);
+        if (style.isSelected())
+        {
+            ic.setStyle(ic.DEFAULT_STYLE);
+        } else
+        {
+            ic.setStyle(ic.NEW_STYLE);
+        }
+        return ic;
+    }
 
-		// TITLE
-		JLabel panelTitleLabel = new JLabel(JMeterUtils.getResString("interleave_control_title"));
-		Font curFont = panelTitleLabel.getFont();
-		int curFontSize = curFont.getSize();
-		curFontSize += 4;
-		panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
-		mainPanel.add(panelTitleLabel);
+    /****************************************
+     * !ToDoo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public String getStaticLabel()
+    {
+        return "interleave_control_title";
+    }
 
-		// NAME
-		namePanel = new NamePanel();
-		mainPanel.add(namePanel);
+    protected void initComponents()
+    {
+        super.initComponents();
+        JPanel panel = GUIFactory.createPanel();
+        panel.setLayout(new GridBagLayout());
+        JMeterGridBagConstraints constraints = new JMeterGridBagConstraints();
 
-		this.add(mainPanel);
-		style = new JCheckBox(JMeterUtils.getResString("ignore_subcontrollers"));
-		this.add(style);
-	}
+        style = new JCheckBox(JMeterUtils.getResString("ignore_subcontrollers"));
+        style.addItemListener(this);
+        style.setName("ignore_subcontrollers");
+        constraints.fillHorizontal(1.0);
+        panel.add(style, constraints);
+        add(panel);
+    }
+
+
+    public void itemStateChanged(ItemEvent e)
+    {
+        if (e.getStateChange() == ItemEvent.SELECTED)
+        {
+            getElement().setProperty(InterleaveControl.STYLE, new Integer(InterleaveControl.DEFAULT_STYLE));
+        } else
+        {
+            getElement().setProperty(InterleaveControl.STYLE, new Integer(InterleaveControl.NEW_STYLE));
+        }
+
+    }
+
+
+    public void localeChanged(LocaleChangeEvent event)
+    {
+        super.localeChanged(event);
+        updateLocalizedStrings(new JComponent[]{style});
+    }
+
 }
