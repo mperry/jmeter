@@ -65,7 +65,7 @@ import org.apache.jmeter.control.Controller;
 import org.apache.jmeter.samplers.SampleEvent;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.samplers.Sampler;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.ThreadListener;
 import org.apache.jmeter.timers.Timer;
 import org.apache.log.Hierarchy;
@@ -220,7 +220,7 @@ public class JMeterThread implements Runnable, java.io.Serializable {
 	
 	private void notifyListeners(List listeners, SampleResult result) {
 		SampleEvent event =
-			new SampleEvent(result, (String) controller.getProperty(TestElement.NAME));
+			new SampleEvent(result, (String) controller.getPropertyValue(NamedTestElement.NAME));
 		compiler.sampleOccurred(event);
 		notifier.addLast(event,listeners);
 	}

@@ -64,7 +64,7 @@ import java.util.*;
  * 
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  */
-public class RootElement extends AbstractTestElement
+public class RootElement extends AbstractNamedTestElement
 {
 
     public RootElement()

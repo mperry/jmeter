@@ -25,7 +25,7 @@ import java.util.*;
 import java.io.*;
 import java.lang.ref.WeakReference;
 
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestPlan;
 import org.apache.jmeter.save.SaveService;
 import org.apache.jmeter.util.*;
@@ -59,12 +59,13 @@ public class JMeterDocumentManager
     public JMeterDocument loadDocument(File file) throws IOException
     {
         FileInputStream in = new FileInputStream(file);
-        TestElement element = SaveService.loadSubTree(in);
+        // todo: should never happen but what if the element is not a NamedTestElement?
+        NamedTestElement element = (NamedTestElement)SaveService.loadSubTree(in);
         return createDocument(file, element);
 
     }
 
-    private JMeterDocument createDocument(File file, TestElement element)
+    private JMeterDocument createDocument(File file, NamedTestElement element)
     {
         String documentName = "document" + getCount();
         JMeterDocument document = new JMeterDocument(documentName, file, element);
@@ -152,7 +153,7 @@ public class JMeterDocumentManager
         this.currentDocument = currentDocument;
     }
 
-    public TestElement getCurrentTestElement()
+    public NamedTestElement getCurrentTestElement()
     {
         if(getCurrentDocument() == null) {
             return null;

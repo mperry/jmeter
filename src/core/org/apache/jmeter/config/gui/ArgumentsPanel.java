@@ -68,6 +68,7 @@ import junit.framework.TestCase;
 import org.apache.jmeter.config.Argument;
 import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
@@ -115,7 +116,7 @@ public class ArgumentsPanel extends AbstractConfigGui implements ActionListener,
     }
 
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
 //        Data model = tableModel.getData();
         Arguments args = new Arguments();
@@ -125,7 +126,7 @@ public class ArgumentsPanel extends AbstractConfigGui implements ActionListener,
 //                             model.getColumnValue(Arguments.COLUMN_NAMES[1]));
 //        }
 //        this.configureTestElement(args);
-        return (TestElement)args.clone();
+        return (NamedTestElement)args.clone();
     }
 
 
@@ -394,7 +395,7 @@ public class ArgumentsPanel extends AbstractConfigGui implements ActionListener,
                     argument.setName((String)value);
                     break;
                 case 1:
-                    argument.setValue(value);
+                    argument.setValue((String)value);
                     break;
                 default:
 

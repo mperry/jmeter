@@ -65,7 +65,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.jmeter.reporters.ResultCollector;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestListener;
 import org.apache.jmeter.testelement.TestPlan;
 import org.apache.jmeter.threads.JMeterThread;
@@ -202,7 +202,7 @@ public class StandardJMeterEngine implements JMeterEngine,JMeterThreadMonitor,
 			{
 				iter.remove();
 			}
-			else if(!(item instanceof TestElement))
+			else if(!(item instanceof NamedTestElement))
 			{
 				iter.remove();
 			}

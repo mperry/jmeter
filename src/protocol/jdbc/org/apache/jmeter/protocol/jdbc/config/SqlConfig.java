@@ -82,7 +82,7 @@ public class SqlConfig extends ConfigTestElement implements Serializable
 	}
 	public String getQuery()
 	{
-		return (String)this.getProperty(JDBCSampler.QUERY);
+		return (String)this.getPropertyValue(JDBCSampler.QUERY);
 	}
 
 }

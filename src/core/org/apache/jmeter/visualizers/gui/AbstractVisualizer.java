@@ -14,6 +14,7 @@ import org.apache.jmeter.gui.util.FilePanel;
 import org.apache.jmeter.gui.util.MenuFactory;
 import org.apache.jmeter.reporters.AbstractListenerElement;
 import org.apache.jmeter.reporters.ResultCollector;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.visualizers.Visualizer;
@@ -93,7 +94,7 @@ public abstract class AbstractVisualizer extends AbstractJMeterGuiComponent
 		return Arrays.asList(new String[] { MenuFactory.LISTENERS });
 	}
 
-	public TestElement createTestElement() {
+	public NamedTestElement createTestElement() {
 		if (collector == null) {
 			collector = new ResultCollector();
 		}
@@ -113,7 +114,7 @@ public abstract class AbstractVisualizer extends AbstractJMeterGuiComponent
 		catch (IOException e) {
 			log.error("",e);
 		}
-		return (TestElement)collector.clone();
+		return (NamedTestElement)collector.clone();
 	}
 	
 	public void configure(TestElement el)

@@ -58,7 +58,7 @@ import java.util.*;
 
 import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.testelement.TestPlan;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.control.LoopController;
 
 

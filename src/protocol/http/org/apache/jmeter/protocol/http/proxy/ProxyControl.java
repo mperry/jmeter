@@ -76,7 +76,7 @@ import org.apache.jmeter.protocol.http.control.HeaderManager;
 import org.apache.jmeter.protocol.http.control.gui.HttpTestSampleGui;
 import org.apache.jmeter.protocol.http.gui.HeaderPanel;
 import org.apache.jmeter.protocol.http.sampler.HTTPSampler;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.threads.gui.ThreadGroupGui;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.log.Hierarchy;
@@ -148,14 +148,14 @@ public class ProxyControl extends ConfigTestElement implements Serializable
 	 ***********************************************************/
 	public int getPort()
 	{
-		if (this.getProperty(PORT) instanceof String)
+		if (this.getPropertyValue(PORT) instanceof String)
 		{
-			setPort(Integer.parseInt((String) getProperty(PORT)));
-			return ((Integer) this.getProperty(PORT)).intValue();
+			setPort(Integer.parseInt((String) getPropertyValue(PORT)));
+			return ((Integer) this.getPropertyValue(PORT)).intValue();
 		}
 		else
 		{
-			return ((Integer) this.getProperty(PORT)).intValue();
+			return ((Integer) this.getPropertyValue(PORT)).intValue();
 		}
 	}
 	/************************************************************
@@ -205,7 +205,7 @@ public class ProxyControl extends ConfigTestElement implements Serializable
 	}
 	public List getExcludePatterns()
 	{
-		return (List) getProperty(EXCLUDE_LIST);
+		return (List) getPropertyValue(EXCLUDE_LIST);
 	}
 	/************************************************************
 	 *  !ToDo
@@ -218,7 +218,7 @@ public class ProxyControl extends ConfigTestElement implements Serializable
 	}
 	public List getIncludePatterns()
 	{
-		return (List) getProperty(INCLUDE_LIST);
+		return (List) getPropertyValue(INCLUDE_LIST);
 	}
 	/************************************************************
 	 *  !ToDo (Method description)
@@ -239,7 +239,7 @@ public class ProxyControl extends ConfigTestElement implements Serializable
 	 *
 	 *@param  config  !ToDo (Parameter description)
 	 ***********************************************************/
-	public void deliverSampler(HTTPSampler sampler, TestElement[] subConfigs)
+	public void deliverSampler(HTTPSampler sampler, NamedTestElement[] subConfigs)
 	{
 		if (filterUrl(sampler))
 		{
@@ -290,10 +290,10 @@ public class ProxyControl extends ConfigTestElement implements Serializable
 	}
 	private void placeConfigElement(
 		HTTPSampler sampler,
-		TestElement[] subConfigs)
+		NamedTestElement[] subConfigs)
 	{
 		ValueReplacer replacer = GuiPackage.getInstance().getReplacer();
-		TestElement urlConfig = null;
+		NamedTestElement urlConfig = null;
 		JMeterTreeModel treeModel = GuiPackage.getInstance().getTreeModel();
 		List nodes = treeModel.getNodesOfType(RecordController.class);
 		if (nodes.size() == 0)
@@ -345,28 +345,28 @@ public class ProxyControl extends ConfigTestElement implements Serializable
 	}
 	private void removeValuesFromSampler(
 		HTTPSampler sampler,
-		TestElement urlConfig)
+		NamedTestElement urlConfig)
 	{
 		if (urlConfig != null
-			&& sampler.getDomain().equals(urlConfig.getProperty(HTTPSampler.DOMAIN)))
+			&& sampler.getDomain().equals(urlConfig.getPropertyValue(HTTPSampler.DOMAIN)))
 		{
 			sampler.setDomain("");
 		}
 		if (urlConfig != null
-			&& sampler.getPath().equals(urlConfig.getProperty(HTTPSampler.PATH)))
+			&& sampler.getPath().equals(urlConfig.getPropertyValue(HTTPSampler.PATH)))
 		{
 			sampler.setPath("");
 		}
 	}
-	private boolean areMatched(HTTPSampler sampler, TestElement urlConfig)
+	private boolean areMatched(HTTPSampler sampler, NamedTestElement urlConfig)
 	{
 		return urlConfig == null
-			|| (urlConfig.getProperty(HTTPSampler.DOMAIN) == null
-				|| urlConfig.getProperty(HTTPSampler.DOMAIN).equals("")
-				|| urlConfig.getProperty(HTTPSampler.DOMAIN).equals(sampler.getDomain()))
-			&& (urlConfig.getProperty(HTTPSampler.PATH) == null
-				|| urlConfig.getProperty(HTTPSampler.PATH).equals("")
-				|| urlConfig.getProperty(HTTPSampler.PATH).equals(sampler.getPath()));
+			|| (urlConfig.getPropertyValue(HTTPSampler.DOMAIN) == null
+				|| urlConfig.getPropertyValue(HTTPSampler.DOMAIN).equals("")
+				|| urlConfig.getPropertyValue(HTTPSampler.DOMAIN).equals(sampler.getDomain()))
+			&& (urlConfig.getPropertyValue(HTTPSampler.PATH) == null
+				|| urlConfig.getPropertyValue(HTTPSampler.PATH).equals("")
+				|| urlConfig.getPropertyValue(HTTPSampler.PATH).equals(sampler.getPath()));
 	}
 	private boolean checkIncludes(HTTPSampler sampler)
 	{

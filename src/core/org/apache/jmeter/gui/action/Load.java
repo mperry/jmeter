@@ -76,7 +76,7 @@ import org.apache.jmeter.gui.JMeterGUIComponent;
 import org.apache.jmeter.gui.document.JMeterDocumentManager;
 import org.apache.jmeter.gui.util.FileDialoger;
 import org.apache.jmeter.save.SaveService;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.util.JMeterUtils;
 
 import org.apache.log.Hierarchy;
@@ -137,25 +137,36 @@ public class Load extends JMeterAction
     }
 
 
+    protected ImageIcon createIcon()
+    {
+        return JMeterUtils.getImage("toolbar/Open24.gif");
+    }
+
+    protected ImageIcon createPressedIcon()
+    {
+        return JMeterUtils.getImage("toolbar/Open24.pressed.png");
+    }
+
+
     // for test
     private void convertTree(HashTree tree) throws Exception
     {
         Iterator iter = new LinkedList(tree.list()).iterator();
         while (iter.hasNext())
         {
-            TestElement item = (TestElement)iter.next();
+            NamedTestElement item = (NamedTestElement)iter.next();
             convertTree(tree.getTree(item));
             JMeterGUIComponent comp = generateGUIComponent(item);
             tree.replace(item, comp);
         }
     }
 
-    private JMeterGUIComponent generateGUIComponent(TestElement item) throws Exception
+    private JMeterGUIComponent generateGUIComponent(NamedTestElement item) throws Exception
     {
         JMeterGUIComponent gui = null;
         try
         {
-            gui = (JMeterGUIComponent)Class.forName((String)item.getProperty(TestElement.GUI_CLASS)).newInstance();
+            gui = (JMeterGUIComponent)Class.forName((String)item.getPropertyValue(NamedTestElement.GUI_CLASS)).newInstance();
         } catch (Exception e)
         {
             gui = new WorkBenchGui();

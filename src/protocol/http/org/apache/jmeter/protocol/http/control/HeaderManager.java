@@ -154,7 +154,7 @@ public class HeaderManager extends ConfigTestElement implements Serializable, Co
                     if (sbHeader.length() > 0) {
                          sbHeader.append("; ");
                     }
-                    sbHeader.append(header.getName()).append("=").append(header.getValue());
+                    sbHeader.append(header.getTagName()).append("=").append(header.getValue());
                }
          }
 
@@ -195,7 +195,7 @@ public class HeaderManager extends ConfigTestElement implements Serializable, Co
                if (header == null) {
                     continue;
                }
-               if (header.getName().equals(newHeader.getName())) {
+               if (header.getTagName().equals(newHeader.getTagName())) {
                     removeIndices.addElement(new Integer(i));
                }
          }

@@ -54,7 +54,7 @@
  */
  package org.apache.jmeter.samplers;
 
- import org.apache.jmeter.testelement.TestElement;
+ import org.apache.jmeter.testelement.NamedTestElement;
 
 /************************************************************
  *  Classes which are able to generate information about an entry should
@@ -64,7 +64,7 @@
  *@created    $Date$
  *@version    $Revision$
  ***********************************************************/
-public interface Sampler extends java.io.Serializable, TestElement
+public interface Sampler extends java.io.Serializable, NamedTestElement
 {
 	public final static String HEADER = "sampler.HEADER";
 

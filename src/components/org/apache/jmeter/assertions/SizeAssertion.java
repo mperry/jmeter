@@ -58,6 +58,7 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.testelement.AbstractTestElement;
+import org.apache.jmeter.testelement.AbstractNamedTestElement;
 import org.apache.jmeter.samplers.SampleResult;
 
 /**
@@ -72,7 +73,7 @@ import org.apache.jmeter.samplers.SampleResult;
  *
  * @version $Revision$, $Date$
  */
-public class SizeAssertion extends AbstractTestElement implements Serializable, Assertion {
+public class SizeAssertion extends AbstractNamedTestElement implements Serializable, Assertion {
 
 	int comparator = 1;
 	String comparatorErrorMessage = "ERROR!";

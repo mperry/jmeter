@@ -1,6 +1,6 @@
 package org.apache.jmeter.config;
 import org.apache.jmeter.testelement.*;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import java.io.Serializable;
 
 /****************************************
@@ -11,7 +11,7 @@ import java.io.Serializable;
  *@version   1.0
  ***************************************/
 
-public class ConfigTestElement extends AbstractTestElement implements Serializable
+public class ConfigTestElement extends AbstractNamedTestElement implements Serializable
 {
 
 	public final static String USERNAME = "ConfigTestElement.username";
@@ -27,7 +27,7 @@ public class ConfigTestElement extends AbstractTestElement implements Serializab
 	 *
 	 *@param parm1  !ToDo
 	 ***************************************/
-	public void addTestElement(TestElement parm1)
+	public void addTestElement(NamedTestElement parm1)
 	{
 		if(parm1 instanceof ConfigTestElement)
 		{

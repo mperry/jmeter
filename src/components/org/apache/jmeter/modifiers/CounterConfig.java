@@ -60,6 +60,7 @@ import java.io.Serializable;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.testelement.ThreadListener;
 import org.apache.jmeter.testelement.VariablesCollection;
+import org.apache.jmeter.testelement.property.*;
 import org.apache.jmeter.testelement.category.ConfigCategory;
 import org.apache.jmeter.threads.JMeterVariables;
 import org.apache.jmeter.util.JMeterUtils;
@@ -83,13 +84,13 @@ public class CounterConfig extends ConfigTestElement implements Serializable, Th
     public final static String PER_USER = "perUser";
     public final static String VAR_NAME = "varName";
 
-    private boolean perUser = false;
     private int globalCounter = -1;
-    private int increment = 1;
-    private int start = 0;
-    private int end = 0;
-    private String varName = "counter";
     private VariablesCollection vars = new VariablesCollection();
+    private BooleanProperty perUser = new BooleanProperty(false);
+    private IntProperty increment = new IntProperty(1);
+    private IntProperty start = new IntProperty(0);
+    private IntProperty end = new IntProperty(0);
+    private StringProperty varName = new StringProperty("counter");
 
 
     /**
@@ -98,24 +99,24 @@ public class CounterConfig extends ConfigTestElement implements Serializable, Th
     public synchronized void iterationStarted(int iterationCount)
     {
         JMeterVariables variables = vars.getVariables();
-        if (!perUser) {
+        if (!getPerUser()) {
             globalCounter++;
-            int value = start + (increment * globalCounter);
-            if (value > end) {
+            int value = getStart() + (getIncrement() * globalCounter);
+            if (value > getEnd()) {
                 globalCounter = 0;
-                value = start;
+                value = getStart();
             }
             variables.put(getVarName(), Integer.toString(value));
         } else {
             String value = variables.get(getVarName());
             if (value == null) {
-                variables.put(getVarName(), Integer.toString(start));
+                variables.put(getVarName(), Integer.toString(getStart()));
             } else {
                 try {
                     int current = Integer.parseInt(value);
-                    current += increment;
-                    if (current > end) {
-                        current = start;
+                    current += getIncrement();
+                    if (current > getEnd()) {
+                        current = getStart();
                     }
                     variables.put(getVarName(), Integer.toString(current));
                 } catch (NumberFormatException e) {
@@ -129,72 +130,73 @@ public class CounterConfig extends ConfigTestElement implements Serializable, Th
     /**
      * @see org.apache.jmeter.testelement.ThreadListener#setJMeterVariables(JMeterVariables)
      */
+    // todo: implement
     public void setJMeterVariables(JMeterVariables jmVars)
     {
-        vars.addJMeterVariables(jmVars);
-        start = getStart();
-        end = getEnd();
-        increment = getIncrement();
-        perUser = getPerUser();
+//        vars.addJMeterVariables(jmVars);
+//        start = getStart();
+//        end = getEnd();
+//        increment = getIncrement();
+//        perUser = getPerUser();
     }
 
 
     public boolean getPerUser()
     {
-        return perUser;
+        return perUser.getBooleanValue();
     }
 
 
     public void setPerUser(boolean perUser)
     {
-        this.perUser = perUser;
+        this.perUser.setBooleanValue(perUser);
     }
 
 
     public int getIncrement()
     {
-        return increment;
+        return increment.getIntValue();
     }
 
 
     public void setIncrement(int increment)
     {
-        this.increment = increment;
+        this.increment.setIntValue(increment);
     }
 
 
     public int getStart()
     {
-        return start;
+        return start.getIntValue();
     }
 
 
     public void setStart(int start)
     {
-        this.start = start;
+        this.start.setIntValue(start);
     }
 
 
     public int getEnd()
     {
-        return end;
+        return end.getIntValue();
     }
 
 
     public void setEnd(int end)
     {
-        this.end = end;
+        this.end.setIntValue(end);
     }
 
 
     public String getVarName()
     {
-        return varName;
+        return varName.getStringValue();
     }
 
 
     public void setVarName(String varName)
     {
-        this.varName = varName;
+        this.varName.setValue(varName);
     }
 }

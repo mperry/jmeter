@@ -65,7 +65,7 @@ import org.apache.jmeter.samplers.Sampler;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.AbstractSampler;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 
 /************************************************************
  *  A sampler which understands FTP file requests

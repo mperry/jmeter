@@ -69,7 +69,7 @@ public interface ConfigElement extends Cloneable
 {
 
 	/************************************************************
-	 *  Gets a property of the config element. Object getProperty(String key); Sets
+	 *  Gets a property of the config element. Object getPropertyValue(String key); Sets
 	 *  a property of the config element. void putProperty(String key,Object
 	 *  value); Get the names of all valid properties for this config element.
 	 *  Collection getPropertyNames();

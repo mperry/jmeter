@@ -3,7 +3,7 @@ import java.util.Map;
 
 import org.apache.jmeter.functions.InvalidVariableException;
 import org.apache.jmeter.functions.ValueReplacer;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestPlan;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.log.Hierarchy;
@@ -37,11 +37,11 @@ public class PreCompiler implements HashTreeTraverser
 			replacer.setUserDefinedVariables(
 				((TestPlan) node).getUserDefinedVariablesMap());
 		}
-		if (node instanceof TestElement)
+		if (node instanceof NamedTestElement)
 		{
 			try
 			{
-				replacer.replaceValues((TestElement) node);
+				replacer.replaceValues((NamedTestElement) node);
 			}
 			catch (InvalidVariableException e)
 			{

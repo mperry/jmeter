@@ -56,7 +56,7 @@ package org.apache.jmeter.control.gui;
 
 
 import org.apache.jmeter.control.OnceOnlyController;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 
 
 /****************************************
@@ -71,7 +71,7 @@ import org.apache.jmeter.testelement.TestElement;
 public class OnceOnlyControllerGui extends AbstractControllerGui
 {
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         OnceOnlyController oc = new OnceOnlyController();
         configureTestElement(oc);

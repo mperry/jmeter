@@ -67,6 +67,7 @@ import javax.swing.table.*;
 import org.apache.jmeter.assertions.ResponseAssertion;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
@@ -121,7 +122,7 @@ public class AssertionGui extends AbstractAssertionGui implements ActionListener
     }
 
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         ResponseAssertion el = new ResponseAssertion();
 //		String[] testStrings = tableModel.getData().getColumn(COL_NAME);
@@ -161,7 +162,7 @@ public class AssertionGui extends AbstractAssertionGui implements ActionListener
     public void configure(TestElement element)
     {
         super.configure(element);
-        tableModel = new PatternTableModel((List)element.getProperty(ResponseAssertion.TEST_PATTERNS));
+        tableModel = new PatternTableModel((List)element.getPropertyValue(ResponseAssertion.TEST_PATTERNS));
         patternTable.setModel(tableModel);
 
         DefaultCellEditor editor = new DefaultCellEditor(new JTextField());
@@ -170,8 +171,8 @@ public class AssertionGui extends AbstractAssertionGui implements ActionListener
         patternTable.getColumnModel().getColumn(0).setCellEditor(editor);
         setButtonState();
 
-        int field = ((Integer)element.getProperty(ResponseAssertion.TEST_FIELD)).intValue();
-        int mode = ((Integer)element.getProperty(ResponseAssertion.TEST_MODE)).intValue();
+        int field = ((Integer)element.getPropertyValue(ResponseAssertion.TEST_FIELD)).intValue();
+        int mode = ((Integer)element.getPropertyValue(ResponseAssertion.TEST_MODE)).intValue();
 
         if (field == ResponseAssertion.TEXT_RESPONSE) {
             rbText.setSelected(true);

@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import org.apache.jmeter.gui.JMeterGUIComponent;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jorphan.collections.HashTree;
 
 /**
@@ -37,7 +37,7 @@ public abstract class AbstractAction implements Command {
 			if(item.isEnabled())
 			{
 				convertSubTree(tree.getTree(item));
-				TestElement testElement = item.createTestElement();
+				NamedTestElement testElement = item.createTestElement();
 				tree.replace(item,testElement);
 			}
 			else

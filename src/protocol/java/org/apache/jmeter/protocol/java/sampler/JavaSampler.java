@@ -109,7 +109,7 @@ public class JavaSampler extends AbstractSampler implements JavaSamplerClient {
     }
 
 
-//	public void addCustomTestElement(TestElement el)
+//	public void addCustomTestElement(NamedTestElement el)
 //	{
 //		if(el instanceof JavaConfig)
 //		{

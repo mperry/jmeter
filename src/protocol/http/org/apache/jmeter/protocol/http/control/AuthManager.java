@@ -131,11 +131,11 @@ public class AuthManager extends ConfigTestElement implements ConfigElement, Ser
         }
     }
 
-//	public TestElement addChildElement(TestElement el)
+//	public NamedTestElement addChildElement(NamedTestElement el)
 //	{
-//		if(el.getProperty("password") != null &&
-//				el.getProperty("username") != null &&
-//				el.getProperty("url") != null)
+//		if(el.getPropertyValue("password") != null &&
+//				el.getPropertyValue("username") != null &&
+//				el.getPropertyValue("url") != null)
 //		{
 //			addAuth(new Authorization(el.getPropertyAsString("url"),
 //					el.getPropertyAsString("username"),

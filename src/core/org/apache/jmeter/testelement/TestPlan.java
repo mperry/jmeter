@@ -61,6 +61,8 @@ import java.util.*;
 import org.apache.jmeter.assertions.Assertion;
 import org.apache.jmeter.config.*;
 import org.apache.jmeter.threads.ThreadGroup;
+import org.apache.jmeter.testelement.property.*;
+import org.apache.jmeter.save.TestElementConfiguration;
 
 
 /****************************************
@@ -71,7 +73,7 @@ import org.apache.jmeter.threads.ThreadGroup;
  * @created   March 13, 2001
  * @version   1.0
  ***************************************/
-public class TestPlan extends AbstractTestElement implements Serializable
+public class TestPlan extends AbstractNamedTestElement implements Serializable
 {
 
     /****************************************
@@ -84,8 +86,8 @@ public class TestPlan extends AbstractTestElement implements Serializable
     private List threadGroups = new LinkedList();
     private List configs = new LinkedList();
     private static TestPlan plan;
-    private Arguments userDefinedVariables = new Arguments();
-    private boolean functionalMode = false;
+    private ElementProperty userDefinedVariables = new ElementProperty(new Arguments());
+    private BooleanProperty functionalMode = new BooleanProperty(false);
 
 
     public TestPlan()
@@ -107,25 +109,25 @@ public class TestPlan extends AbstractTestElement implements Serializable
     
     public boolean getFunctionalMode()
     {
-        return functionalMode;
+        return functionalMode.getBooleanValue();
     }
 
 
     public void setFunctionalMode(boolean functionalMode)
     {
-        this.functionalMode = functionalMode;
+        this.functionalMode.setBooleanValue(functionalMode);
     }
 
 
     public Arguments getUserDefinedVariables()
     {
-        return userDefinedVariables;
+        return (Arguments)userDefinedVariables.getElement();
     }
 
 
     public void setUserDefinedVariables(Arguments userDefinedVariables)
     {
-        this.userDefinedVariables = userDefinedVariables;
+        this.userDefinedVariables.setElement(userDefinedVariables);
     }
 
 
@@ -152,7 +154,7 @@ public class TestPlan extends AbstractTestElement implements Serializable
             {
                 plan = new TestPlan(name);
             }
-            plan.setProperty(TestElement.GUI_CLASS, "org.apache.jmeter.control.gui.TestPlanGui");
+            plan.setProperty(NamedTestElement.GUI_CLASS, "org.apache.jmeter.control.gui.TestPlanGui");
         }
         return plan;
     }
@@ -162,7 +164,7 @@ public class TestPlan extends AbstractTestElement implements Serializable
 //	 *
 //	 *@param tg  !ToDo
 //	 ***************************************/
-//	public TestElement addChildElement(TestElement tg)
+//	public NamedTestElement addChildElement(NamedTestElement tg)
 //	{
 //		if(tg instanceof ThreadGroup)
 //		{
@@ -190,7 +192,7 @@ public class TestPlan extends AbstractTestElement implements Serializable
      *
      *@param child  !ToDo
      ***************************************/
-    public void addJMeterComponent(TestElement child)
+    public void addJMeterComponent(NamedTestElement child)
     {
         if (child instanceof ThreadGroup)
         {

@@ -75,7 +75,7 @@ import org.apache.jmeter.protocol.http.gui.HTTPArgumentsPanel;
 import org.apache.jmeter.protocol.http.sampler.HTTPSampler;
 import org.apache.jmeter.protocol.http.util.HTTPArgument;
 import org.apache.jmeter.testelement.AbstractTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.util.JMeterUtils;
 
 
@@ -125,11 +125,11 @@ public class UrlConfigGui extends JPanel
     }
 
 
-    protected void configureTestElement(TestElement mc)
+    protected void configureTestElement(NamedTestElement mc)
     {
-        mc.setProperty(TestElement.NAME, getName());
-        mc.setProperty(TestElement.GUI_CLASS, this.getClass().getName());
-        mc.setProperty(TestElement.TEST_CLASS, mc.getClass().getName());
+        mc.setProperty(NamedTestElement.NAME, getName());
+        mc.setProperty(NamedTestElement.GUI_CLASS, this.getClass().getName());
+        mc.setProperty(NamedTestElement.TEST_CLASS, mc.getClass().getName());
     }
 
     /****************************************
@@ -137,7 +137,7 @@ public class UrlConfigGui extends JPanel
      *
      *@return   !ToDo (Return description)
      ***************************************/
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         ConfigTestElement element = new ConfigTestElement();
         this.configureTestElement(element);
@@ -174,13 +174,13 @@ public class UrlConfigGui extends JPanel
      *
      *@param el  !ToDo (Parameter description)
      ***************************************/
-    public void configure(TestElement el)
+    public void configure(NamedTestElement el)
     {
-        setName((String)el.getProperty(TestElement.NAME));
-        argsPanel.configure((TestElement)el.getProperty(HTTPSampler.ARGUMENTS));
-        domain.setText((String)el.getProperty(HTTPSampler.DOMAIN));
+        setName((String)el.getPropertyValue(NamedTestElement.NAME));
+        argsPanel.configure((NamedTestElement)el.getPropertyValue(HTTPSampler.ARGUMENTS));
+        domain.setText((String)el.getPropertyValue(HTTPSampler.DOMAIN));
         port.setText((String)el.getPropertyAsString(HTTPSampler.PORT));
-        if ("METHOD_POST".equals(el.getProperty(HTTPSampler.METHOD)))
+        if ("METHOD_POST".equals(el.getPropertyValue(HTTPSampler.METHOD)))
         {
             post.setSelected(true);
             get.setSelected(false);
@@ -189,10 +189,10 @@ public class UrlConfigGui extends JPanel
             get.setSelected(true);
             post.setSelected(false);
         }
-        path.setText((String)el.getProperty(HTTPSampler.PATH));
+        path.setText((String)el.getPropertyValue(HTTPSampler.PATH));
         followRedirects.setSelected(((AbstractTestElement)el).getPropertyAsBoolean(HTTPSampler.FOLLOW_REDIRECTS));
         useKeepAlive.setSelected(((AbstractTestElement)el).getPropertyAsBoolean(HTTPSampler.KEEP_ALIVE));
-        if ("http".equals(el.getProperty(HTTPSampler.PROTOCOL)))
+        if ("http".equals(el.getPropertyValue(HTTPSampler.PROTOCOL)))
         {
             http.setSelected(true);
             https.setSelected(false);

@@ -67,6 +67,7 @@ import org.apache.jmeter.control.LoopController;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.IntegerFieldDocumentListener;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
@@ -102,10 +103,10 @@ public class LoopControlPanel extends AbstractControllerGui implements KeyListen
     }
 
 
-    public void configure(org.apache.jmeter.testelement.TestElement element)
+    public void configure(TestElement element)
     {
-        loopInput.setText(String.valueOf(element.getProperty(LoopController.LOOP_COUNT)));
-        boolean forever = ((Boolean)element.getProperty(LoopController.LOOP_FOREVER)).booleanValue();
+        loopInput.setText(String.valueOf(element.getPropertyValue(LoopController.LOOP_COUNT)));
+        boolean forever = ((Boolean)element.getPropertyValue(LoopController.LOOP_FOREVER)).booleanValue();
 
         if (forever)
         {
@@ -124,7 +125,7 @@ public class LoopControlPanel extends AbstractControllerGui implements KeyListen
      *
      *@return   !ToDo (Return description)
      ***************************************/
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         LoopController lc = new LoopController();
 //		configureTestElement(lc);

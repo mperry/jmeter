@@ -11,7 +11,7 @@ import org.apache.jmeter.gui.AbstractJMeterGuiComponent;
 import org.apache.jmeter.gui.action.AddElement;
 import org.apache.jmeter.gui.action.Actions;
 import org.apache.jmeter.gui.util.MenuFactory;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.util.JMeterUtils;
 
 
@@ -37,7 +37,7 @@ public abstract class AbstractControllerGui extends AbstractJMeterGuiComponent
         return Arrays.asList(new String[]{MenuFactory.CONTROLLERS});
     }
 
-    public JPopupMenu createPopupMenu(TestElement element)
+    public JPopupMenu createPopupMenu(NamedTestElement element)
     {
         JPopupMenu pop = new JPopupMenu();
 

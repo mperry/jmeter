@@ -63,6 +63,7 @@ import javax.swing.*;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.gui.util.LongFieldDocumentListener;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.timers.ConstantTimer;
 import org.apache.jmeter.util.JMeterUtils;
@@ -110,7 +111,7 @@ public class ConstantTimerGui extends AbstractTimerGui implements KeyListener
     }
 
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         ConstantTimer timer = new ConstantTimer();
         this.configureTestElement(timer);

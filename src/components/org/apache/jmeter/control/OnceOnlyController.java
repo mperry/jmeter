@@ -58,7 +58,7 @@ package org.apache.jmeter.control;
 import java.io.*;
 
 import org.apache.jmeter.samplers.AbstractSampler;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 
 
 /************************************************************
@@ -131,20 +131,20 @@ public class OnceOnlyController extends GenericController implements Serializabl
                 }
                 while (controller.hasNext())
                 {
-                    TestElement sampler = controller.next();
+                    NamedTestElement sampler = controller.next();
                     if (i == 0 && counter < 2)
                     {
-                        assertEquals(interleaveOrder[counter], sampler.getProperty(TestElement.NAME));
+                        assertEquals(interleaveOrder[counter], sampler.getPropertyValue(NamedTestElement.NAME));
                     } else
                     {
-                        assertEquals(order[counter], sampler.getProperty(TestElement.NAME));
+                        assertEquals(order[counter], sampler.getPropertyValue(NamedTestElement.NAME));
                     }
                     counter++;
                 }
             }
         }
 
-        private TestElement makeSampler(String name)
+        private NamedTestElement makeSampler(String name)
         {
             TestSampler s = new TestSampler();
             s.setName(name);
@@ -154,7 +154,7 @@ public class OnceOnlyController extends GenericController implements Serializabl
         public class TestSampler extends AbstractSampler
         {
 
-            public void addCustomTestElement(TestElement t)
+            public void addCustomTestElement(NamedTestElement t)
             {
             }
 

@@ -76,7 +76,7 @@ import org.apache.jmeter.protocol.http.util.HTTPArgument;
 import org.apache.jmeter.samplers.AbstractSampler;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.SSLManager;
 import org.apache.log.Hierarchy;
@@ -401,7 +401,7 @@ public class HTTPSampler extends AbstractSampler
 
     public AuthManager getAuthManager()
     {
-        return (AuthManager)getProperty(AUTH_MANAGER);
+        return (AuthManager)getPropertyValue(AUTH_MANAGER);
     }
 
 
@@ -413,7 +413,7 @@ public class HTTPSampler extends AbstractSampler
 
     public HeaderManager getHeaderManager()
     {
-        return (HeaderManager)getProperty(HEADER_MANAGER);
+        return (HeaderManager)getPropertyValue(HEADER_MANAGER);
     }
 
 
@@ -425,7 +425,7 @@ public class HTTPSampler extends AbstractSampler
 
     public CookieManager getCookieManager()
     {
-        return (CookieManager)getProperty(COOKIE_MANAGER);
+        return (CookieManager)getPropertyValue(COOKIE_MANAGER);
     }
 
 
@@ -443,29 +443,29 @@ public class HTTPSampler extends AbstractSampler
     }
 
 
-//    protected void addCustomTestElement(TestElement element)
+//    protected void addCustomTestElement(NamedTestElement element)
 //    {
 //        if (element instanceof Arguments) {
-//            if (getProperty(ARGUMENTS) != null) {
-//                ((Arguments)getProperty(ARGUMENTS)).addChildElement(element);
+//            if (getPropertyValue(ARGUMENTS) != null) {
+//                ((Arguments)getPropertyValue(ARGUMENTS)).addChildElement(element);
 //            } else {
 //                setProperty(ARGUMENTS, element);
 //            }
 //        } else if (element instanceof AuthManager) {
-//            if (getProperty(AUTH_MANAGER) != null) {
-//                ((TestElement)getProperty(AUTH_MANAGER)).addChildElement(element);
+//            if (getPropertyValue(AUTH_MANAGER) != null) {
+//                ((NamedTestElement)getPropertyValue(AUTH_MANAGER)).addChildElement(element);
 //            } else {
 //                setProperty(AUTH_MANAGER, element);
 //            }
 //        } else if (element instanceof CookieManager) {
-//            if (getProperty(COOKIE_MANAGER) != null) {
-//                ((TestElement)getProperty(COOKIE_MANAGER)).addChildElement(element);
+//            if (getPropertyValue(COOKIE_MANAGER) != null) {
+//                ((NamedTestElement)getPropertyValue(COOKIE_MANAGER)).addChildElement(element);
 //            } else {
 //                setProperty(COOKIE_MANAGER, element);
 //            }
 //        } else if (element instanceof HeaderManager) {
-//            if (getProperty(HEADER_MANAGER) != null) {
-//                ((TestElement)getProperty(HEADER_MANAGER)).addChildElement(element);
+//            if (getPropertyValue(HEADER_MANAGER) != null) {
+//                ((NamedTestElement)getPropertyValue(HEADER_MANAGER)).addChildElement(element);
 //            } else {
 //                setProperty(HEADER_MANAGER, element);
 //            }
@@ -521,7 +521,7 @@ public class HTTPSampler extends AbstractSampler
         } else {
             return new URL(
                 getProtocol(),
-                (String)getProperty(HTTPSampler.DOMAIN),
+                (String)getPropertyValue(HTTPSampler.DOMAIN),
                 getServerPort(),
                 pathAndQuery);
         }
@@ -955,7 +955,7 @@ public class HTTPSampler extends AbstractSampler
                 log.debug("sample2 : sampling url - " + u);
             }
             conn = setupConnection(u, getMethod());
-            if (getProperty(HTTPSampler.METHOD).equals(HTTPSampler.METHOD_POST)) {
+            if (getPropertyValue(HTTPSampler.METHOD).equals(HTTPSampler.METHOD_POST)) {
                 setPostHeaders(conn);
                 time = connect();
                 sendPostData(conn);

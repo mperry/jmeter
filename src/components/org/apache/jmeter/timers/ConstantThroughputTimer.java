@@ -60,6 +60,7 @@ import java.io.*;
 
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.testelement.AbstractTestElement;
+import org.apache.jmeter.testelement.AbstractNamedTestElement;
 
 /**
  * This class implements a constant throughput timer. A Constant Throughtput
@@ -70,8 +71,7 @@ import org.apache.jmeter.testelement.AbstractTestElement;
  * @author <a href="mailto:seade@backstagetech.com.au">Scott Eade</a>
  * @version $Id$
  */
-public class ConstantThroughputTimer
-        extends AbstractTestElement
+public class ConstantThroughputTimer extends AbstractNamedTestElement
         implements Timer, Serializable
 {
     public final static String THROUGHPUT= "ConstantThroughputTimer.throughput";
@@ -145,7 +145,7 @@ public class ConstantThroughputTimer
      */
     public long getThroughput()
     {
-		Object throughput = getProperty(THROUGHPUT);
+		Object throughput = getPropertyValue(THROUGHPUT);
 		if(throughput instanceof Long)
 		{
 		    return ((Long)throughput).longValue();

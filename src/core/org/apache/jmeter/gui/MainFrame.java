@@ -53,14 +53,7 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.gui;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -68,23 +61,7 @@ import java.awt.event.WindowEvent;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTree;
-import javax.swing.MenuElement;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
@@ -94,6 +71,7 @@ import org.apache.jmeter.gui.action.GlobalMouseListener;
 import org.apache.jmeter.gui.tree.JMeterCellRenderer;
 import org.apache.jmeter.gui.tree.JMeterTreeListener;
 import org.apache.jmeter.gui.util.JMeterMenuBar;
+import org.apache.jmeter.gui.util.JMeterToolBar;
 import org.apache.jmeter.gui.panel.TestPlanPanel;
 import org.apache.jmeter.gui.panel.TabbedMainPanel;
 import org.apache.jmeter.samplers.Remoteable;
@@ -128,8 +106,9 @@ public class MainFrame extends JFrame implements TestListener,Remoteable
 	int previousDragYLocation = 0;
 	private Set hosts = new HashSet();
 	JDialog stoppingMessage;
+    private JToolBar toolBar;
 
-	/****************************************
+    /****************************************
 	 * !ToDo (Constructor description)
 	 *
 	 *@param actionHandler  !ToDo (Parameter description)
@@ -345,7 +324,7 @@ public class MainFrame extends JFrame implements TestListener,Remoteable
 	private void init()
 	{
 		menuBar = new JMeterMenuBar();
-		createToolBar();
+		toolBar = createToolBar();
 		createMainPanel();
 		addThemAll();
 		addWindowListener(new WindowHappenings());
@@ -372,7 +351,7 @@ public class MainFrame extends JFrame implements TestListener,Remoteable
 			gbc.fill = gbc.BOTH;
 			gbc.weightx = 1;
 			gbc.weighty = 0;
-			all.add(toolPanel, gbc.clone());
+			all.add(toolBar, gbc.clone());
 		}
 
 		// The setResizeWeight() method was added to JDK1.3. For now, JMeter should
@@ -385,12 +364,15 @@ public class MainFrame extends JFrame implements TestListener,Remoteable
 		this.getContentPane().add(all);
 	}
 
-	private void createToolBar()
+	private JToolBar createToolBar()
 	{
-		toolPanel = new Box(BoxLayout.X_AXIS);
-		toolPanel.add(Box.createRigidArea(new Dimension(10,15)));
-		toolPanel.add(Box.createGlue());
-		toolPanel.add(runningIndicator);
+//		toolPanel = new Box(BoxLayout.X_AXIS);
+//		toolPanel.add(Box.createRigidArea(new Dimension(10,15)));
+//		toolPanel.add(Box.createGlue());
+//		toolPanel.add(runningIndicator);
+        JToolBar toolBar = new JMeterToolBar();
+        toolBar.setFloatable(false);
+        return toolBar;
 	}
 
 	private void createTreePanel()
@@ -413,6 +395,7 @@ public class MainFrame extends JFrame implements TestListener,Remoteable
 	private void createMainPanel()
 	{
         mainPanel = new TabbedMainPanel();
+
     }
 
 	private JTree makeTree()

@@ -55,6 +55,7 @@
 package org.apache.jmeter.save;
 
 
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 
 
@@ -66,5 +67,5 @@ import org.apache.jmeter.testelement.TestElement;
  */
 public interface PropertyTranslator
 {
-    public void translate(TestElement element, Object value);
+    public void translate(TestElement element, TestElement parent, Object value);
 }

@@ -63,7 +63,7 @@ import java.util.Set;
 
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.jmeter.assertions.AssertionResult;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
 
@@ -85,7 +85,7 @@ public class SampleResult implements Serializable
 	private byte[] responseData;
 	private String responseCode;
 	private String label;
-	private TestElement samplerData;
+	private NamedTestElement samplerData;
 	private String threadName;
 	private String responseMessage;
 	private long timeStamp = 0;
@@ -273,12 +273,12 @@ public class SampleResult implements Serializable
 		return bytes.toByteArray();*/
 	}
 
-	public void setSamplerData(TestElement s)
+	public void setSamplerData(NamedTestElement s)
 	{
 		samplerData = s;
 	}
 
-	public TestElement getSamplerData()
+	public NamedTestElement getSamplerData()
 	{
 		return samplerData;
 	}

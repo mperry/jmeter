@@ -68,6 +68,7 @@ import javax.swing.border.EmptyBorder;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.config.gui.AbstractConfigGui;
 import org.apache.jmeter.protocol.jdbc.sampler.JDBCSampler;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.gui.layout.VerticalLayout;
@@ -113,11 +114,11 @@ public class PoolConfigGui extends AbstractConfigGui implements FocusListener
 	public void configure(TestElement element)
 	{
 		super.configure(element);
-		connField.setText(element.getProperty(JDBCSampler.CONNECTIONS).toString());
-		maxUseField.setText(element.getProperty(JDBCSampler.MAXUSE).toString());
+		connField.setText(element.getPropertyValue(JDBCSampler.CONNECTIONS).toString());
+		maxUseField.setText(element.getPropertyValue(JDBCSampler.MAXUSE).toString());
 	}
 
-	public TestElement createTestElement()
+	public NamedTestElement createTestElement()
 	{
 		ConfigTestElement element = new ConfigTestElement();
 		configureTestElement(element);

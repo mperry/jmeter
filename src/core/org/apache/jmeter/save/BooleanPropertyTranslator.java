@@ -55,6 +55,7 @@
 package org.apache.jmeter.save;
 
 
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 
 
@@ -71,8 +72,18 @@ public class BooleanPropertyTranslator extends PropertyNameTranslator {
         super(propertyName);
     }
 
-    public void translate(TestElement element, Object value)
+    public BooleanPropertyTranslator(String propertyName, boolean useParent)
     {
-        element.setProperty(getPropertyName(), new Boolean((String)value));
+        super(propertyName, useParent);
+    }
+
+    public BooleanPropertyTranslator(String propertyName, boolean useParent, boolean optional)
+    {
+        super(propertyName, useParent, optional);
+    }
+
+    public void translate(TestElement element, TestElement parent, Object value)
+    {
+        setProperty(element, parent, new Boolean((String)value));
     }
 }

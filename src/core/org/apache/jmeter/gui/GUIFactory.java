@@ -61,7 +61,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 
 
 /**
@@ -95,7 +95,7 @@ public class GUIFactory
         return (ImageIcon)iconMap.get(key);
     }
 
-    public static synchronized JComponent getGUI(TestElement element)
+    public static synchronized JComponent getGUI(NamedTestElement element)
     {
         String key = element.getClass().getName();
         JComponent gui = (JComponent)guiMap.get(key);

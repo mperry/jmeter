@@ -111,11 +111,11 @@ public class TestPlanTreeModel extends DefaultTreeModel
 
         public void visit(TestElement element)
         {
-            Iterator iterator = element.getChildren().iterator();
+            Iterator iterator = element.getChildElements().iterator();
 
             while (iterator.hasNext())
             {
-                TestElement testElement = (TestElement)iterator.next();
+                NamedTestElement testElement = (NamedTestElement)iterator.next();
                 TestPlanTreeNode node = new TestPlanTreeNode(testElement, model);
 
                 getRootNode().add(node);

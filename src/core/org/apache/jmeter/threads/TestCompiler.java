@@ -78,7 +78,7 @@ import org.apache.jmeter.samplers.SampleListener;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.samplers.Sampler;
 import org.apache.jmeter.testelement.PerSampleClonable;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.timers.Timer;
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
@@ -206,7 +206,7 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 	public void subtractNode()
 	{
 		log.debug("Subtracting node, stack size = "+stack.size());
-		TestElement child = (TestElement)stack.getLast();
+		NamedTestElement child = (NamedTestElement)stack.getLast();
 		if(child instanceof Sampler)
 		{
 			log.debug("Saving configs for sampler: "+child);
@@ -218,7 +218,7 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 			ObjectPair pair = new ObjectPair(child, stack.getLast());
 			if(!pairing.contains(pair))
 			{
-				((TestElement)stack.getLast()).addChildElement(child);
+				((NamedTestElement)stack.getLast()).addChildElement(child);
 				pairing.add(pair);
 			}
 		}
@@ -245,7 +245,7 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 			Iterator iter = testTree.list(stack.subList(0, i)).iterator();
 			while(iter.hasNext())
 			{
-				TestElement item = (TestElement)iter.next();
+				NamedTestElement item = (NamedTestElement)iter.next();
 				synchronized(item)
 				{
 					if(hasFunctions(item))
@@ -382,11 +382,11 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 			TestCompiler compiler = new TestCompiler(testing,new JMeterVariables());
 			testing.traverse(compiler);
 			sampler = (TestSampler)compiler.configureSampler(sampler).getSampler();
-			assertEquals("A test value", sampler.getProperty("test.property"));
+			assertEquals("A test value", sampler.getPropertyValue("test.property"));
 		}
 
 		class TestSampler extends AbstractSampler {
-		  public void addCustomTestElement(TestElement t) { }
+		  public void addCustomTestElement(NamedTestElement t) { }
 		  public org.apache.jmeter.samplers.SampleResult sample(org.apache.jmeter.samplers.Entry e) { return null; }
 		  public Object clone() { return new TestSampler(); }
 		}
@@ -447,7 +447,7 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 		while(iter.hasNext())
 		{
 			ConfigTestElement config = (ConfigTestElement)iter.next();
-			TestElement clonedConfig = (TestElement)cloneIfNecessary(config);
+			NamedTestElement clonedConfig = (NamedTestElement)cloneIfNecessary(config);
 			if(objectsWithFunctions.contains(config))
 			{
 				replaceValues(clonedConfig);
@@ -462,7 +462,7 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 		while(iter.hasNext())
 		{
 			Modifier mod = (Modifier)iter.next();
-			TestElement cloned = (TestElement)cloneIfNecessary(mod);
+			NamedTestElement cloned = (NamedTestElement)cloneIfNecessary(mod);
 			if(objectsWithFunctions.contains(mod))
 			{
 				replaceValues(cloned);
@@ -477,7 +477,7 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 		while(iter.hasNext())
 		{
 			ResponseBasedModifier mod = (ResponseBasedModifier)iter.next();
-			TestElement cloned = (TestElement)cloneIfNecessary(mod);
+			NamedTestElement cloned = (NamedTestElement)cloneIfNecessary(mod);
 			if(objectsWithFunctions.contains(mod))
 			{
 				replaceValues(cloned);
@@ -493,7 +493,7 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 	{
 		if(el instanceof PerSampleClonable || objectsWithFunctions.contains(el))
 		{
-			return ((TestElement)el).clone();
+			return ((NamedTestElement)el).clone();
 		}
 		else
 		{
@@ -507,7 +507,7 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 		while(iter.hasNext())
 		{
 			Assertion assertion = (Assertion)iter.next();
-			TestElement cloned = (TestElement)cloneIfNecessary(assertion);
+			NamedTestElement cloned = (NamedTestElement)cloneIfNecessary(assertion);
 			if(objectsWithFunctions.contains(assertion))
 			{
 				replaceValues(cloned);
@@ -518,7 +518,7 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 		while(iter.hasNext())
 		{
 			Timer timer = (Timer)iter.next();
-			TestElement cloned = (TestElement)cloneIfNecessary(timer);
+			NamedTestElement cloned = (NamedTestElement)cloneIfNecessary(timer);
 			if(objectsWithFunctions.contains(timer))
 			{
 				replaceValues(cloned);
@@ -530,7 +530,7 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 		while(iter.hasNext())
 		{
 			SampleListener lis = (SampleListener)iter.next();
-			TestElement cloned = (TestElement)cloneIfNecessary(lis);
+			NamedTestElement cloned = (NamedTestElement)cloneIfNecessary(lis);
 			if(objectsWithFunctions.contains(lis))
 			{
 				replaceValues(cloned);
@@ -539,22 +539,22 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 		}
 	}
 	
-	private boolean hasFunctions(TestElement el)
+	private boolean hasFunctions(NamedTestElement el)
 	{
 		boolean hasFunctions = false;
 		Iterator iter = el.getPropertyNames().iterator();
 		while(iter.hasNext())
 		{
 			String propName = (String)iter.next();
-			Object propValue = el.getProperty(propName);
+			Object propValue = el.getPropertyValue(propName);
 			if(propValue instanceof Function)
 			{
 				((Function)propValue).setJMeterVariables(threadVars);
 				hasFunctions = true;
 			}
-			else if(propValue instanceof TestElement)
+			else if(propValue instanceof NamedTestElement)
 			{
-				if(hasFunctions((TestElement)propValue))
+				if(hasFunctions((NamedTestElement)propValue))
 				{
 					hasFunctions = true;
 				}
@@ -577,9 +577,9 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 		while(iter.hasNext())
 		{
 			Object val = iter.next();
-			if(val instanceof TestElement)
+			if(val instanceof NamedTestElement)
 			{
-				if(hasFunctions((TestElement)val))
+				if(hasFunctions((NamedTestElement)val))
 				{
 					hasFunctions = true;
 				}
@@ -600,13 +600,13 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 		return hasFunctions;
 	}	
 	
-	private void replaceValues(TestElement el)
+	private void replaceValues(NamedTestElement el)
 	{
 		Iterator iter = el.getPropertyNames().iterator();
 		while(iter.hasNext())
 		{
 			String propName = (String)iter.next();
-			Object propValue = el.getProperty(propName);
+			Object propValue = el.getPropertyValue(propName);
 			if(propValue instanceof Function)
 			{
 				try
@@ -616,9 +616,9 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 				catch(InvalidVariableException e)
 				{}
 			}
-			else if(propValue instanceof TestElement)
+			else if(propValue instanceof NamedTestElement)
 			{
-				replaceValues((TestElement)propValue);
+				replaceValues((NamedTestElement)propValue);
 			}
 			else if(propValue instanceof Collection)
 			{
@@ -640,9 +640,9 @@ public class TestCompiler implements HashTreeTraverser, SampleListener
 		while(iter.hasNext())
 		{
 			Object val = iter.next();
-			if(val instanceof TestElement)
+			if(val instanceof NamedTestElement)
 			{
-				replaceValues((TestElement)val);
+				replaceValues((NamedTestElement)val);
 			}
 			else if(val instanceof Function)
 			{

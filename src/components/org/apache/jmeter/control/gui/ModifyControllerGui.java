@@ -61,7 +61,7 @@ import javax.swing.*;
 
 import org.apache.jmeter.control.ModifyController;
 import org.apache.jmeter.gui.util.MenuFactory;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.util.JMeterUtils;
 
 
@@ -102,7 +102,7 @@ public class ModifyControllerGui extends AbstractControllerGui
      *
      *@return   !ToDo (Return description)
      ***************************************/
-    public JPopupMenu createPopupMenu(TestElement testElement)
+    public JPopupMenu createPopupMenu(NamedTestElement testElement)
     {
         JPopupMenu pop = new JPopupMenu();
         pop.add(MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
@@ -131,7 +131,7 @@ public class ModifyControllerGui extends AbstractControllerGui
      *
      *@return   !ToDo (Return description)
      ***************************************/
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         ModifyController mc = new ModifyController();
         configureTestElement(mc);

@@ -68,6 +68,7 @@ import org.apache.jmeter.gui.util.*;
 import org.apache.jmeter.protocol.http.gui.HTTPArgumentsPanel;
 import org.apache.jmeter.protocol.http.sampler.HTTPSampler;
 import org.apache.jmeter.samplers.gui.AbstractSamplerGui;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
@@ -125,7 +126,7 @@ public class HttpTestSampleGui extends AbstractSamplerGui implements ActionListe
     {
         super.configure(element);
 
-        int port = ((Integer)element.getProperty(HTTPSampler.PORT)).intValue();
+        int port = ((Integer)element.getPropertyValue(HTTPSampler.PORT)).intValue();
 
         if (port == HTTPSampler.USE_DEFAULT_PORT)
         {
@@ -135,12 +136,12 @@ public class HttpTestSampleGui extends AbstractSamplerGui implements ActionListe
             portInput.setText(String.valueOf(port));
         }
 
-        domainInput.setText((String)element.getProperty(HTTPSampler.DOMAIN));
-        pathInput.setText((String)element.getProperty(HTTPSampler.PATH));
-        followRedirects.setSelected(((Boolean)element.getProperty(HTTPSampler.FOLLOW_REDIRECTS)).booleanValue());
-        keepAlive.setSelected(((Boolean)element.getProperty(HTTPSampler.KEEP_ALIVE)).booleanValue());
+        domainInput.setText((String)element.getPropertyValue(HTTPSampler.DOMAIN));
+        pathInput.setText((String)element.getPropertyValue(HTTPSampler.PATH));
+        followRedirects.setSelected(((Boolean)element.getPropertyValue(HTTPSampler.FOLLOW_REDIRECTS)).booleanValue());
+        keepAlive.setSelected(((Boolean)element.getPropertyValue(HTTPSampler.KEEP_ALIVE)).booleanValue());
 
-        String method = (String)element.getProperty(HTTPSampler.METHOD);
+        String method = (String)element.getPropertyValue(HTTPSampler.METHOD);
 
         if (HTTPSampler.METHOD_GET.equals(method))
         {
@@ -150,7 +151,7 @@ public class HttpTestSampleGui extends AbstractSamplerGui implements ActionListe
             rbPOST.setSelected(true);
         }
 
-        String protocol = (String)element.getProperty(HTTPSampler.PROTOCOL);
+        String protocol = (String)element.getPropertyValue(HTTPSampler.PROTOCOL);
 
         if (HTTPSampler.PROTOCOL_HTTP.equals(protocol))
         {
@@ -160,23 +161,23 @@ public class HttpTestSampleGui extends AbstractSamplerGui implements ActionListe
             rbHTTPS.setSelected(true);
         }
 
-        boolean upload = ((Boolean)element.getProperty(HTTPSampler.UPLOAD_FILE)).booleanValue();
+        boolean upload = ((Boolean)element.getPropertyValue(HTTPSampler.UPLOAD_FILE)).booleanValue();
 
         uploadFile.setSelected(upload);
         setUploadFile(upload);
-        paramNameField.setText((String)element.getProperty(HTTPSampler.FILE_FIELD));
-        filenameField.setText((String)element.getProperty(HTTPSampler.FILE_NAME));
-        mimetypeField.setText((String)element.getProperty(HTTPSampler.FILE_MIMETYPE));
+        paramNameField.setText((String)element.getPropertyValue(HTTPSampler.FILE_FIELD));
+        filenameField.setText((String)element.getPropertyValue(HTTPSampler.FILE_NAME));
+        mimetypeField.setText((String)element.getPropertyValue(HTTPSampler.FILE_MIMETYPE));
 
-        getImages.setSelected(((Boolean)element.getProperty(HTTPSampler.LOAD_IMAGES)).booleanValue());
-        argsPanel.setElement((Arguments)element.getProperty(HTTPSampler.ARGUMENTS));
+        getImages.setSelected(((Boolean)element.getPropertyValue(HTTPSampler.LOAD_IMAGES)).booleanValue());
+        argsPanel.setElement((Arguments)element.getPropertyValue(HTTPSampler.ARGUMENTS));
     }
 
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         HTTPSampler sampler = null;
-//        TestElement el = urlConfigGui.createTestElement();
+//        NamedTestElement el = urlConfigGui.createTestElement();
 //        if (getImages.isSelected()) {
 //            sampler = new HTTPSamplerFull();
 //        } else {

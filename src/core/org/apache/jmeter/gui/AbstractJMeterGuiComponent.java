@@ -63,8 +63,7 @@ import javax.swing.table.*;
 import org.apache.jorphan.gui.layout.VerticalLayout;
 
 import org.apache.jmeter.gui.util.JMeterBoxedLayout;
-import org.apache.jmeter.testelement.TestElement;
-import org.apache.jmeter.testelement.TestElementWrapper;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.*;
 
 
@@ -167,7 +166,7 @@ public abstract class AbstractJMeterGuiComponent
      * it does the work necessary to configure the name of the component from the
      * given Test Element.
      *
-     * @see org.apache.jmeter.gui.JMeterGUIComponent#configure(org.apache.jmeter.testelement.TestElement)
+     * @see org.apache.jmeter.gui.JMeterGUIComponent#configure(org.apache.jmeter.testelement.NamedTestElement)
      */
     // todo: make this protected
     public void configure(TestElement element)
@@ -184,9 +183,9 @@ public abstract class AbstractJMeterGuiComponent
     // todo: remove this as no longer necessary
     protected void configureTestElement(TestElement mc)
     {
-        mc.setProperty(TestElement.NAME, getName());
-        mc.setProperty(TestElement.GUI_CLASS, this.getClass().getName());
-        mc.setProperty(TestElement.TEST_CLASS, mc.getClass().getName());
+        mc.setProperty(NamedTestElement.NAME, getName());
+        mc.setProperty(NamedTestElement.GUI_CLASS, this.getClass().getName());
+        mc.setProperty(NamedTestElement.TEST_CLASS, mc.getClass().getName());
     }
 
 
@@ -283,7 +282,7 @@ public abstract class AbstractJMeterGuiComponent
     }
 
 
-    public JPopupMenu createPopupMenu(TestElement testElement)
+    public JPopupMenu createPopupMenu(NamedTestElement testElement)
     {
         return null;
     }

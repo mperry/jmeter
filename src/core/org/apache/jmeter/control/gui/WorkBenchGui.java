@@ -69,8 +69,7 @@ import org.apache.jmeter.gui.JMeterGUIComponent;
 import org.apache.jmeter.gui.NamePanel;
 import org.apache.jmeter.gui.tree.JMeterTreeNode;
 import org.apache.jmeter.gui.util.MenuFactory;
-import org.apache.jmeter.testelement.TestElement;
-import org.apache.jmeter.testelement.WorkBench;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 
 import org.apache.jorphan.gui.layout.VerticalLayout;
@@ -136,12 +135,12 @@ public class WorkBenchGui extends JPanel implements JMeterGUIComponent
      *
      *@return   !ToDo (Return description)
      ***************************************/
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         WorkBench wb = new WorkBench();
-        wb.setProperty(TestElement.NAME, namePanel.getName());
-        wb.setProperty(TestElement.GUI_CLASS, this.getClass().getName());
-        wb.setProperty(TestElement.TEST_CLASS, wb.getClass().getName());
+        wb.setProperty(NamedTestElement.NAME, namePanel.getName());
+        wb.setProperty(NamedTestElement.GUI_CLASS, this.getClass().getName());
+        wb.setProperty(NamedTestElement.TEST_CLASS, wb.getClass().getName());
         return wb;
     }
 
@@ -160,7 +159,7 @@ public class WorkBenchGui extends JPanel implements JMeterGUIComponent
      *
      *@return   !ToDo (Return description)
      ***************************************/
-    public JPopupMenu createPopupMenu(TestElement element)
+    public JPopupMenu createPopupMenu(NamedTestElement element)
     {
         JPopupMenu menu = new JPopupMenu();
         JMenu addMenu = MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,

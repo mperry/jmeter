@@ -64,6 +64,7 @@ import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.*;
 import org.apache.jmeter.protocol.jdbc.sampler.JDBCSampler;
 import org.apache.jmeter.samplers.gui.AbstractSamplerGui;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
@@ -112,13 +113,13 @@ public class JdbcTestSampleGui extends AbstractSamplerGui
     {
         super.configure(element);
 
-        driverInput.setText((String)element.getProperty(JDBCSampler.DRIVER));
-        urlInput.setText((String)element.getProperty(JDBCSampler.URL));
-        usernameInput.setText((String)element.getProperty(JDBCSampler.USERNAME));
-        passwordInput.setText((String)element.getProperty(JDBCSampler.PASSWORD));
-        sqlInput.setText((String)element.getProperty(JDBCSampler.QUERY));
-        connectionsInput.setText((element.getProperty(JDBCSampler.CONNECTIONS)).toString());
-        maxUsageInput.setText((element.getProperty(JDBCSampler.MAXUSE)).toString());
+        driverInput.setText((String)element.getPropertyValue(JDBCSampler.DRIVER));
+        urlInput.setText((String)element.getPropertyValue(JDBCSampler.URL));
+        usernameInput.setText((String)element.getPropertyValue(JDBCSampler.USERNAME));
+        passwordInput.setText((String)element.getPropertyValue(JDBCSampler.PASSWORD));
+        sqlInput.setText((String)element.getPropertyValue(JDBCSampler.QUERY));
+        connectionsInput.setText((element.getPropertyValue(JDBCSampler.CONNECTIONS)).toString());
+        maxUsageInput.setText((element.getPropertyValue(JDBCSampler.MAXUSE)).toString());
     }
 
 
@@ -128,7 +129,7 @@ public class JdbcTestSampleGui extends AbstractSamplerGui
     }
 
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         JDBCSampler sampler = new JDBCSampler();
 //        sampler.addChildElement(dbGui.createTestElement());

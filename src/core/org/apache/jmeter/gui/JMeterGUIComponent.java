@@ -60,6 +60,7 @@ import java.util.*;
 
 import javax.swing.*;
 
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 
 
@@ -126,7 +127,7 @@ public interface JMeterGUIComponent
      *@return  The Test Element object that the GUI component
      * represents.
      ***************************************/
-    public TestElement createTestElement();
+    public NamedTestElement createTestElement();
 
     /**
      * Test GUI elements can be  disabled, in which case
@@ -148,7 +149,7 @@ public interface JMeterGUIComponent
      *
      *@return   A JPopupMenu appropriate for the component.
      ***************************************/
-    public JPopupMenu createPopupMenu(TestElement testElement);
+    public JPopupMenu createPopupMenu(NamedTestElement testElement);
 
     /****************************************
      * A newly created component can be initialized with the contents of

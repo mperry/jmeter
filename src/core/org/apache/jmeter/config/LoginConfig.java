@@ -102,7 +102,7 @@ public class LoginConfig extends ConfigTestElement implements Serializable
 	 ***********************************************************/
 	public String getUsername()
 	{
-		return (String)this.getProperty(ConfigTestElement.USERNAME);
+		return (String)this.getPropertyValue(ConfigTestElement.USERNAME);
 	}
 
 	/************************************************************
@@ -112,7 +112,7 @@ public class LoginConfig extends ConfigTestElement implements Serializable
 	 ***********************************************************/
 	public String getPassword()
 	{
-		return (String)this.getProperty(ConfigTestElement.PASSWORD);
+		return (String)this.getPropertyValue(ConfigTestElement.PASSWORD);
 	}
 
 }

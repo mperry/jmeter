@@ -58,6 +58,8 @@ package org.apache.jmeter.config;
 import java.io.*;
 
 import org.apache.jmeter.testelement.AbstractTestElement;
+import org.apache.jmeter.testelement.property.StringProperty;
+import org.apache.jmeter.testelement.property.ObjectProperty;
 
 
 //Mark Walsh, 2002-08-03, add metadata attribute
@@ -82,22 +84,23 @@ public class Argument extends AbstractTestElement implements Serializable
     public final static String METADATA = "metaData";
 
 
-    private String name;
-    private Object value;
+    private StringProperty name;
+    private StringProperty value;
     private Object metaData;
 
 
-    public Argument(String name, Object value, Object metaData)
+    public Argument(String name, String value, Object metaData)
     {
-        this.name = name;
-        this.value = value;
-        this.metaData = metaData;
+        this(name, value);
+        // todo: how to handle
+//        this.metaData = new ObjectProperty(metaData);
     }
 
 
-    public Argument(String name, Object value)
+    public Argument(String name, String value)
     {
-        this(name, value, null);
+        this.name = new StringProperty(name);
+        this.value = new StringProperty(value);
     }
 
 
@@ -109,25 +112,25 @@ public class Argument extends AbstractTestElement implements Serializable
 
     public String getName()
     {
-        return name;
+        return name.getStringValue();
     }
 
 
     public void setName(String name)
     {
-        this.name = name;
+        this.name.setValue(name);
     }
 
 
-    public Object getValue()
+    public String getValue()
     {
-        return value;
+        return value.getStringValue();
     }
 
 
-    public void setValue(Object value)
+    public void setValue(String value)
     {
-        this.value = value;
+        this.value.setValue(value);
     }
 
 

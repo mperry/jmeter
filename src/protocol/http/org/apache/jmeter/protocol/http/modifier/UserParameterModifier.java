@@ -166,7 +166,7 @@ public class UserParameterModifier
 			// (Note: each jmeter thread (ie user) gets to have unique values)			
 			if (currentUser.containsKey(arg.getName()))
 			{
-				arg.setValue(currentUser.get(arg.getName()));
+				arg.setValue((String)currentUser.get(arg.getName()));
 			}
 		}
 		return changeValue;
@@ -184,7 +184,7 @@ public class UserParameterModifier
 	}
 	/**
 	 * From the GUI screen, set file name of XML to read
-	 * @param the name of the XML file containing the HTTP name value pair parameters per user
+	 * @param xmlURI name of the XML file containing the HTTP name value pair parameters per user
 	 */
 	public void setXmlUri(String xmlURI)
 	{

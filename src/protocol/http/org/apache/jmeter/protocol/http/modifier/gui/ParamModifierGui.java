@@ -18,6 +18,7 @@ import javax.swing.border.EmptyBorder;
 import org.apache.jmeter.config.gui.AbstractModifierGui;
 import org.apache.jmeter.protocol.http.modifier.ParamMask;
 import org.apache.jmeter.protocol.http.modifier.ParamModifier;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.gui.layout.VerticalLayout;
@@ -83,7 +84,7 @@ public class ParamModifierGui extends AbstractModifierGui implements FocusListen
 	 *
 	 *@return   !ToDo (Return description)
 	 ***************************************/
-	public TestElement createTestElement()
+	public NamedTestElement createTestElement()
 	{
 		ParamModifier modifier = new ParamModifier();
 		configureTestElement(modifier);

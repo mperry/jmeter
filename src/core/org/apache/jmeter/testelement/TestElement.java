@@ -60,6 +60,8 @@ import java.util.*;
 import java.io.*;
 import java.awt.datatransfer.*;
 
+import org.apache.jmeter.testelement.property.Property;
+
 
 /****************************************
  * <p>
@@ -81,34 +83,34 @@ import java.awt.datatransfer.*;
 public interface TestElement extends Serializable, Cloneable, Transferable
 {
 
-    public final static String NAME = "name";
-    // todo: remove them
-    public final static String GUI_CLASS = "gui_class";
-    public final static String TEST_CLASS = "test_class";
-
-    public static final DataFlavor DATAFLAVOR = new DataFlavor(TestElement.class, "TestElement");
+    public static final DataFlavor DATAFLAVOR = new DataFlavor(TestElement.class, "NamedTestElement");
 
 
     public void addChildElement(TestElement child);
 
     public void removeChildElement(TestElement child);
 
-    public List getChildren();
+    public List getChildElements();
 
-    public Collection getPropertyNames();
+    public Map getProperties();
 
-    public Object getProperty(String key);
+    public Set getPropertyNames();
+
+    public Property getProperty(String key);
+
+    public Object getPropertyValue(String key);
 
     public String getPropertyAsString(String key);
 
-    public void setProperty(String key, Object property);
+    public void setProperty(String key, Object value);
+
+    public void setProperty(String key, boolean value);
+
+    public void setProperty(String key, long value);
+
+    public void setProperty(String key, int value);
 
     public Object clone();
-
-    public String getName();
-
-    public void setName(String name);
-
 
     /**
      * Answer the set of valid subelement types.
@@ -129,9 +131,9 @@ public interface TestElement extends Serializable, Cloneable, Transferable
     // todo: is this required?
     public long getId();
 
-    public TestElement getParentElement();
+    public void setParent(TestElement element);
 
-    public void setParent(TestElement parent);
+    public TestElement getParentElement();
 
     public void accept(TestElementVisitor visitor);
 }

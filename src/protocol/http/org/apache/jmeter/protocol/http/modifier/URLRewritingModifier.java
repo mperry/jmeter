@@ -67,6 +67,7 @@ import org.apache.jmeter.protocol.http.util.HTTPArgument;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.samplers.Sampler;
 import org.apache.jmeter.testelement.AbstractTestElement;
+import org.apache.jmeter.testelement.AbstractNamedTestElement;
 import org.apache.jmeter.testelement.category.ResponseBasedModifierCategory;
 
 import org.apache.log.Hierarchy;
@@ -83,8 +84,7 @@ import org.apache.oro.text.regex.Perl5Matcher;
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  *
  */
-public class URLRewritingModifier
-    extends AbstractTestElement
+public class URLRewritingModifier extends AbstractNamedTestElement
     implements Serializable, ResponseBasedModifier, ResponseBasedModifierCategory
 {
 

@@ -72,6 +72,7 @@ import org.apache.jmeter.protocol.http.sampler.HTTPSampler;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.samplers.Sampler;
 import org.apache.jmeter.testelement.AbstractTestElement;
+import org.apache.jmeter.testelement.AbstractNamedTestElement;
 import org.apache.jmeter.testelement.category.ResponseBasedModifierCategory;
 
 import org.apache.log.Hierarchy;
@@ -92,7 +93,7 @@ import org.xml.sax.SAXException;
  * @version    1.0
  ***********************************************************/
 
-public class AnchorModifier extends AbstractTestElement implements ResponseBasedModifier,
+public class AnchorModifier extends AbstractNamedTestElement implements ResponseBasedModifier,
 		Serializable, ResponseBasedModifierCategory
 {
 	transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor(

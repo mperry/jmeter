@@ -62,9 +62,8 @@ import java.util.List;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
-import org.apache.jmeter.testelement.AbstractTestElement;
-import org.apache.jmeter.testelement.ThreadListener;
-import org.apache.jmeter.testelement.VariablesCollection;
+
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.testelement.category.TimerCategory;
 import org.apache.jmeter.threads.JMeterVariables;
 
@@ -76,8 +75,7 @@ import org.apache.jmeter.threads.JMeterVariables;
  * @author <a href="mailto:seade@backstagetech.com.au">Scott Eade</a>
  * @version $Revision$ $Date$
  */
-public class ConstantTimer
-    extends AbstractTestElement
+public class ConstantTimer extends AbstractNamedTestElement
     implements Timer, Serializable, ThreadListener, TimerCategory
 {
     private static Logger log =

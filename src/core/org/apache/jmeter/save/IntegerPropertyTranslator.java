@@ -55,6 +55,7 @@
 package org.apache.jmeter.save;
 
 
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 
 
@@ -71,8 +72,18 @@ public class IntegerPropertyTranslator extends PropertyNameTranslator {
         super(propertyName);
     }
 
-    public void translate(TestElement element, Object value)
+    public IntegerPropertyTranslator(String propertyName, boolean useParent)
     {
-        element.setProperty(getPropertyName(), new Integer((String)value));
+        super(propertyName, useParent);
+    }
+
+    public IntegerPropertyTranslator(String propertyName, boolean useParent, boolean optional)
+    {
+        super(propertyName, useParent, optional);
+    }
+
+    public void translate(TestElement element, TestElement parent, Object value)
+    {
+        setProperty(element, parent, new Integer((String)value));
     }
 }

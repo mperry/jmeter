@@ -54,13 +54,11 @@
  */
 package org.apache.jmeter.config;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jmeter.testelement.property.ListProperty;
+import org.apache.jmeter.testelement.AbstractTestElement;
 
 // Mark Walsh, 2002-08-03 add method addArgument(String name, Object value, Object metadata)
 // modify methods toString(), addEmptyArgument(), addArgument(String name, Object value)
@@ -74,7 +72,7 @@ import org.apache.jmeter.util.JMeterUtils;
  * @version   1.0
  ***************************************/
 
-public class Arguments extends ConfigTestElement implements Serializable
+public class Arguments extends AbstractTestElement implements Serializable
 {
 	public static String[] COLUMN_NAMES = {
 			JMeterUtils.getResString("name_column"),
@@ -85,7 +83,7 @@ public class Arguments extends ConfigTestElement implements Serializable
 	public final static String ARGUMENTS = "arguments";
 
 
-    private List arguments = new ArrayList();
+    private ListProperty arguments = new ListProperty();
 
 
 	public Arguments()
@@ -101,7 +99,7 @@ public class Arguments extends ConfigTestElement implements Serializable
 
     public void setArguments(List arguments)
     {
-        this.arguments = arguments;
+        this.arguments.setValue(arguments);
     }
 
 
@@ -117,7 +115,7 @@ public class Arguments extends ConfigTestElement implements Serializable
 		return argMap;
 	}
 
-	public void addArgument(String name, Object value)
+	public void addArgument(String name, String value)
 	{
 		getArguments().add(new Argument(name, value, null));
 	}
@@ -127,7 +125,7 @@ public class Arguments extends ConfigTestElement implements Serializable
 		getArguments().add(arg);
 	}
 
-	public void addArgument(String name, Object value, Object metadata)
+	public void addArgument(String name, String value, Object metadata)
 	{
 		getArguments().add(new Argument(name, value, metadata));
 	}

@@ -78,7 +78,7 @@ import org.apache.jmeter.protocol.http.sampler.HTTPSampler;
 import org.apache.jmeter.samplers.AbstractSampler;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.AbstractTestElement;
 import org.apache.jmeter.testelement.category.ConfigCategory;
 import org.apache.jmeter.util.JMeterUtils;

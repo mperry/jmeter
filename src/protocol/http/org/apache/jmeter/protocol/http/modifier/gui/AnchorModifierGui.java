@@ -57,7 +57,7 @@ package org.apache.jmeter.protocol.http.modifier.gui;
 
 import org.apache.jmeter.config.gui.AbstractResponseBasedModifierGui;
 import org.apache.jmeter.protocol.http.modifier.AnchorModifier;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 
 
 /****************************************
@@ -83,7 +83,7 @@ public class AnchorModifierGui extends AbstractResponseBasedModifierGui
     }
 
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         AnchorModifier modifier = new AnchorModifier();
         configureTestElement(modifier);

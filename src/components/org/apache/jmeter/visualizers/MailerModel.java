@@ -71,7 +71,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.testelement.AbstractTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
@@ -416,11 +416,11 @@ public class MailerModel extends AbstractTestElement implements Serializable {
 
 	/**
 	 * Stores the attributes of the model as elements of the
-	 * given TestElement-object.
+	 * given NamedTestElement-object.
 	 *
-	 * @param element The TestElement to collect the model-attributes.
+	 * @param element The NamedTestElement to collect the model-attributes.
 	 */
-	public void storeModel(TestElement element) {
+	public void storeModel(NamedTestElement element) {
 		element.setProperty(TO_KEY, getToAddress());
 		element.setProperty(FROM_KEY, getFromAddress());
 		element.setProperty(HOST_KEY, getSmtpHost());
@@ -432,19 +432,19 @@ public class MailerModel extends AbstractTestElement implements Serializable {
 
 	/**
 	 * Retrieves the attribute of the model as elements of the
-	 * given TestElement-object.
+	 * given NamedTestElement-object.
 	 *
-	 * @param element The TestElement to collect the model-attributes.
+	 * @param element The NamedTestElement to collect the model-attributes.
 	 */
-	public void retrieveModel(TestElement element) {
+	public void retrieveModel(NamedTestElement element) {
 		try {
 			setToAddress(element.getPropertyAsString(TO_KEY));
 			setFromAddress(element.getPropertyAsString(FROM_KEY));
 			setSmtpHost(element.getPropertyAsString(HOST_KEY));
 			setSuccessSubject(element.getPropertyAsString(SUCCESS_KEY));
 			setFailureSubject(element.getPropertyAsString(FAILURE_KEY));
-			setFailureLimit(Long.parseLong((String)element.getProperty(FAILURE_LIMIT_KEY)));
-			setSuccessLimit(Long.parseLong((String)element.getProperty(SUCCESS_LIMIT_KEY)));
+			setFailureLimit(Long.parseLong((String)element.getPropertyValue(FAILURE_LIMIT_KEY)));
+			setSuccessLimit(Long.parseLong((String)element.getPropertyValue(SUCCESS_LIMIT_KEY)));
 		}
 		catch (Exception e) {
 			log.error("Couldn't load MailerVisualizer...");

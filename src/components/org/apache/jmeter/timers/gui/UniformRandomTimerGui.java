@@ -64,6 +64,7 @@ import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.DoubleFieldDocumentListener;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.gui.util.LongFieldDocumentListener;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.timers.RandomTimer;
 import org.apache.jmeter.timers.UniformRandomTimer;
@@ -118,7 +119,7 @@ public class UniformRandomTimerGui extends AbstractTimerGui implements KeyListen
     }
 
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         RandomTimer timer = new UniformRandomTimer();
         this.configureTestElement(timer);

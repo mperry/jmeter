@@ -91,8 +91,7 @@ import org.apache.jmeter.gui.tree.JMeterTreeNode;
 import org.apache.jmeter.gui.util.MenuFactory;
 import org.apache.jmeter.gui.util.PowerTableModel;
 import org.apache.jmeter.protocol.http.proxy.ProxyControl;
-import org.apache.jmeter.testelement.TestElement;
-import org.apache.jmeter.testelement.TestPlan;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 
 /****************************************
@@ -141,20 +140,20 @@ public class ProxyControlGui extends JPanel implements JMeterGUIComponent, Actio
 		init();
 	}
 
-	public JPopupMenu createPopupMenu(TestElement element)
+	public JPopupMenu createPopupMenu(NamedTestElement element)
 	{
 		return MenuFactory.getDefaultTimerMenu();
 	}
 
-	public TestElement createTestElement()
+	public NamedTestElement createTestElement()
 	{
 		ProxyControl element = new ProxyControl();
-		element.setProperty(TestElement.NAME,getName());
+		element.setProperty(NamedTestElement.NAME,getName());
 		element.setPort(Integer.parseInt(portField.getText()));
 		setIncludeListInProxyControl(element);
 		setExcludeListInProxyControl(element);
-		element.setProperty(TestElement.GUI_CLASS, this.getClass().getName());
-		element.setProperty(TestElement.TEST_CLASS, element.getClass().getName());
+		element.setProperty(NamedTestElement.GUI_CLASS, this.getClass().getName());
+		element.setProperty(NamedTestElement.TEST_CLASS, element.getClass().getName());
 		return element;
 	}
 
@@ -205,8 +204,8 @@ public class ProxyControlGui extends JPanel implements JMeterGUIComponent, Actio
 	public void configure(TestElement element)
 	{
 		ProxyControl el = (ProxyControl)element;
-		setName(element.getProperty(TestElement.NAME).toString());
-		portField.setText(element.getProperty(ProxyControl.PORT).toString());
+		setName(element.getPropertyValue(NamedTestElement.NAME).toString());
+		portField.setText(element.getPropertyValue(ProxyControl.PORT).toString());
 		populateTable(includeModel,el.getIncludePatterns().iterator());
 		populateTable(excludeModel,el.getExcludePatterns().iterator());
 	}

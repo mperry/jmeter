@@ -56,7 +56,7 @@ package org.apache.jmeter.control.gui;
 
 
 import org.apache.jmeter.control.RandomController;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 
 
 /****************************************
@@ -75,7 +75,7 @@ public class RandomControlGui extends InterleaveControlGui
     {
     }
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         RandomController ic = new RandomController();
 //		configureTestElement(ic);

@@ -56,11 +56,15 @@ package org.apache.jmeter;
 
 
 import java.awt.event.*;
+import java.awt.*;
+import java.awt.image.*;
 import java.io.*;
 import java.net.Authenticator;
 import java.net.MalformedURLException;
 import java.util.*;
 import java.util.jar.*;
+
+import javax.swing.*;
 
 import org.apache.avalon.excalibur.cli.*;
 import org.apache.jorphan.collections.HashTree;
@@ -114,7 +118,7 @@ public class JMeter implements JMeterPlugin, TranslationTableProvider
     protected static final int PROXY_USERNAME = 'u';
     protected static final int PROXY_PASSWORD = 'a';
 
-    private static final String JMETER_HOME="jmeter.home";
+    private static final String JMETER_HOME = "jmeter.home";
 
     /**
      *  Define the understood options. Each CLOptionDescriptor contains:
@@ -193,6 +197,7 @@ public class JMeter implements JMeterPlugin, TranslationTableProvider
      */
     public void startGui(CLOption testFile) throws IllegalUserActionException, IllegalAccessException, ClassNotFoundException, InstantiationException
     {
+        JWindow splash = showSplash();
 
         PluginManager.install(this, true);
         installPlugins(true);
@@ -208,11 +213,15 @@ public class JMeter implements JMeterPlugin, TranslationTableProvider
                 treeLis);
         main.setTitle("Apache JMeter");
         main.setIconImage(JMeterUtils.getImage("jmeter.jpg").getImage());
+
         ComponentUtil.centerComponentInWindow(main, 80);
-        main.show();
+
+
         ActionRouter.getInstance().actionPerformed(
             new ActionEvent(main, 1, CheckDirty.ADD_ALL));
-        if (testFile != null)
+        if (testFile == null) {
+            JMeterDocumentManager.getInstance().newTestPlanDocument();
+        } else
         {
             try
             {
@@ -224,6 +233,9 @@ public class JMeter implements JMeterPlugin, TranslationTableProvider
                 log.error("Failure loading test file", e);
             }
         }
+        main.show();
+        splash.dispose();
+        splash = null;
     }
 
     /**
@@ -380,7 +392,8 @@ public class JMeter implements JMeterPlugin, TranslationTableProvider
 
             reader = new FileInputStream(f);
 
-            TestElement tree = SaveService.loadSubTree(reader);
+            // todo: shold never happen, but what if the element is not a NamedTestElement?
+            NamedTestElement tree = (NamedTestElement)SaveService.loadSubTree(reader);
             if (logFile != null)
             {
                 ResultCollector logger = new ResultCollector();
@@ -454,17 +467,21 @@ public class JMeter implements JMeterPlugin, TranslationTableProvider
 
 
 
-    private void installPlugins(boolean useGui) {
+
+    private void installPlugins(boolean useGui)
+    {
         String home = System.getProperty(JMETER_HOME);
         String pluginDir;
 
-        if (home == null) {
+        if (home == null)
+        {
             home = ".";
         }
 
         pluginDir = home + "/plugin";
         File dir = new File(pluginDir);
-        File[] jars = dir.listFiles(new FilenameFilter() {
+        File[] jars = dir.listFiles(new FilenameFilter()
+        {
             public boolean accept(File dir, String name)
             {
                 return name.endsWith(".jar");
@@ -474,8 +491,10 @@ public class JMeter implements JMeterPlugin, TranslationTableProvider
         Map urls = new HashMap();
         String plugin;
 
-        for (int i = 0; i < jars.length; i++) {
-            if ((plugin = checkPlugin(jars[i])) != null) {
+        for (int i = 0; i < jars.length; i++)
+        {
+            if ((plugin = checkPlugin(jars[i])) != null)
+            {
                 try
                 {
                     urls.put(plugin, jars[i].toURL());
@@ -499,10 +518,12 @@ public class JMeter implements JMeterPlugin, TranslationTableProvider
 
             try
             {
-                while(entries.hasMoreElements()) {
+                while (entries.hasMoreElements())
+                {
                     JarEntry entry = (JarEntry)entries.nextElement();
                     String name = entry.getName();
-                    if (name.endsWith("Plugin.class")) {
+                    if (name.endsWith("Plugin.class"))
+                    {
                         return name.substring(0, name.length() - 6).replace('/', '.');
                     }
                 }
@@ -521,20 +542,21 @@ public class JMeter implements JMeterPlugin, TranslationTableProvider
 
     public String[][] getIconMappings()
     {
-        return new String[][] {
-            { TestPlan.class.getName() + "_TAB", "org/apache/jmeter/images/beaker_tab.png"},
-            { TestPlan.class.getName(), "org/apache/jmeter/images/beaker.gif"},
-            { org.apache.jmeter.threads.ThreadGroup.class.getName(), "org/apache/jmeter/images/thread.gif"},
-            { AbstractListenerElement.class.getName(), "org/apache/jmeter/images/meter.png"},
-            { ConfigTestElement.class.getName(), "org/apache/jmeter/images/testtubes.png"},
-            { GenericController.class.getName(), "org/apache/jmeter/images/knob.gif"},
-            { WorkBench.class.getName(), "org/apache/jmeter/images/clipboard.gif"},
-            { AbstractSampler.class.getName(), "org/apache/jmeter/images/pipet.png"}
+        return new String[][]{
+            {TestPlan.class.getName() + "_TAB", "org/apache/jmeter/images/beaker_tab.png"},
+            {TestPlan.class.getName(), "org/apache/jmeter/images/beaker.gif"},
+            {org.apache.jmeter.threads.ThreadGroup.class.getName(), "org/apache/jmeter/images/thread.gif"},
+            {AbstractListenerElement.class.getName(), "org/apache/jmeter/images/meter.png"},
+            {ConfigTestElement.class.getName(), "org/apache/jmeter/images/testtubes.png"},
+            {GenericController.class.getName(), "org/apache/jmeter/images/knob.gif"},
+            {WorkBench.class.getName(), "org/apache/jmeter/images/clipboard.gif"},
+            {AbstractSampler.class.getName(), "org/apache/jmeter/images/pipet.png"}
         };
     }
 
-    public Class[][] getGuiMappings() {
-        return new Class[][] {
+    public Class[][] getGuiMappings()
+    {
+        return new Class[][]{
             {TestPlan.class, TestPlanGui.class},
             {org.apache.jmeter.threads.ThreadGroup.class, ThreadGroupGui.class},
             {GenericController.class, LogicControllerGui.class},
@@ -542,8 +564,9 @@ public class JMeter implements JMeterPlugin, TranslationTableProvider
         };
     }
 
-    public Class[] getElementClasses() {
-        return new Class[] {
+    public Class[] getElementClasses()
+    {
+        return new Class[]{
             TestPlan.class,
             org.apache.jmeter.threads.ThreadGroup.class,
             GenericController.class,
@@ -554,7 +577,7 @@ public class JMeter implements JMeterPlugin, TranslationTableProvider
 
     public Class[] getJavaSamplerClientClasses()
     {
-        return new Class[] {
+        return new Class[]{
         };
     }
 
@@ -571,16 +594,76 @@ public class JMeter implements JMeterPlugin, TranslationTableProvider
 
         translationTable.put("TestElement.gui_class", null);
         translationTable.put("TestElement.test_class", null);
-        translationTable.put("TestElement.name", new PropertyNameTranslator(TestElement.NAME));
+        translationTable.put("TestElement.name", new PropertyNameTranslator(NamedTestElement.NAME, false, true));
         translationTable.put("Arguments.arguments", new PropertyNameTranslator(Arguments.ARGUMENTS));
         translationTable.put("TestPlan.thread_groups", null);
         translationTable.put("TestPlan.functional_mode", new BooleanPropertyTranslator(TestPlan.FUNCTIONAL_MODE));
         translationTable.put("TestPlan.user_defined_variables", new PropertyNameTranslator(TestPlan.USER_DEFINED_VARIABLES));
         translationTable.put("ThreadGroup.num_threads", new IntegerPropertyTranslator(org.apache.jmeter.threads.ThreadGroup.NUMBER_OF_THREADS));
         translationTable.put("ThreadGroup.ramp_time", new IntegerPropertyTranslator(org.apache.jmeter.threads.ThreadGroup.RAMP_UP_PERIOD));
-        translationTable.put("ThreadGroup.main_controller", new PropertyNameTranslator(org.apache.jmeter.threads.ThreadGroup.CONTROLLER));
-        translationTable.put("LoopController.loops", new IntegerPropertyTranslator(LoopController.LOOP_COUNT));
-        translationTable.put("LoopController.continue_forever", new BooleanPropertyTranslator(LoopController.LOOP_FOREVER));
+        translationTable.put("ThreadGroup.main_controller", null);
+        translationTable.put("LoopController.loops", new IntegerPropertyTranslator(LoopController.LOOP_COUNT, true));
+        translationTable.put("LoopController.continue_forever", new BooleanPropertyTranslator(LoopController.LOOP_FOREVER, true));
         return translationTable;
+    }
+
+    private JWindow showSplash()
+    {
+
+        JWindow splash = new JWindow();
+        JPanel content = (JPanel)splash.getContentPane();
+        SplashPanel splashPanel = new SplashPanel();
+
+        // set the window's bounds, centering the window
+        int width = 400;
+        int height = 250;
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (screen.width - width) / 2;
+        int y = (screen.height - height) / 2;
+        splash.setBounds(x, y, width, height);
+        splash.setBackground(Color.white);
+        content.setBackground(Color.white);
+        content.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+
+        JLabel copyright = new JLabel("Copyright 2001-2003, Apache Software Foundation", JLabel.CENTER);
+        JPanel copyrightPanel = new JPanel();
+        copyrightPanel.setLayout(new FlowLayout());
+        copyrightPanel.setBorder(BorderFactory.createEmptyBorder(0, 4, 4, 4));
+        copyrightPanel.setBackground(Color.white);
+        copyright.setFont(new Font("Sans-Serif", Font.PLAIN, 12));
+        copyright.setBackground(Color.white);
+        copyrightPanel.add(copyright);
+        content.add(splashPanel, BorderLayout.CENTER);
+        content.add(copyrightPanel, BorderLayout.SOUTH);
+
+        splash.setVisible(true);
+        return splash;
+    }
+
+    class SplashPanel extends JPanel
+    {
+
+        Image image;
+        int xpos;
+        int ypos;
+
+        SplashPanel()
+        {
+            image = JMeterUtils.getImage("jmeter.jpg").getImage();
+
+            setSize(400, 250);
+            setBackground(Color.white);
+            xpos = (getSize().width - image.getWidth(this)) / 2;
+            ypos = (getSize().height - image.getHeight(this)) / 2;
+        }
+
+        public void paint(Graphics g)
+        {
+//            super.paint(g);
+            if (image != null)
+            {
+                g.drawImage(image, xpos, ypos, this);
+            }
+        }
     }
 }

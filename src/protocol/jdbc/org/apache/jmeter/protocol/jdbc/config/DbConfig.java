@@ -76,7 +76,7 @@ public class DbConfig extends LoginConfig implements Serializable
 	}
 	public String getUrl()
 	{
-		return (String)this.getProperty(JDBCSampler.URL);
+		return (String)this.getPropertyValue(JDBCSampler.URL);
 	}
 
 	public void setUrl(String url)
@@ -86,7 +86,7 @@ public class DbConfig extends LoginConfig implements Serializable
 
 	public String getDriver()
 	{
-		return (String)this.getProperty(JDBCSampler.DRIVER);
+		return (String)this.getPropertyValue(JDBCSampler.DRIVER);
 	}
 
 	public void setDriver(String driver)

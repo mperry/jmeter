@@ -56,20 +56,17 @@
 package org.apache.jmeter.testelement;
 
 
+import java.awt.datatransfer.*;
 import java.io.*;
-import java.util.*;
 import java.lang.reflect.InvocationTargetException;
-import java.beans.PropertyDescriptor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
+import java.lang.reflect.Field;
+import java.util.*;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
 
-import org.apache.jmeter.gui.NamePanel;
-
-import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.jmeter.testelement.property.*;
 
 
 /****************************************
@@ -90,10 +87,9 @@ public abstract class AbstractTestElement implements TestElement, Transferable
     private static long idCounter = 0L;
 
 
-    private List children = new LinkedList();
-    private String name;
-    private long id;
     private TestElement parent;
+    private List children = new LinkedList();
+    private long id;
 
 
     private static final synchronized long getNextId()
@@ -104,14 +100,7 @@ public abstract class AbstractTestElement implements TestElement, Transferable
 
     public AbstractTestElement()
     {
-        this("Test Element");
-    }
-
-
-    public AbstractTestElement(String name)
-    {
         id = getNextId();
-        setName(name);
     }
 
 
@@ -126,25 +115,34 @@ public abstract class AbstractTestElement implements TestElement, Transferable
         try
         {
             AbstractTestElement clone = (AbstractTestElement)super.clone();
-            LinkedList childrenClone = new LinkedList();
+
+            clone.children = new LinkedList();
+            clone.id = getNextId();
+            clone.parent = null;
+
             Iterator iterator = children.iterator();
 
             while (iterator.hasNext())
             {
-                TestElement testElement = (TestElement)iterator.next();
-                childrenClone.add(testElement.clone());
+                NamedTestElement testElement = (NamedTestElement)iterator.next();
+                clone.addChildElement((NamedTestElement)testElement.clone());
             }
 
-            clone.children = childrenClone;
-            clone.id = getNextId();
-            clone.parent = null;
+            iterator = getProperties().entrySet().iterator();
+
+            while (iterator.hasNext())
+            {
+                Map.Entry entry = (Map.Entry)iterator.next();
+                String name = (String)entry.getKey();
+                Property property = (Property)((Property)entry.getValue()).clone();
+                setProperty(name, property);
+            }
+
             return clone;
         } catch (CloneNotSupportedException e)
         {
-            // this will never happen as we implement Cloneable
+            throw new InternalError("Object.clone failed");
         }
-        // to make the compiler happy
-        return null;
     }
 
 
@@ -162,45 +160,51 @@ public abstract class AbstractTestElement implements TestElement, Transferable
 
 
 
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@param name  !ToDo (Parameter description)
-     ***************************************/
-    public void setName(String name)
+
+    /**
+     * Get all properties by reflection;
+     * @return collection of {@link Property} instances
+     */
+    public Map getProperties()
     {
-        this.name = name;
-    }
+        HashMap properties = new HashMap();
+        Class clazz = this.getClass();
 
-
-    /****************************************
-     * !ToDoo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public String getName()
-    {
-        return name;
-    }
-
-
-    /****************************************
-     * !ToDoo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public Collection getPropertyNames()
-    {
-        PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(getClass());
-        ArrayList list = new ArrayList(descriptors.length);
-
-        for (int i = 0; i < descriptors.length; i++)
-        {
-            list.add(descriptors[i].getName());
+        while (AbstractTestElement.class.isAssignableFrom(clazz)) {
+            collectProperties(clazz, properties);
+            clazz = clazz.getSuperclass();
         }
-        return list;
+
+        return properties;
     }
 
+    private void collectProperties(Class clazz, HashMap properties)
+    {
+        Field[] fields = clazz.getDeclaredFields();
+
+        for (int i = 0; i < fields.length; i++)
+        {
+            if (Property.class.isAssignableFrom(fields[i].getType()))
+            {
+                fields[i].setAccessible(true);
+                try
+                {
+                    properties.put(fields[i].getName(), fields[i].get(this));
+                } catch (IllegalArgumentException e)
+                {
+                    log.warn("Introspection failed", e);
+                } catch (IllegalAccessException e)
+                {
+                    log.warn("Introspection failed", e);
+                }
+            }
+        }
+    }
+
+    public Set getPropertyNames()
+    {
+        return new HashSet(getProperties().keySet());
+    }
 
     private long getLongValue(Object bound)
     {
@@ -261,7 +265,7 @@ public abstract class AbstractTestElement implements TestElement, Transferable
     {
         if (bound == null)
         {
-            return (int)0;
+            return 0;
         } else if (bound instanceof Integer)
         {
             return ((Integer)bound).intValue();
@@ -295,37 +299,37 @@ public abstract class AbstractTestElement implements TestElement, Transferable
 
     public int getPropertyAsInt(String key)
     {
-        return getIntValue(getProperty(key));
+        return getIntValue(getPropertyValue(key));
     }
 
 
     public boolean getPropertyAsBoolean(String key)
     {
-        return getBooleanValue(getProperty(key));
+        return getBooleanValue(getPropertyValue(key));
     }
 
 
     public float getPropertyAsFloat(String key)
     {
-        return getFloatValue(getProperty(key));
+        return getFloatValue(getPropertyValue(key));
     }
 
 
     public long getPropertyAsLong(String key)
     {
-        return getLongValue(getProperty(key));
+        return getLongValue(getPropertyValue(key));
     }
 
 
     public double getPropertyAsDouble(String key)
     {
-        return getDoubleValue(getProperty(key));
+        return getDoubleValue(getPropertyValue(key));
     }
 
 
     public String getPropertyAsString(String key)
     {
-        return getStringValue(getProperty(key));
+        return getStringValue(getPropertyValue(key));
     }
 
 
@@ -334,47 +338,47 @@ public abstract class AbstractTestElement implements TestElement, Transferable
      *
      *@param element  !ToDo (Parameter description)
      ***************************************/
-    protected void mergeIn(TestElement element)
+    protected void mergeIn(NamedTestElement element)
     {
-        Iterator iter = element.getPropertyNames().iterator();
-        while (iter.hasNext())
-        {
-            String key = (String)iter.next();
-            Object value = element.getProperty(key);
-            if (getProperty(key) == null || getProperty(key).equals(""))
-            {
-                setProperty(key, value);
-                continue;
-            }
-            if (value instanceof TestElement)
-            {
-                if (getProperty(key) == null)
-                {
-                    setProperty(key, value);
-                } else if (getProperty(key) instanceof TestElement)
-                {
-                    ((TestElement)getProperty(key)).addChildElement((TestElement)value);
-                }
-            } else if (value instanceof Collection)
-            {
-                Iterator iter2 = ((Collection)value).iterator();
-                Collection localCollection = (Collection)getProperty(key);
-                if (localCollection == null)
-                {
-                    setProperty(key, value);
-                } else
-                {
-                    while (iter2.hasNext())
-                    {
-                        Object item = iter2.next();
-                        if (!localCollection.contains(item))
-                        {
-                            localCollection.add(item);
-                        }
-                    }
-                }
-            }
-        }
+//        Iterator iter = element.getPropertyNames().iterator();
+//        while (iter.hasNext())
+//        {
+//            String key = (String)iter.next();
+//            Object value = element.getPropertyValue(key);
+//            if (getPropertyValue(key) == null || getPropertyValue(key).equals(""))
+//            {
+//                setProperty(key, value);
+//                continue;
+//            }
+//            if (value instanceof NamedTestElement)
+//            {
+//                if (getPropertyValue(key) == null)
+//                {
+//                    setProperty(key, value);
+//                } else if (getPropertyValue(key) instanceof NamedTestElement)
+//                {
+//                    ((NamedTestElement)getPropertyValue(key)).addChildElement((NamedTestElement)value);
+//                }
+//            } else if (value instanceof Collection)
+//            {
+//                Iterator iter2 = ((Collection)value).iterator();
+//                Collection localCollection = (Collection)getPropertyValue(key);
+//                if (localCollection == null)
+//                {
+//                    setProperty(key, value);
+//                } else
+//                {
+//                    while (iter2.hasNext())
+//                    {
+//                        Object item = iter2.next();
+//                        if (!localCollection.contains(item))
+//                        {
+//                            localCollection.add(item);
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
 
@@ -402,9 +406,14 @@ public abstract class AbstractTestElement implements TestElement, Transferable
     }
 
 
-    public List getChildren()
+    public List getChildElements()
     {
         return Collections.unmodifiableList(children);
+    }
+
+    public void setChildElements(List children)
+    {
+        this.children = new LinkedList(children);
     }
 
 
@@ -432,43 +441,110 @@ public abstract class AbstractTestElement implements TestElement, Transferable
     }
 
 
-    public Object getProperty(String property)
+    public Property getProperty(String property)
     {
         try
         {
-            return PropertyUtils.getSimpleProperty(this, property);
+            Field field = findField(property, getClass());
+
+            if (field == null) {
+                throw new IllegalArgumentException("Invalid property name " + property);
+            }
+
+            field.setAccessible(true);
+            return (Property)field.get(this);
         } catch (IllegalAccessException e)
-        {
-            throw new IllegalArgumentException("Invalid property name " + property);
-        } catch (InvocationTargetException e)
-        {
-            throw new IllegalArgumentException("Invalid property name " + property);
-        } catch (NoSuchMethodException e)
         {
             throw new IllegalArgumentException("Invalid property name " + property);
         }
     }
 
 
-    public void setProperty(String property, Object value)
-    {
+    private Field findField(String fieldName, Class clazz) {
         try
         {
-            PropertyUtils.setSimpleProperty(this, property, value);
-        } catch (IllegalAccessException e)
+            return clazz.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e)
         {
-            throw new IllegalArgumentException("Invalid property name or value " + property + "/" + value);
-        } catch (InvocationTargetException e)
+            Class superclass = clazz.getSuperclass();
+
+            if (NamedTestElement.class.isAssignableFrom(superclass)) {
+                return findField(fieldName, superclass);
+            }
+        }
+        return null;
+    }
+
+    public Object getPropertyValue(String property)
+    {
+        return getProperty(property).getValue();
+    }
+
+
+    public void setProperty(String name, Object value)
+    {
+        Property property = getProperty(name);
+        property.setValue(value);
+    }
+
+
+    public void setProperty(String key, boolean value)
+    {
+        Property property = getProperty(key);
+
+        if (property instanceof BooleanProperty)
         {
-            throw new IllegalArgumentException("Invalid property name or value " + property + "/" + value);
-        } catch (NoSuchMethodException e)
+            ((BooleanProperty)property).setBooleanValue(value);
+        } else
         {
-            throw new IllegalArgumentException("Invalid property name or value " + property + "/" + value);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid property name or value " + property + "/" + value);
+            property.setValue(String.valueOf(value));
         }
     }
 
+    public void setProperty(String key, long value)
+    {
+        Property property = getProperty(key);
+
+        if (property instanceof LongProperty)
+        {
+            ((LongProperty)property).setLongValue(value);
+        } else
+        {
+            property.setValue(String.valueOf(value));
+        }
+    }
+
+    public void setProperty(String key, int value)
+    {
+        Property property = getProperty(key);
+
+        if (property instanceof IntProperty)
+        {
+            ((IntProperty)property).setIntValue(value);
+        } else
+        {
+            property.setValue(String.valueOf(value));
+        }
+    }
+
+
+    protected void setProperty(String name, Property property)
+    {
+        try
+        {
+            Field field = findField(name, getClass());
+
+            if (field == null) {
+                throw new IllegalArgumentException("Invalid property name " + property);
+            }
+
+            field.setAccessible(true);
+            field.set(this, property);
+        } catch (IllegalAccessException e)
+        {
+            throw new IllegalArgumentException("Invalid property name " + property);
+        }
+    }
 
     // todo: remove as soon as all subclasses have a valid implementation
     public String getFunctionalGroup()
@@ -517,4 +593,5 @@ public abstract class AbstractTestElement implements TestElement, Transferable
     {
         visitor.visit(this);
     }
+
 }

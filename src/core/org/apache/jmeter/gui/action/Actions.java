@@ -71,5 +71,5 @@ public class Actions {
     public static final Action addElement = new AddElement("add", 'A');
     public static final Action loadDocument = new Load("open", 'O', KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
     public static final Action newDocument = new New("new", 'N', KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK));
-
+    public static final Action saveDocument = new Save("save", 'S', KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
 }

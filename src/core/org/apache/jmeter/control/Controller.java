@@ -57,7 +57,7 @@ import java.util.*;
 import org.apache.jmeter.config.ConfigElement;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.samplers.Sampler;
 
 /****************************************
@@ -74,7 +74,7 @@ import org.apache.jmeter.samplers.Sampler;
  *@created   $Date$
  *@version   1.0
  ***************************************/
-public interface Controller extends TestElement
+public interface Controller extends NamedTestElement
 {
 	/**
 	 * Delivers the next Sampler.

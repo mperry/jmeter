@@ -69,8 +69,7 @@ import org.apache.jmeter.gui.action.AddElement;
 import org.apache.jmeter.gui.action.Actions;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.gui.util.MenuFactory;
-import org.apache.jmeter.testelement.TestElement;
-import org.apache.jmeter.testelement.TestPlan;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.*;
 
 
@@ -99,7 +98,7 @@ public class TestPlanGui extends AbstractJMeterGuiComponent implements LocaleCha
     }
 
 
-    public JPopupMenu createPopupMenu(TestElement testElement)
+    public JPopupMenu createPopupMenu(NamedTestElement testElement)
     {
 //        if (popup == null) {
         ActionListener addListener = Actions.addElement;
@@ -125,11 +124,11 @@ public class TestPlanGui extends AbstractJMeterGuiComponent implements LocaleCha
      *
      *@return   !ToDo (Return description)
      ***************************************/
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         TestPlan tp = new TestPlan();
-        tp.setProperty(TestElement.GUI_CLASS, this.getClass().getName());
-        tp.setProperty(TestElement.TEST_CLASS, TestPlan.class.getName());
+        tp.setProperty(NamedTestElement.GUI_CLASS, this.getClass().getName());
+        tp.setProperty(NamedTestElement.TEST_CLASS, TestPlan.class.getName());
         tp.setName(getName());
         tp.setFunctionalMode(functionalMode.isSelected());
         tp.setUserDefinedVariables((Arguments)argsPanel.createTestElement());

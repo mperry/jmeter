@@ -66,6 +66,7 @@ import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.gui.util.StringFieldDocumentListener;
 import org.apache.jmeter.protocol.http.sampler.SoapSampler;
 import org.apache.jmeter.samplers.gui.AbstractSamplerGui;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
@@ -103,7 +104,7 @@ public class SoapSamplerGui extends AbstractSamplerGui
     /**
      * @see org.apache.jmeter.gui.JMeterGUIComponent#createTestElement()
      */
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         SoapSampler sampler = new SoapSampler();
         this.configureTestElement(sampler);
@@ -164,8 +165,8 @@ public class SoapSamplerGui extends AbstractSamplerGui
     public void configure(TestElement el)
     {
         super.configure(el);
-        urlField.setText((String)el.getProperty(SoapSampler.URL));
-        dataField.setText((String)el.getProperty(SoapSampler.XML_DATA));
+        urlField.setText((String)el.getPropertyValue(SoapSampler.URL));
+        dataField.setText((String)el.getPropertyValue(SoapSampler.XML_DATA));
         dataField.setCaretPosition(0);
     }
 

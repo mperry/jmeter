@@ -64,6 +64,7 @@ import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.gui.util.StringFieldDocumentListener;
 import org.apache.jmeter.protocol.ftp.sampler.FTPSampler;
 import org.apache.jmeter.samplers.gui.AbstractSamplerGui;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
@@ -102,14 +103,14 @@ public class FtpTestSamplerGui extends AbstractSamplerGui
     {
         super.configure(element);
 
-        serverInput.setText((String)element.getProperty(FTPSampler.SERVER));
-        usernameInput.setText((String)element.getProperty(FTPSampler.USERNAME));
-        passwordInput.setText((String)element.getProperty(FTPSampler.PASSWORD));
-        filenameInput.setText((String)element.getProperty(FTPSampler.FILENAME));
+        serverInput.setText((String)element.getPropertyValue(FTPSampler.SERVER));
+        usernameInput.setText((String)element.getPropertyValue(FTPSampler.USERNAME));
+        passwordInput.setText((String)element.getPropertyValue(FTPSampler.PASSWORD));
+        filenameInput.setText((String)element.getPropertyValue(FTPSampler.FILENAME));
     }
 
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         FTPSampler sampler = new FTPSampler();
 //        sampler.addChildElement(ftpDefaultPanel.createTestElement());

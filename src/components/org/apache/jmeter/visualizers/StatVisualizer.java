@@ -74,7 +74,7 @@ import javax.swing.table.TableModel;
 
 import org.apache.jmeter.samplers.Clearable;
 import org.apache.jmeter.samplers.SampleResult;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.visualizers.gui.AbstractVisualizer;
 import org.apache.jorphan.gui.layout.VerticalLayout;
@@ -220,9 +220,9 @@ public class StatVisualizer
 	}
 	// overrides AbstractVisualizer
 	// forces GUI update after sample file has been read
-	public TestElement createTestElement()
+	public NamedTestElement createTestElement()
 	{
-		TestElement t = super.createTestElement();
+		NamedTestElement t = super.createTestElement();
 		sleepTill = 0;
 		return t;
 	}

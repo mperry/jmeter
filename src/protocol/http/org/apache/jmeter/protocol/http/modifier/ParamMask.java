@@ -123,7 +123,7 @@ public class ParamMask extends AbstractTestElement implements Serializable
 	 */
 	public String getPrefix()
 	{
-		return (String) getProperty(PREFIX);
+		return (String) getPropertyValue(PREFIX);
 	}
 
 
@@ -135,7 +135,7 @@ public class ParamMask extends AbstractTestElement implements Serializable
 	 */
 	public long getLowerBound()
 	{
-		Object lowerBound = getProperty(LOWER_BOUND);
+		Object lowerBound = getPropertyValue(LOWER_BOUND);
 		return getLongValue(lowerBound);
 	}
 
@@ -148,7 +148,7 @@ public class ParamMask extends AbstractTestElement implements Serializable
 	 */
 	public long getUpperBound()
 	{
-		Object bound = getProperty(UPPER_BOUND);
+		Object bound = getPropertyValue(UPPER_BOUND);
 		return getLongValue(bound);
 	}
 
@@ -161,7 +161,7 @@ public class ParamMask extends AbstractTestElement implements Serializable
 	 */
 	public long getIncrement()
 	{
-		Object inc = getProperty(INCREMENT);
+		Object inc = getPropertyValue(INCREMENT);
 		return getLongValue(inc);
 	}
 
@@ -174,7 +174,7 @@ public class ParamMask extends AbstractTestElement implements Serializable
 	 */
 	public String getSuffix()
 	{
-		return (String) getProperty(SUFFIX);
+		return (String) getPropertyValue(SUFFIX);
 	}
 
 
@@ -223,7 +223,7 @@ public class ParamMask extends AbstractTestElement implements Serializable
 
 	public String getFieldName()
 	{
-		return (String)getProperty(FIELD_NAME);
+		return (String)getPropertyValue(FIELD_NAME);
 	}
 
 

@@ -103,5 +103,16 @@ public class New extends JMeterAction
 	{
         JMeterDocumentManager.getInstance().newTestPlanDocument();
 	}
+
+    protected ImageIcon createIcon()
+    {
+        return JMeterUtils.getImage("toolbar/New24.gif");
+    }
+
+    protected ImageIcon createPressedIcon()
+    {
+        return JMeterUtils.getImage("toolbar/New24.pressed.png");
+    }
+
 }
 

@@ -65,6 +65,7 @@ import org.apache.jmeter.config.gui.AbstractConfigGui;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.*;
 import org.apache.jmeter.modifiers.CounterConfig;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
@@ -108,7 +109,7 @@ public class CounterConfigGui extends AbstractConfigGui implements ItemListener
     /**
      * @see org.apache.jmeter.gui.JMeterGUIComponent#createTestElement()
      */
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         CounterConfig config = new CounterConfig();
 //        config.setStart(startField.getText());
@@ -126,11 +127,11 @@ public class CounterConfigGui extends AbstractConfigGui implements ItemListener
     public void configure(TestElement element)
     {
         super.configure(element);
-        startInput.setText(element.getProperty(CounterConfig.START).toString());
-        maxInput.setText(element.getProperty(CounterConfig.END).toString());
-        incrementInput.setText(element.getProperty(CounterConfig.INCREMENT).toString());
-        nameInput.setText(element.getProperty(CounterConfig.VAR_NAME).toString());
-        perUser.setSelected(((Boolean)element.getProperty(CounterConfig.PER_USER)).booleanValue());
+        startInput.setText(element.getPropertyValue(CounterConfig.START).toString());
+        maxInput.setText(element.getPropertyValue(CounterConfig.END).toString());
+        incrementInput.setText(element.getPropertyValue(CounterConfig.INCREMENT).toString());
+        nameInput.setText(element.getPropertyValue(CounterConfig.VAR_NAME).toString());
+        perUser.setSelected(((Boolean)element.getPropertyValue(CounterConfig.PER_USER)).booleanValue());
     }
 
 

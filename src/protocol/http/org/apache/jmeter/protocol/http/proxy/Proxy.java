@@ -71,7 +71,7 @@ import org.apache.jmeter.protocol.http.control.CookieManager;
 import org.apache.jmeter.protocol.http.control.HeaderManager;
 import org.apache.jmeter.protocol.http.sampler.HTTPSampler;
 import org.apache.jmeter.samplers.SampleResult;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
 //
@@ -158,7 +158,7 @@ public class Proxy extends Thread {
 			writeToClient(serverResponse,
 				new BufferedOutputStream(ClientSocket.getOutputStream()));
 			headers.removeHeaderNamed("cookie");
-			target.deliverSampler(sampler,new TestElement[]{headers});
+			target.deliverSampler(sampler,new NamedTestElement[]{headers});
 		} catch (UnknownHostException uhe) {
 			log.warn("Server Not Found.",uhe);
 			try {

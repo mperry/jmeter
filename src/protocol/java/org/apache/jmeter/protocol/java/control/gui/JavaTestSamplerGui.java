@@ -70,6 +70,7 @@ import org.apache.jmeter.protocol.java.config.JavaConfig;
 import org.apache.jmeter.protocol.java.config.gui.JavaConfigGui;
 import org.apache.jmeter.protocol.java.sampler.JavaSampler;
 import org.apache.jmeter.samplers.gui.AbstractSamplerGui;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
@@ -138,7 +139,7 @@ public class JavaTestSamplerGui extends AbstractSamplerGui implements ItemListen
     }
 
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         JavaConfig config = (JavaConfig)javaPanel.createTestElement();
         JavaSampler sampler = new JavaSampler();
@@ -151,7 +152,7 @@ public class JavaTestSamplerGui extends AbstractSamplerGui implements ItemListen
     {
         super.configure(element);
 
-        argsPanel.setElement((Arguments)element.getProperty(JavaConfig.ARGUMENTS));
+        argsPanel.setElement((Arguments)element.getPropertyValue(JavaConfig.ARGUMENTS));
         fillComboBox(element);
     }
 
@@ -185,7 +186,7 @@ public class JavaTestSamplerGui extends AbstractSamplerGui implements ItemListen
             // todo: remove this check as soon as gui refactoring is done
             return;
         }
-        String className = (String)element.getProperty(JavaSampler.CLASSNAME);
+        String className = (String)element.getPropertyValue(JavaSampler.CLASSNAME);
         String selectOne = JMeterUtils.getResString("select_class");
 
         if (className == null)

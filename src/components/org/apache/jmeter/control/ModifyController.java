@@ -65,7 +65,7 @@ import org.apache.jmeter.gui.JMeterComponentModel;
 import org.apache.jmeter.gui.util.MenuFactory;
 import org.apache.jmeter.samplers.*;
 import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.control.gui.ModifyControllerGui;
 
 
@@ -125,7 +125,7 @@ public class ModifyController extends GenericController implements SampleListene
                     ((ResponseBasedModifier)item).modifyEntry(entry, currentResult);
                 } else
                 {
-                    entry.addChildElement((TestElement)item);
+                    entry.addChildElement((NamedTestElement)item);
                 }
             }
         }

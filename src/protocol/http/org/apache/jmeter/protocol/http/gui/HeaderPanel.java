@@ -74,6 +74,7 @@ import org.apache.jmeter.gui.util.FileDialoger;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.protocol.http.control.Header;
 import org.apache.jmeter.protocol.http.control.HeaderManager;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
@@ -118,11 +119,11 @@ public class HeaderPanel extends AbstractConfigGui implements ActionListener, Fo
      *
      *@return   !ToDo (Return description)
      ***************************************/
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
 //        HeaderManager headerManager = tableModel.manager;
 //        configureTestElement(headerManager);
-//        return (TestElement)headerManager.clone();
+//        return (NamedTestElement)headerManager.clone();
         return null;
     }
 
@@ -130,7 +131,7 @@ public class HeaderPanel extends AbstractConfigGui implements ActionListener, Fo
     public void configure(TestElement element)
     {
         super.configure(element);
-        tableModel = new HeaderTableModel((List)element.getProperty(HeaderManager.HEADERS));
+        tableModel = new HeaderTableModel((List)element.getPropertyValue(HeaderManager.HEADERS));
         headerTable.setModel(tableModel);
         DefaultCellEditor editor = new DefaultCellEditor(new JTextField());
         editor.setClickCountToStart(1);

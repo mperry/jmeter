@@ -66,6 +66,7 @@ import javax.swing.tree.*;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.JMeterGUIComponent;
 import org.apache.jmeter.testelement.*;
+import org.apache.jmeter.testelement.property.Property;
 
 
 /**
@@ -77,7 +78,7 @@ public class TestPlanTreeNode extends DefaultMutableTreeNode implements TestElem
     private TestPlanTreeModel treeModel;
 
 
-    TestPlanTreeNode(TestElement testElement)
+    TestPlanTreeNode(NamedTestElement testElement)
     {
         super(testElement);
     }
@@ -102,9 +103,9 @@ public class TestPlanTreeNode extends DefaultMutableTreeNode implements TestElem
     }
 
 
-    public TestElement getElement()
+    public NamedTestElement getElement()
     {
-        return (TestElement)getUserObject();
+        return (NamedTestElement)getUserObject();
     }
 
 
@@ -143,7 +144,7 @@ public class TestPlanTreeNode extends DefaultMutableTreeNode implements TestElem
 //            submenu.setMnemonic(KeyEvent.VK_A);
 //
 //            for (int i = 0; i < subelements.length; i++) {
-//                menuItem = new JMenuItem(subelements[i].getName());
+//                menuItem = new JMenuItem(subelements[i].getTagName());
 //                menuItem.addActionListener(new AddAction(subelements[i], tree));
 //                submenu.add(menuItem);
 //                menu.add(submenu);
@@ -157,13 +158,13 @@ public class TestPlanTreeNode extends DefaultMutableTreeNode implements TestElem
 
     public void setName(String name)
     {
-        ((TestElement)getUserObject()).setName(name);
+        ((NamedTestElement)getUserObject()).setName(name);
         treeModel.nodeChanged(this);
     }
 
 
-//    public TestElement addChildElement(TestElement element) {
-//        ((TestElement)getUserObject()).addChildElement(element);
+//    public NamedTestElement addChildElement(NamedTestElement element) {
+//        ((NamedTestElement)getUserObject()).addChildElement(element);
 //        TestPlanTreeNode newNode = new TestPlanTreeNode(element, treeModel);
 //        treeModel.insertNodeInto(newNode, this, treeModel.getChildCount(this));
 //        return newNode;
@@ -171,31 +172,51 @@ public class TestPlanTreeNode extends DefaultMutableTreeNode implements TestElem
 
 
 //    public List getChildren() {
-//        return ((TestElement)getUserObject()).getChildren();
+//        return ((NamedTestElement)getUserObject()).getChildren();
 //    }
 //
 //
 //    public Class[] getAllowedSubelementTypes() {
-//        return ((TestElement)getUserObject()).getAllowedSubelementTypes();
+//        return ((NamedTestElement)getUserObject()).getAllowedSubelementTypes();
 //    }
 //
 //
 //    public String getFunctionalGroup() {
-//        return ((TestElement)getUserObject()).getFunctionalGroup();
+//        return ((NamedTestElement)getUserObject()).getFunctionalGroup();
 //    }
 
 
-    public Object getProperty(String property)
+    public Property getProperty(String property)
     {
-        return ((TestElement)getUserObject()).getProperty(property);
+        return ((NamedTestElement)getUserObject()).getProperty(property);
     }
 
 
     public void setProperty(String property, Object value)
     {
-        ((TestElement)getUserObject()).setProperty(property, value);
+        ((NamedTestElement)getUserObject()).setProperty(property, value);
     }
 
+
+    public Object getPropertyValue(String key)
+    {
+        return ((NamedTestElement)getUserObject()).getPropertyValue(key);
+    }
+
+    public void setProperty(String key, boolean value)
+    {
+        ((NamedTestElement)getUserObject()).setProperty(key, value);
+    }
+
+    public void setProperty(String key, long value)
+    {
+        ((NamedTestElement)getUserObject()).setProperty(key, value);
+    }
+
+    public void setProperty(String key, int value)
+    {
+        ((NamedTestElement)getUserObject()).setProperty(key, value);
+    }
 
     public void addChildElement(TestElement child)
     {
@@ -222,9 +243,9 @@ public class TestPlanTreeNode extends DefaultMutableTreeNode implements TestElem
     }
 
 
-    public List getChildren()
+    public List getChildElements()
     {
-        return getElement().getChildren();
+        return getElement().getChildElements();
     }
 
 
@@ -234,11 +255,16 @@ public class TestPlanTreeNode extends DefaultMutableTreeNode implements TestElem
         treeModel.removeNodeFromParent(this);
     }
 
-    public Collection getPropertyNames()
+    public Map getProperties()
+    {
+        return getElement().getProperties();
+    }
+
+
+    public Set getPropertyNames()
     {
         return getElement().getPropertyNames();
     }
-
 
     public String getPropertyAsString(String key)
     {
@@ -262,10 +288,10 @@ public class TestPlanTreeNode extends DefaultMutableTreeNode implements TestElem
 //
 //        public void actionPerformed(ActionEvent e) {
 //            try {
-//                TestElement element = (TestElement)elementClass.newInstance();
-//                element.setName(elementClass.getName().substring(elementClass.getPackage().getName().length()));
-//                if (element.getName().startsWith(".")) {
-//                    element.setName(element.getName().substring(1));
+//                NamedTestElement element = (NamedTestElement)elementClass.newInstance();
+//                element.setName(elementClass.getTagName().substring(elementClass.getPackage().getTagName().length()));
+//                if (element.getTagName().startsWith(".")) {
+//                    element.setName(element.getTagName().substring(1));
 //                }
 //                TestPlanTreeNode node = (TestPlanTreeNode)addChildElement(element);
 //                TreePath path = new TreePath(node.getPath());
@@ -332,7 +358,7 @@ public class TestPlanTreeNode extends DefaultMutableTreeNode implements TestElem
         return getName();
     }
 
-    public TestElement unwrap()
+    public NamedTestElement unwrap()
     {
         return getElement();
     }

@@ -63,7 +63,9 @@ import org.apache.jmeter.gui.GUIFactory;
 
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
+
 import javax.swing.ImageIcon;
 
 /************************************************************
@@ -107,7 +109,7 @@ public class JMeterTreeNode extends DefaultMutableTreeNode
 		return ((JMeterGUIComponent)getUserObject()).getMenuCategories();
 	}
 
-	public JPopupMenu createPopupMenu(TestElement element)
+	public JPopupMenu createPopupMenu(NamedTestElement element)
 	{
 		return ((JMeterGUIComponent)getUserObject()).createPopupMenu(element);
 	}
@@ -117,7 +119,7 @@ public class JMeterTreeNode extends DefaultMutableTreeNode
 		((JMeterGUIComponent)getUserObject()).configure(element);
 	}
 
-	public TestElement createTestElement()
+	public NamedTestElement createTestElement()
 	{
 		return ((JMeterGUIComponent)getUserObject()).createTestElement();
 	}

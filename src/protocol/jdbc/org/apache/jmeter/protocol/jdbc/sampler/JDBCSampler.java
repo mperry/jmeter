@@ -72,7 +72,7 @@ import org.apache.jmeter.protocol.jdbc.control.gui.JdbcTestSampleGui;
 import org.apache.jmeter.samplers.AbstractSampler;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestListener;
 
 import org.apache.log.Hierarchy;
@@ -125,7 +125,7 @@ public class JDBCSampler extends AbstractSampler implements TestListener
         super(name);
     }
 
-//    public void addCustomTestElement(TestElement element)
+//    public void addCustomTestElement(NamedTestElement element)
 //    {
 //        if (element instanceof SqlConfig
 //            || element instanceof PoolConfig

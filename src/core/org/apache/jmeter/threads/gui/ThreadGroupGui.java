@@ -68,6 +68,7 @@ import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.action.AddElement;
 import org.apache.jmeter.gui.action.Actions;
 import org.apache.jmeter.gui.util.*;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.*;
 
@@ -101,12 +102,12 @@ public class ThreadGroupGui extends AbstractJMeterGuiComponent implements Locale
     }
 
 
-    public void configure(org.apache.jmeter.testelement.TestElement element)
+    public void configure(TestElement element)
     {
-        threadInput.setText(String.valueOf(element.getProperty(org.apache.jmeter.threads.ThreadGroup.NUMBER_OF_THREADS)));
-        rampInput.setText(String.valueOf(element.getProperty(org.apache.jmeter.threads.ThreadGroup.RAMP_UP_PERIOD)));
-        loopInput.setText(String.valueOf(element.getProperty(org.apache.jmeter.threads.ThreadGroup.LOOP_COUNT)));
-        boolean forever = ((Boolean)element.getProperty(org.apache.jmeter.threads.ThreadGroup.LOOP_FOREVER)).booleanValue();
+        threadInput.setText(String.valueOf(element.getPropertyValue(org.apache.jmeter.threads.ThreadGroup.NUMBER_OF_THREADS)));
+        rampInput.setText(String.valueOf(element.getPropertyValue(org.apache.jmeter.threads.ThreadGroup.RAMP_UP_PERIOD)));
+        loopInput.setText(String.valueOf(element.getPropertyValue(org.apache.jmeter.threads.ThreadGroup.LOOP_COUNT)));
+        boolean forever = ((Boolean)element.getPropertyValue(org.apache.jmeter.threads.ThreadGroup.LOOP_FOREVER)).booleanValue();
 
         if (forever) {
             rbForever.setSelected(true);
@@ -118,7 +119,7 @@ public class ThreadGroupGui extends AbstractJMeterGuiComponent implements Locale
     }
 
 
-    public JPopupMenu createPopupMenu(TestElement element)
+    public JPopupMenu createPopupMenu(NamedTestElement element)
     {
         JPopupMenu pop = new JPopupMenu();
         pop.add(MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
@@ -249,7 +250,7 @@ public class ThreadGroupGui extends AbstractJMeterGuiComponent implements Locale
     }
 
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         return null;
     }

@@ -60,6 +60,7 @@ import java.text.MessageFormat;
 
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.testelement.AbstractTestElement;
+import org.apache.jmeter.testelement.AbstractNamedTestElement;
 import org.apache.jmeter.testelement.category.AssertionCategory;
 import org.apache.jmeter.util.JMeterUtils;
 
@@ -73,7 +74,7 @@ import org.apache.jmeter.util.JMeterUtils;
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$, $Date$
  */
-public class DurationAssertion extends AbstractTestElement implements Serializable, Assertion, AssertionCategory
+public class DurationAssertion extends AbstractNamedTestElement implements Serializable, Assertion, AssertionCategory
 {
 
     public static final String DURATION = "duration";

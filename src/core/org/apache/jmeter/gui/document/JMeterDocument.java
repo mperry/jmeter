@@ -59,7 +59,7 @@ import java.io.*;
 
 import javax.swing.*;
 
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.gui.GUIFactory;
 
 
@@ -72,17 +72,17 @@ import org.apache.jmeter.gui.GUIFactory;
 public class JMeterDocument {
 
     private File file;
-    private TestElement rootElement;
+    private NamedTestElement rootElement;
     private String name;
-    private TestElement currentTestElement;
+    private NamedTestElement currentTestElement;
 
 
-    public JMeterDocument(String name, TestElement rootElement)
+    public JMeterDocument(String name, NamedTestElement rootElement)
     {
         this(name, null, rootElement);
     }
 
-    public JMeterDocument(String name, File file, TestElement rootElement)
+    public JMeterDocument(String name, File file, NamedTestElement rootElement)
     {
         this.file = file;
         this.rootElement = rootElement;
@@ -100,12 +100,12 @@ public class JMeterDocument {
         this.file = file;
     }
 
-    public TestElement getRootElement()
+    public NamedTestElement getRootElement()
     {
         return rootElement;
     }
 
-    public void setRootElement(TestElement rootElement)
+    public void setRootElement(NamedTestElement rootElement)
     {
         this.rootElement = rootElement;
     }
@@ -126,12 +126,12 @@ public class JMeterDocument {
     }
 
 
-    public TestElement getCurrentTestElement()
+    public NamedTestElement getCurrentTestElement()
     {
         return currentTestElement;
     }
 
-    public void setCurrentTestElement(TestElement currentTestElement)
+    public void setCurrentTestElement(NamedTestElement currentTestElement)
     {
         this.currentTestElement = currentTestElement;
     }

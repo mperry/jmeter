@@ -58,7 +58,7 @@ package org.apache.jmeter.control;
 import java.io.*;
 
 import org.apache.jmeter.control.gui.LoopControlPanel;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.samplers.AbstractSampler;
 
 
@@ -206,13 +206,13 @@ public class LoopController extends GenericController implements Serializable
                 counter = 0;
                 while (controller.hasNext())
                 {
-                    TestElement sampler = controller.next();
-                    assertEquals(order[counter++], sampler.getProperty(TestElement.NAME));
+                    NamedTestElement sampler = controller.next();
+                    assertEquals(order[counter++], sampler.getPropertyValue(NamedTestElement.NAME));
                 }
             }
         }
 
-        private TestElement makeSampler(String name)
+        private NamedTestElement makeSampler(String name)
         {
             TestSampler s = new TestSampler();
             s.setName(name);
@@ -223,7 +223,7 @@ public class LoopController extends GenericController implements Serializable
         class TestSampler extends AbstractSampler
         {
 
-            public void addCustomTestElement(TestElement t)
+            public void addCustomTestElement(NamedTestElement t)
             {
             }
 

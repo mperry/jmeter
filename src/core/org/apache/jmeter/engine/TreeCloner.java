@@ -67,7 +67,6 @@ public class TreeCloner implements HashTreeTraverser
 			GenericController controller = new GenericController();
 			controller.setName("controller");
 			Arguments args = new Arguments();
-			args.setName("args");
 			original.add(controller,args);
 			TreeCloner cloner = new TreeCloner();
 			original.traverse(cloner);

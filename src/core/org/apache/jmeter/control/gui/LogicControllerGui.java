@@ -64,7 +64,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.jmeter.control.GenericController;
 import org.apache.jmeter.gui.NamePanel;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.util.JMeterUtils;
 
 import org.apache.jorphan.gui.layout.VerticalLayout;
@@ -86,7 +86,7 @@ public class LogicControllerGui extends AbstractControllerGui
     }
 
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         GenericController lc = new GenericController();
         configureTestElement(lc);

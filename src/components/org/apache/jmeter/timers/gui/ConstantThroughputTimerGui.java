@@ -66,6 +66,7 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.timers.ConstantThroughputTimer;
 import org.apache.jmeter.util.JMeterUtils;
@@ -111,7 +112,7 @@ public class ConstantThroughputTimerGui
 	 * 
 	 * @see org.apache.jmeter.gui.JMeterGUIComponent#createTestElement()
 	 */
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
 		ConstantThroughputTimer timer = new ConstantThroughputTimer();
 		this.configureTestElement(timer);
@@ -120,9 +121,9 @@ public class ConstantThroughputTimerGui
     }
 
 	/**
-	 * Configure this GUI component from the underlying TestElement.
+	 * Configure this GUI component from the underlying NamedTestElement.
 	 * 
-	 * @see org.apache.jmeter.gui.JMeterGUIComponent#configure(TestElement)
+	 * @see org.apache.jmeter.gui.JMeterGUIComponent#configure(NamedTestElement)
 	 */
     public void configure(TestElement el)
     {

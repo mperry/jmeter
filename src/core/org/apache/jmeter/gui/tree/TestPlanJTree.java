@@ -66,7 +66,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
 
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 
 
 /**
@@ -196,11 +196,11 @@ public class TestPlanJTree extends JTree implements TreeSelectionListener, DragG
                 event.rejectDrop();
             } else
             {
-                TestElement element = null;
+                NamedTestElement element = null;
 
                 try
                 {
-                    element = (TestElement)transferable.getTransferData(TestElement.DATAFLAVOR);
+                    element = (NamedTestElement)transferable.getTransferData(NamedTestElement.DATAFLAVOR);
                     TestPlanTreeNode target = (TestPlanTreeNode)targetPath.getLastPathComponent();
 
                     event.acceptDrop(event.getDropAction());
@@ -282,7 +282,7 @@ public class TestPlanJTree extends JTree implements TreeSelectionListener, DragG
 
             if (node != null)
             {
-                TestElement element = node.getElement();
+                NamedTestElement element = node.getElement();
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 node.remove();
                 clipboard.setContents(element, this);
@@ -314,7 +314,7 @@ public class TestPlanJTree extends JTree implements TreeSelectionListener, DragG
 
             if (node != null)
             {
-                TestElement element = node.getElement();
+                NamedTestElement element = node.getElement();
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(element, this);
             }
@@ -352,7 +352,7 @@ public class TestPlanJTree extends JTree implements TreeSelectionListener, DragG
                 {
                     try
                     {
-                        TestElement element = (TestElement)transferable.getTransferData(TestElement.DATAFLAVOR);
+                        NamedTestElement element = (NamedTestElement)transferable.getTransferData(NamedTestElement.DATAFLAVOR);
                         node.addChildElement(element);
                     } catch (UnsupportedFlavorException e1)
                     {

@@ -60,9 +60,7 @@ import java.util.*;
 
 import org.apache.jmeter.samplers.AbstractSampler;
 import org.apache.jmeter.samplers.Sampler;
-import org.apache.jmeter.testelement.AbstractTestElement;
-import org.apache.jmeter.testelement.PerThreadClonable;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.testelement.category.ControllerCategory;
 import org.apache.jmeter.config.ResponseBasedModifier;
 import org.apache.jmeter.config.ConfigTestElement;
@@ -77,8 +75,8 @@ import org.apache.jmeter.config.ConfigTestElement;
  * @version   1.0
  ***************************************/
 
-public class GenericController extends AbstractTestElement implements Controller,
-    Serializable, PerThreadClonable, ControllerCategory
+public class GenericController extends AbstractNamedTestElement
+    implements Controller, Serializable, PerThreadClonable, ControllerCategory
 {
 
     // todo: make them private
@@ -117,7 +115,7 @@ public class GenericController extends AbstractTestElement implements Controller
     }
 
 
-    private void addConfigElement(TestElement el)
+    private void addConfigElement(NamedTestElement el)
     {
         configs.add(el);
     }
@@ -249,11 +247,11 @@ public class GenericController extends AbstractTestElement implements Controller
     }
 
 
-    protected TestElement getCurrentController()
+    protected NamedTestElement getCurrentController()
     {
         if (current < subControllersAndSamplers.size())
         {
-            return (TestElement)subControllersAndSamplers.get(current);
+            return (NamedTestElement)subControllersAndSamplers.get(current);
         } else
             return null;
     }
@@ -270,7 +268,7 @@ public class GenericController extends AbstractTestElement implements Controller
     }
 
 
-    private void addController(TestElement child)
+    private void addController(NamedTestElement child)
     {
         subControllersAndSamplers.add(child);
     }
@@ -283,7 +281,7 @@ public class GenericController extends AbstractTestElement implements Controller
      ***************************************/
     public Sampler next()
     {
-        TestElement controller = getCurrentController();
+        NamedTestElement controller = getCurrentController();
         if (controller == null)
         {
             nextAtEnd();
@@ -359,14 +357,14 @@ public class GenericController extends AbstractTestElement implements Controller
                 counter = 0;
                 while (controller.hasNext())
                 {
-                    TestElement sampler = controller.next();
-                    assertEquals(order[counter++], sampler.getProperty(TestElement.NAME));
+                    NamedTestElement sampler = controller.next();
+                    assertEquals(order[counter++], sampler.getPropertyValue(NamedTestElement.NAME));
                 }
             }
         }
 
 
-        private TestElement makeSampler(String name)
+        private NamedTestElement makeSampler(String name)
         {
             TestSampler s = new TestSampler();
             s.setName(name);
@@ -377,7 +375,7 @@ public class GenericController extends AbstractTestElement implements Controller
         class TestSampler extends AbstractSampler
         {
 
-            public void addCustomTestElement(TestElement t)
+            public void addCustomTestElement(NamedTestElement t)
             {
             }
 

@@ -66,6 +66,7 @@ import org.apache.jmeter.assertions.DurationAssertion;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.gui.util.LongFieldDocumentListener;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
@@ -103,7 +104,7 @@ public class DurationAssertionGui extends AbstractAssertionGui
         return "duration_assertion_title";
     }
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         //ResponseAssertion el = new ResponseAssertion();
         DurationAssertion el = new DurationAssertion();
@@ -124,7 +125,7 @@ public class DurationAssertionGui extends AbstractAssertionGui
     public void configure(TestElement element)
     {
         super.configure(element);
-        durationInput.setText(String.valueOf(element.getProperty(DurationAssertion.DURATION)));
+        durationInput.setText(String.valueOf(element.getPropertyValue(DurationAssertion.DURATION)));
     }
 
     protected void initComponents()

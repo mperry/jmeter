@@ -401,13 +401,14 @@ public class JMeterMenuBar extends JMenuBar implements LocaleChangeListener
 		// FILE MENU
 		fileMenu = new JMenu(JMeterUtils.getResString("file"));
 		fileMenu.setMnemonic('F');
-		JMenuItem file_save = new JMenuItem(JMeterUtils.getResString("save_all"), 'S');
-		file_save.setAccelerator(
-			KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
-		file_save.setActionCommand("save");
-		file_save.addActionListener(ActionRouter.getInstance());
-		file_save.setEnabled(true);
-		
+		JMenuItem file_save = new JMenuItem(Actions.saveDocument);
+//        JMenuItem file_save = new JMenuItem(JMeterUtils.getResString("save_all"), 'S');
+//		file_save.setAccelerator(
+//			KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
+//		file_save.setActionCommand("save");
+//		file_save.addActionListener(ActionRouter.getInstance());
+//		file_save.setEnabled(true);
+
 		file_save_all = new JMenuItem(JMeterUtils.getResString("save_all_as"), 'A');
 		file_save_all.setAccelerator(
 			KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_MASK));

@@ -9,7 +9,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestPlan;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.StringUtilities;
@@ -43,21 +43,21 @@ public class ValueReplacer
 		this.variables = variables;
 	}
 	
-	public void replaceValues(TestElement el) throws InvalidVariableException
+	public void replaceValues(NamedTestElement el) throws InvalidVariableException
 	{
-		Iterator iter = el.getPropertyNames().iterator();
+		Iterator iter = el.getProperties().keySet().iterator();
 		while(iter.hasNext())
 		{
 			String propName = (String)iter.next();
-			Object propValue = el.getProperty(propName);
+			Object propValue = el.getPropertyValue(propName);
 			if(propValue instanceof String)
 			{
 				Object newValue = getNewValue((String)propValue);
 				el.setProperty(propName,newValue);
 			}
-			else if(propValue instanceof TestElement)
+			else if(propValue instanceof NamedTestElement)
 			{
-				replaceValues((TestElement)propValue);
+				replaceValues((NamedTestElement)propValue);
 			}
 			else if(propValue instanceof Collection)
 			{
@@ -95,9 +95,9 @@ public class ValueReplacer
 		while(iter.hasNext())
 		{
 			Object val = iter.next();
-			if(val instanceof TestElement)
+			if(val instanceof NamedTestElement)
 			{
-				replaceValues((TestElement)val);
+				replaceValues((NamedTestElement)val);
 			}
 			else if(val instanceof String)
 			{
@@ -128,9 +128,9 @@ public class ValueReplacer
 		while(iter.hasNext())
 		{
 			Object val = iter.next();
-			if(val instanceof TestElement)
+			if(val instanceof NamedTestElement)
 			{
-				reverseReplace((TestElement)val);
+				reverseReplace((NamedTestElement)val);
 			}
 			else if(val instanceof String)
 			{
@@ -148,21 +148,21 @@ public class ValueReplacer
 	/**
 	 * Replaces raw values with user-defined variable names.
 	 */
-	public void reverseReplace(TestElement el)
+	public void reverseReplace(NamedTestElement el)
 	{
 		Iterator iter = el.getPropertyNames().iterator();
 		while(iter.hasNext())
 		{
 			String propName = (String)iter.next();
-			Object propValue = el.getProperty(propName);
+			Object propValue = el.getPropertyValue(propName);
 			if(propValue instanceof String)
 			{
 				Object newValue = substituteValues((String)propValue);
 				el.setProperty(propName,newValue);
 			}
-			else if(propValue instanceof TestElement)
+			else if(propValue instanceof NamedTestElement)
 			{
-				reverseReplace((TestElement)propValue);
+				reverseReplace((NamedTestElement)propValue);
 			}
 			else if(propValue instanceof Collection)
 			{
@@ -206,14 +206,14 @@ public class ValueReplacer
 		public void testReverseReplacement() throws Exception
 		{
 			ValueReplacer replacer = new ValueReplacer(variables);
-			TestElement element = new TestPlan();
+			NamedTestElement element = new TestPlan();
 			element.setProperty("domain","jakarta.apache.org");
 			List args = new LinkedList();
 			args.add("username is jack");
 			args.add("jacks_password");
 			element.setProperty("args",args);
 			replacer.reverseReplace(element);
-			assertEquals("${server}",element.getProperty("domain"));
+			assertEquals("${server}",element.getPropertyValue("domain"));
 		}
 	}
 }

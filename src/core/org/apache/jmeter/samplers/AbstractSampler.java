@@ -57,11 +57,9 @@ package org.apache.jmeter.samplers;
 
 import java.util.*;
 
-import org.apache.jmeter.testelement.AbstractTestElement;
-import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.assertions.Assertion;
 import org.apache.jmeter.config.ConfigTestElement;
-import org.apache.jmeter.testelement.PerSampleClonable;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.testelement.category.SamplerCategory;
 
 
@@ -74,8 +72,8 @@ import org.apache.jmeter.testelement.category.SamplerCategory;
  * @version   1.0
  ***************************************/
 
-public abstract class AbstractSampler extends AbstractTestElement implements Sampler,
-    PerSampleClonable, SamplerCategory
+public abstract class AbstractSampler extends AbstractNamedTestElement
+    implements Sampler, PerSampleClonable, SamplerCategory
 {
 
     private final static String ASSERTIONS = "AbstractSampler.assertions";
@@ -92,12 +90,12 @@ public abstract class AbstractSampler extends AbstractTestElement implements Sam
     }
 
 
-//	abstract protected void addCustomTestElement(TestElement element);
+//	abstract protected void addCustomTestElement(NamedTestElement element);
 
     protected List getAssertions()
     {
         ArrayList assertions = new ArrayList();
-        Iterator iterator = getChildren().iterator();
+        Iterator iterator = getChildElements().iterator();
 
         while (iterator.hasNext())
         {

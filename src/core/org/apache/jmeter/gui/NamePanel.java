@@ -65,8 +65,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
 
-import org.apache.jmeter.testelement.TestElement;
-import org.apache.jmeter.testelement.WorkBench;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
 import org.apache.jmeter.gui.tree.JMeterTreeNode;
@@ -80,13 +79,12 @@ import org.apache.jmeter.gui.tree.JMeterTreeNode;
  * @created   $Date$
  * @version   1.0
  ***************************************/
-
 public class NamePanel extends JPanel implements JMeterGUIComponent
 {
 
     private JTextField nameField;
     private JLabel nameLabel;
-    private TestElement element;
+    private NamedTestElement element;
 
 
     /****************************************
@@ -105,7 +103,7 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
      ***************************************/
     public void configure(TestElement testElement)
     {
-        nameField.setText(testElement.getName());
+        nameField.setText(((NamedTestElement)testElement).getName());
     }
 
     /****************************************
@@ -113,7 +111,7 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
      *
      *@return   !ToDo (Return description)
      ***************************************/
-    public JPopupMenu createPopupMenu(TestElement testElement)
+    public JPopupMenu createPopupMenu(NamedTestElement testElement)
     {
         return null;
     }
@@ -143,12 +141,12 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
      *
      *@return   !ToDo (Return description)
      ***************************************/
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         WorkBench wb = new WorkBench();
-        wb.setProperty(TestElement.NAME, getName());
-        wb.setProperty(TestElement.GUI_CLASS, this.getClass().getName());
-        wb.setProperty(TestElement.TEST_CLASS, WorkBench.class.getName());
+        wb.setProperty(NamedTestElement.NAME, getName());
+        wb.setProperty(NamedTestElement.GUI_CLASS, this.getClass().getName());
+        wb.setProperty(NamedTestElement.TEST_CLASS, WorkBench.class.getName());
         return wb;
     }
 
@@ -189,7 +187,7 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
     {
         if (getElement() != null)
         {
-            getElement().setName(newValue);
+            ((NamedTestElement)getElement()).setName(newValue);
         }
     }
 
@@ -201,8 +199,11 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
 
     public void setElement(TestElement element)
     {
-        this.element = element;
-        configure(element);
+        if (element instanceof NamedTestElement)
+        {
+            this.element = (NamedTestElement)element;
+            configure(element);
+        }
     }
 
 

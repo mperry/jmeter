@@ -60,7 +60,7 @@ package org.apache.jmeter.testelement;
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$
  */
-public interface TestElementWrapper extends TestElement {
+public interface TestElementWrapper extends NamedTestElement {
 
     /**
      * Answer the wrapped test element. If this object wraps an another wrapper it has to
@@ -68,5 +68,5 @@ public interface TestElementWrapper extends TestElement {
      *
      * @return test element wrapped by this object or by other wrappers wrapped by this object
      */
-    public TestElement unwrap();
+    public NamedTestElement unwrap();
 }

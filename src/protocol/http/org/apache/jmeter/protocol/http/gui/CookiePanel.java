@@ -73,6 +73,7 @@ import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.FileDialoger;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.protocol.http.control.*;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
@@ -211,7 +212,7 @@ public class CookiePanel extends AbstractConfigGui implements ActionListener, Li
      *
      *@return   !ToDo (Return description)
      ***************************************/
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
 //        CookieManager cookieManager = createCookieManager();
 //        configureTestElement(cookieManager);
@@ -223,7 +224,7 @@ public class CookiePanel extends AbstractConfigGui implements ActionListener, Li
     public void configure(TestElement element)
     {
         super.configure(element);
-        tableModel = new CookieTableModel((List)element.getProperty(CookieManager.COOKIES));
+        tableModel = new CookieTableModel((List)element.getPropertyValue(CookieManager.COOKIES));
         cookieTable.setModel(tableModel);
 
         DefaultCellEditor editor = new DefaultCellEditor(new JTextField());

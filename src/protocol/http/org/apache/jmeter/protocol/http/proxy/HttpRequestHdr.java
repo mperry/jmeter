@@ -20,7 +20,7 @@ import org.apache.jmeter.protocol.http.control.HeaderManager;
 import org.apache.jmeter.protocol.http.control.gui.HttpTestSampleGui;
 import org.apache.jmeter.protocol.http.gui.HeaderPanel;
 import org.apache.jmeter.protocol.http.sampler.HTTPSampler;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.log.Logger;
 import org.apache.jorphan.logging.LoggingManager;
@@ -148,8 +148,8 @@ public class HttpRequestHdr
 			}
 		}
 		manager.setName("Browser-derived headers");
-		manager.setProperty(TestElement.TEST_CLASS, HeaderManager.class.getName());
-		manager.setProperty(TestElement.GUI_CLASS, HeaderPanel.class.getName());
+		manager.setProperty(NamedTestElement.TEST_CLASS, HeaderManager.class.getName());
+		manager.setProperty(NamedTestElement.GUI_CLASS, HeaderPanel.class.getName());
 		return manager;
 	}
 	public HTTPSampler getSampler()

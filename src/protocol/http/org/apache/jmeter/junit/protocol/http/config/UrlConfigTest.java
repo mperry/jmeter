@@ -220,10 +220,10 @@ public class UrlConfigTest extends TestCase
 
 	public void testOverRide()
 	{
-		this.assertNull(partialConfig.getProperty(HTTPSampler.DOMAIN));
+		this.assertNull(partialConfig.getPropertyValue(HTTPSampler.DOMAIN));
 		partialConfig.addChildElement(defaultConfig);
-		assertEquals(partialConfig.getProperty(HTTPSampler.DOMAIN),"www.xerox.com");
-		assertEquals(partialConfig.getProperty(HTTPSampler.PATH),"main.jsp");
+		assertEquals(partialConfig.getPropertyValue(HTTPSampler.DOMAIN),"www.xerox.com");
+		assertEquals(partialConfig.getPropertyValue(HTTPSampler.PATH),"main.jsp");
 	}
 
 

@@ -64,9 +64,9 @@ import org.apache.jmeter.samplers.RemoteSampleListener;
 import org.apache.jmeter.samplers.SampleEvent;
 import org.apache.jmeter.samplers.SampleListener;
 import org.apache.jmeter.samplers.Sampler;
-import org.apache.jmeter.testelement.AbstractTestElement;
-import org.apache.jmeter.testelement.PerThreadClonable;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
+import org.apache.jmeter.testelement.property.BooleanProperty;
+import org.apache.jmeter.testelement.property.IntProperty;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.assertions.Assertion;
 
@@ -80,8 +80,7 @@ import org.apache.log.Logger;
  * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Id$
  */
-public class ThreadGroup
-    extends AbstractTestElement
+public class ThreadGroup extends AbstractNamedTestElement
     implements SampleListener, Serializable, Controller, PerThreadClonable
 {
     private static Logger log =
@@ -100,10 +99,10 @@ public class ThreadGroup
     private LinkedList listeners = new LinkedList();
     private LinkedList remoteListeners = new LinkedList();
 
-    private boolean loopForever = true;
-    private int loopCount = 1;
-    private int numberOfThreads = 1;
-    private int rampUpPeriod = 1;
+    private BooleanProperty loopForever = new BooleanProperty(true);
+    private IntProperty loopCount = new IntProperty(1);
+    private IntProperty numberOfThreads = new IntProperty(1);
+    private IntProperty rampUpPeriod = new IntProperty(1);
     private LoopController controller;
 
     /**
@@ -117,49 +116,49 @@ public class ThreadGroup
 
     public boolean isLoopForever()
     {
-        return loopForever;
+        return loopForever.getBooleanValue();
     }
 
 
     public void setLoopForever(boolean loopForever)
     {
-        this.loopForever = loopForever;
+        this.loopForever.setBooleanValue(loopForever);
     }
 
 
     public int getLoopCount()
     {
-        return loopCount;
+        return loopCount.getIntValue();
     }
 
 
     public void setLoopCount(int loopCount)
     {
-        this.loopCount = loopCount;
+        this.loopCount.setIntValue(loopCount);
     }
 
 
     public int getNumberOfThreads()
     {
-        return numberOfThreads;
+        return numberOfThreads.getIntValue();
     }
 
 
     public void setNumberOfThreads(int numberOfThreads)
     {
-        this.numberOfThreads = numberOfThreads;
+        this.numberOfThreads.setIntValue(numberOfThreads);
     }
 
 
     public int getRampUpPeriod()
     {
-        return rampUpPeriod;
+        return rampUpPeriod.getIntValue();
     }
 
 
     public void setRampUpPeriod(int rampUpPeriod)
     {
-        this.rampUpPeriod = rampUpPeriod;
+        this.rampUpPeriod.setIntValue(rampUpPeriod);
     }
 
 
@@ -233,7 +232,7 @@ public class ThreadGroup
      */
     public Controller getSamplerController()
     {
-        return (Controller) getProperty(CONTROLLER);
+        return (Controller) getPropertyValue(CONTROLLER);
     }
 
     /**
@@ -283,7 +282,7 @@ public class ThreadGroup
      *
      * @param child the test element to add.
      */
-//    public void addTestElement(TestElement child)
+//    public void addTestElement(NamedTestElement child)
 //    {
 //        getSamplerController().addTestElement(child);
 //    }
@@ -437,5 +436,4 @@ public class ThreadGroup
 
         return answer;
     }
-
 }

@@ -14,7 +14,7 @@ import junit.framework.TestCase;
 import org.apache.jmeter.gui.JMeterGUIComponent;
 import org.apache.jmeter.gui.tree.JMeterTreeNode;
 import org.apache.jmeter.save.SaveService;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.log.Logger;
 import org.apache.jorphan.logging.LoggingManager;
@@ -59,23 +59,22 @@ public class JMeterTest extends TestCase
 			}
 			this.assertEquals("Failed on " + item.getClass().getName(), 
 					item.getStaticLabel(), item.getName());
-			TestElement el = item.createTestElement();
+			NamedTestElement el = item.createTestElement();
 			assertEquals("GUI-CLASS: Failed on " + item.getClass().getName(), item.getClass().getName(),
-					el.getProperty(TestElement.GUI_CLASS));
+					el.getPropertyValue(NamedTestElement.GUI_CLASS));
 			assertEquals("NAME: Failed on " + item.getClass().getName(), item.getName(),
-					el.getProperty(TestElement.NAME));
+					el.getPropertyValue(NamedTestElement.NAME));
 			assertEquals("TEST-CLASS: Failed on " + item.getClass().getName(),
-					el.getClass().getName(), el.getProperty(TestElement.TEST_CLASS));
-			el.setProperty(TestElement.NAME, "hey, new name!:");
+					el.getClass().getName(), el.getPropertyValue(NamedTestElement.TEST_CLASS));
+			el.setProperty(NamedTestElement.NAME, "hey, new name!:");
 			el.setProperty("NOT","Shouldn't be here");
-			TestElement el2 = item.createTestElement();
+			NamedTestElement el2 = item.createTestElement();
 			assertNull("GUI-CLASS: Failed on " + item.getClass().getName(),
-			el2.getProperty("NOT"));
-			el = SaveService.createTestElement(SaveService.getConfigForTestElement(null,
-					el));
+			el2.getPropertyValue("NOT"));
+			el = (NamedTestElement)SaveService.createTestElement(SaveService.getConfigForTestElement(null, el), null);
 			item.configure(el);
 			assertEquals("CONFIGURE-TEST: Failed on " + item.getClass().getName(),
-					el.getProperty(TestElement.NAME), item.getName());
+					el.getPropertyValue(NamedTestElement.NAME), item.getName());
 		}
 	}
 	
@@ -118,10 +117,10 @@ public class JMeterTest extends TestCase
 	 ***************************************/
 	public void testTestElements() throws Exception
 	{
-		Iterator iter = getObjects(TestElement.class).iterator();
+		Iterator iter = getObjects(NamedTestElement.class).iterator();
 		while(iter.hasNext())
 		{
-			TestElement item = (TestElement)iter.next();
+			NamedTestElement item = (NamedTestElement)iter.next();
 			checkElementCloning(item);
 			assertTrue(item.getClass().getName()+" must implement Serializable",
 					item instanceof Serializable);
@@ -176,24 +175,24 @@ public class JMeterTest extends TestCase
 		return objects;
 	}
 
-	private void cloneTesting(TestElement item, TestElement clonedItem)
+	private void cloneTesting(NamedTestElement item, NamedTestElement clonedItem)
 	{
 		this.assertTrue(item != clonedItem);
 		this.assertEquals("CLONE-SAME-CLASS: testing " + item.getClass().getName(),
 				item.getClass().getName(), clonedItem.getClass().getName());
 	}
 
-	private void checkElementCloning(TestElement item)
+	private void checkElementCloning(NamedTestElement item)
 	{
-		TestElement clonedItem = (TestElement)item.clone();
+		NamedTestElement clonedItem = (NamedTestElement)item.clone();
 		cloneTesting(item, clonedItem);
 		Iterator iter2 = item.getPropertyNames().iterator();
 		while(iter2.hasNext())
 		{
 			Object item2 = iter2.next();
-			if(item2 instanceof TestElement)
+			if(item2 instanceof NamedTestElement)
 			{
-				checkElementCloning((TestElement)item2);
+				checkElementCloning((NamedTestElement)item2);
 			}
 		}
 	}

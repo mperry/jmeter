@@ -7,8 +7,7 @@ import org.apache.jmeter.config.Argument;
 import org.apache.jmeter.config.Modifier;
 import org.apache.jmeter.protocol.http.sampler.HTTPSampler;
 import org.apache.jmeter.samplers.Sampler;
-import org.apache.jmeter.testelement.AbstractTestElement;
-import org.apache.jmeter.testelement.TestListener;
+import org.apache.jmeter.testelement.*;
 
 /**
  *  <P>
@@ -34,7 +33,7 @@ import org.apache.jmeter.testelement.TestListener;
  *@created    Jan 18, 2002
  *@see        ParamMask
  */
-public class ParamModifier extends AbstractTestElement implements TestListener,Modifier, Serializable
+public class ParamModifier extends AbstractNamedTestElement implements TestListener,Modifier, Serializable
 {
 
 	/*
@@ -63,7 +62,7 @@ public class ParamModifier extends AbstractTestElement implements TestListener,M
 
 	public ParamMask getMask()
 	{
-		return (ParamMask)getProperty(MASK);
+		return (ParamMask)getPropertyValue(MASK);
 	}
 	
 	public void testStarted()

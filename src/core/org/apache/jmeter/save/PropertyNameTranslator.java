@@ -55,6 +55,7 @@
 package org.apache.jmeter.save;
 
 
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 
 
@@ -67,19 +68,67 @@ import org.apache.jmeter.testelement.TestElement;
 public class PropertyNameTranslator implements PropertyTranslator {
 
     private String propertyName;
+    private boolean useParent = false;
+    private boolean optional = false;
 
     public PropertyNameTranslator(String propertyName)
     {
         this.propertyName = propertyName;
     }
 
-    public void translate(TestElement element, Object value)
+    public PropertyNameTranslator(String propertyName, boolean useParent)
     {
-        element.setProperty(getPropertyName(), value);
+        this.propertyName = propertyName;
+        this.useParent = useParent;
+    }
+
+    public PropertyNameTranslator(String propertyName, boolean useParent, boolean optional)
+    {
+        this.propertyName = propertyName;
+        this.useParent = useParent;
+        this.optional = optional;
+    }
+
+    public void translate(TestElement element, TestElement parent, Object value)
+    {
+        setProperty(element, parent, value);
+    }
+
+    protected void setProperty(TestElement element, TestElement parent, Object value)
+    {
+        try
+        {
+            getElement(element, parent).setProperty(getPropertyName(), value);
+        } catch (IllegalArgumentException e)
+        {
+            if (isOptional()) {
+                return;
+            }
+            throw e;
+        }
+    }
+
+    protected TestElement getElement(TestElement element, TestElement parent)
+    {
+        if (isUseParent()) {
+            return parent;
+        } else {
+            return element;
+        }
     }
 
     protected String getPropertyName()
     {
         return propertyName;
+    }
+
+    public boolean isUseParent()
+    {
+        return useParent;
+    }
+
+    public boolean isOptional()
+    {
+        return optional;
     }
 }

@@ -60,6 +60,7 @@ import java.util.*;
 import org.apache.jmeter.config.Argument;
 import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.config.gui.ArgumentsPanel;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 
@@ -83,11 +84,11 @@ public class HTTPArgumentsPanel extends ArgumentsPanel
 
     protected ArgumentsPanel.ArgumentsTableModel createTableModel(TestElement element)
     {
-        return new HTTPArgumentsTableModel((List)element.getProperty(Arguments.ARGUMENTS));
+        return new HTTPArgumentsTableModel((List)element.getPropertyValue(Arguments.ARGUMENTS));
     }
 
 
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
 //		Data model = tableModel.getData();
         Arguments args = new Arguments();
@@ -109,7 +110,7 @@ public class HTTPArgumentsPanel extends ArgumentsPanel
 //			}
 //		}
 //		this.configureTestElement(args);
-        return (TestElement)args.clone();
+        return (NamedTestElement)args.clone();
     }
 
 

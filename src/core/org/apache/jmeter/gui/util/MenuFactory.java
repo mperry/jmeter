@@ -70,7 +70,7 @@ import org.apache.jmeter.gui.JMeterGUIComponent;
 import org.apache.jmeter.gui.action.ActionRouter;
 import org.apache.jmeter.gui.action.AddElement;
 import org.apache.jmeter.plugin.ElementClassRegistry;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.util.JMeterUtils;
 
 /****************************************

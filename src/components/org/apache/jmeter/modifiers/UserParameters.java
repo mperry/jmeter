@@ -124,13 +124,13 @@ public class UserParameters extends ConfigTestElement implements Serializable, T
 
     public List getNames()
     {
-        return (List)getProperty(NAMES);
+        return (List)getPropertyValue(NAMES);
     }
 
 
     public List getThreadLists()
     {
-        return (List)getProperty(THREAD_VALUES);
+        return (List)getPropertyValue(THREAD_VALUES);
     }
 
 
@@ -160,7 +160,7 @@ public class UserParameters extends ConfigTestElement implements Serializable, T
     {
         if (threadValues == null || !threadValues.hasNext())
         {
-            threadValues = ((List)getProperty(THREAD_VALUES)).iterator();
+            threadValues = ((List)getPropertyValue(THREAD_VALUES)).iterator();
         }
         if (threadValues.hasNext())
         {

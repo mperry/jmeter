@@ -64,7 +64,11 @@ import org.apache.jmeter.util.JMeterUtils;
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$
  */
-public abstract class JMeterAction extends javax.swing.AbstractAction {
+public abstract class JMeterAction extends javax.swing.AbstractAction
+{
+
+    public static final String ROLLOVER_ICON = "rollOverIcon";
+    public static final String PRESSED_ICON = "pressedIcon";
 
     private String resourceKey;
 
@@ -72,18 +76,68 @@ public abstract class JMeterAction extends javax.swing.AbstractAction {
     {
         super(JMeterUtils.getResString(resourceKey));
         this.resourceKey = resourceKey;
+        setProperties();
     }
 
     public JMeterAction(String resourceKey, int mnemonic)
     {
         this(resourceKey);
         putValue(MNEMONIC_KEY, new Integer(mnemonic));
+        setProperties();
     }
 
     public JMeterAction(String resourceKey, int mnemonic, KeyStroke accelerator)
     {
         this(resourceKey, mnemonic);
         putValue(ACCELERATOR_KEY, accelerator);
+        setProperties();
+    }
+
+    public String getResourceKey()
+    {
+        return resourceKey;
+    }
+
+    protected void setProperties()
+    {
+        ImageIcon icon = createIcon();
+
+        if (icon != null)
+        {
+            putValue(Action.SMALL_ICON, icon);
+        }
+
+        icon = createRollOverIcon();
+        if (icon != null)
+        {
+            putValue(ROLLOVER_ICON, icon);
+        }
+
+        icon = createPressedIcon();
+        if (icon != null)
+        {
+            putValue(PRESSED_ICON, icon);
+        }
+        putValue(Action.SHORT_DESCRIPTION, getToolTipText());
+    }
+
+    protected ImageIcon createIcon()
+    {
+        return null;
+    }
+
+    protected ImageIcon createRollOverIcon()
+    {
+        return null;
+    }
+
+    protected ImageIcon createPressedIcon()
+    {
+        return null;
+    }
+
+    protected String getToolTipText() {
+        return JMeterUtils.getResString(getResourceKey());
     }
 
 }

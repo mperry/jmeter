@@ -66,6 +66,7 @@ import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.gui.util.StringFieldDocumentListener;
 import org.apache.jmeter.protocol.http.modifier.URLRewritingModifier;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
@@ -135,7 +136,7 @@ public class URLRewritingModifierGui extends AbstractResponseBasedModifierGui im
     /**
      * @see org.apache.jmeter.gui.JMeterGUIComponent#createTestElement()
      */
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
         URLRewritingModifier modifier = new URLRewritingModifier();
 //		this.configureTestElement(modifier);
@@ -148,8 +149,8 @@ public class URLRewritingModifierGui extends AbstractResponseBasedModifierGui im
     {
         super.configure(element);
 
-        argumentInput.setText((String)element.getProperty(URLRewritingModifier.ARGUMENT_NAME));
-        pathExt.setSelected(((Boolean)element.getProperty(URLRewritingModifier.PATH_EXTENSION)).booleanValue());
+        argumentInput.setText((String)element.getPropertyValue(URLRewritingModifier.ARGUMENT_NAME));
+        pathExt.setSelected(((Boolean)element.getPropertyValue(URLRewritingModifier.PATH_EXTENSION)).booleanValue());
     }
 
 

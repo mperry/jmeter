@@ -69,7 +69,7 @@ import javax.swing.JTextField;
 
 import org.apache.jmeter.gui.util.FileDialoger;
 import org.apache.jmeter.protocol.http.sampler.HTTPSampler;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.util.JMeterUtils;
 
 import org.apache.jorphan.gui.layout.VerticalLayout;
@@ -112,9 +112,9 @@ public class MultipartUrlConfigGui extends UrlConfigGui implements ActionListene
      *
      *@return   !ToDo (Return description)
      ***************************************/
-    public TestElement createTestElement()
+    public NamedTestElement createTestElement()
     {
-        TestElement ce = super.createTestElement();
+        NamedTestElement ce = super.createTestElement();
         configureTestElement(ce);
         ce.setProperty(HTTPSampler.MIMETYPE, mimetypeField.getText());
         ce.setProperty(HTTPSampler.FILE_NAME, filenameField.getText());
@@ -135,12 +135,12 @@ public class MultipartUrlConfigGui extends UrlConfigGui implements ActionListene
      *
      *@param el  !ToDo (Parameter description)
      ***************************************/
-    public void configure(TestElement el)
+    public void configure(NamedTestElement el)
     {
         super.configure(el);
-//		mimetypeField.setText((String)el.getProperty(HTTPSampler.MIMETYPE));
-//		filenameField.setText((String)el.getProperty(HTTPSampler.FILE_NAME));
-//		paramNameField.setText((String)el.getProperty(HTTPSampler.FILE_FIELD));
+//		mimetypeField.setText((String)el.getPropertyValue(HTTPSampler.MIMETYPE));
+//		filenameField.setText((String)el.getPropertyValue(HTTPSampler.FILE_NAME));
+//		paramNameField.setText((String)el.getPropertyValue(HTTPSampler.FILE_FIELD));
     }
 
     /****************************************

@@ -59,7 +59,7 @@ import java.io.*;
 
 import org.apache.jmeter.samplers.AbstractSampler;
 import org.apache.jmeter.samplers.Sampler;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.NamedTestElement;
 
 
 /****************************************
@@ -168,7 +168,7 @@ public class InterleaveControl extends GenericController implements Serializable
     public Sampler next()
     {
         setInterleave(DEFAULT_STYLE);
-        TestElement controller = getCurrentController();
+        NamedTestElement controller = getCurrentController();
         if (controller == null)
         {
             nextAtEnd();
@@ -237,13 +237,13 @@ public class InterleaveControl extends GenericController implements Serializable
                 counter = 0;
                 while (controller.hasNext())
                 {
-                    TestElement sampler = controller.next();
+                    NamedTestElement sampler = controller.next();
                     if (counter == 0)
                     {
-                        assertEquals(interleaveOrder[i % 2], sampler.getProperty(TestElement.NAME));
+                        assertEquals(interleaveOrder[i % 2], sampler.getPropertyValue(NamedTestElement.NAME));
                     } else
                     {
-                        assertEquals(order[counter], sampler.getProperty(TestElement.NAME));
+                        assertEquals(order[counter], sampler.getPropertyValue(NamedTestElement.NAME));
                     }
                     counter++;
                 }
@@ -276,9 +276,9 @@ public class InterleaveControl extends GenericController implements Serializable
             {
                 while (controller.hasNext())
                 {
-                    TestElement sampler = controller.next();
+                    NamedTestElement sampler = controller.next();
                     assertEquals("failed on " + counter,
-                                 order[counter], sampler.getProperty(TestElement.NAME));
+                                 order[counter], sampler.getPropertyValue(NamedTestElement.NAME));
                     counter++;
                 }
             }
@@ -310,8 +310,8 @@ public class InterleaveControl extends GenericController implements Serializable
             {
                 while (controller.hasNext())
                 {
-                    TestElement sampler = controller.next();
-                    assertEquals("failed on " + counter, order[counter], sampler.getProperty(TestElement.NAME));
+                    NamedTestElement sampler = controller.next();
+                    assertEquals("failed on " + counter, order[counter], sampler.getPropertyValue(NamedTestElement.NAME));
                     counter++;
                 }
             }
@@ -337,8 +337,8 @@ public class InterleaveControl extends GenericController implements Serializable
             {
                 while (controller.hasNext())
                 {
-                    TestElement sampler = controller.next();
-                    assertEquals("failed on " + counter, order[counter], sampler.getProperty(TestElement.NAME));
+                    NamedTestElement sampler = controller.next();
+                    assertEquals("failed on " + counter, order[counter], sampler.getPropertyValue(NamedTestElement.NAME));
                     counter++;
                 }
             }
@@ -364,14 +364,14 @@ public class InterleaveControl extends GenericController implements Serializable
             {
                 while (controller.hasNext())
                 {
-                    TestElement sampler = controller.next();
-                    assertEquals("failed on " + counter, order[counter], sampler.getProperty(TestElement.NAME));
+                    NamedTestElement sampler = controller.next();
+                    assertEquals("failed on " + counter, order[counter], sampler.getPropertyValue(NamedTestElement.NAME));
                     counter++;
                 }
             }
         }
 
-        private TestElement makeSampler(String name)
+        private NamedTestElement makeSampler(String name)
         {
             TestSampler s = new TestSampler();
             s.setName(name);
@@ -381,7 +381,7 @@ public class InterleaveControl extends GenericController implements Serializable
         public class TestSampler extends AbstractSampler
         {
 
-            public void addCustomTestElement(TestElement t)
+            public void addCustomTestElement(NamedTestElement t)
             {
             }
 

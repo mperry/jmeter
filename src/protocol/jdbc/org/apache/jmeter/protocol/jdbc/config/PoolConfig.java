@@ -78,7 +78,7 @@ public class PoolConfig extends ConfigTestElement implements Serializable
 
 	public int getMaxUse()
 	{
-		Object max = this.getProperty(JDBCSampler.MAXUSE);
+		Object max = this.getPropertyValue(JDBCSampler.MAXUSE);
 		if(max instanceof Integer)
 		{
 			return ((Integer)max).intValue();
@@ -97,7 +97,7 @@ public class PoolConfig extends ConfigTestElement implements Serializable
 
 	public int getNumConnections()
 	{
-		Object numConn = this.getProperty(JDBCSampler.CONNECTIONS);
+		Object numConn = this.getPropertyValue(JDBCSampler.CONNECTIONS);
 		if(numConn instanceof Integer)
 		{
 			return ((Integer)numConn).intValue();

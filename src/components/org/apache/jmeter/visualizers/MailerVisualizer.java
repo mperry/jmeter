@@ -77,6 +77,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.jmeter.samplers.Clearable;
 import org.apache.jmeter.samplers.SampleResult;
+import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.visualizers.gui.AbstractVisualizer;
@@ -459,9 +460,9 @@ public class MailerVisualizer extends AbstractVisualizer
 	/**
 	 * Makes MailerVisualizer storable.
 	 */
-	public TestElement createTestElement()
+	public NamedTestElement createTestElement()
 	{
-		TestElement element = super.createTestElement();
+		NamedTestElement element = super.createTestElement();
 		model.storeModel(element);
 		return element;
 	}

@@ -64,6 +64,7 @@ import org.apache.oro.text.regex.*;
 
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.testelement.AbstractTestElement;
+import org.apache.jmeter.testelement.AbstractNamedTestElement;
 import org.apache.jmeter.testelement.category.AssertionCategory;
 
 
@@ -78,7 +79,7 @@ import org.apache.jmeter.testelement.category.AssertionCategory;
  * @version    $Revision$
  ***********************************************************/
 
-public class ResponseAssertion extends AbstractTestElement implements Serializable, Assertion, AssertionCategory
+public class ResponseAssertion extends AbstractNamedTestElement implements Serializable, Assertion, AssertionCategory
 {
 
     public final static String TEST_FIELD = "testField";
@@ -252,7 +253,7 @@ public class ResponseAssertion extends AbstractTestElement implements Serializab
      ***********************************************************/
     public List getTestStrings()
     {
-        return (List)getProperty(TEST_PATTERNS);
+        return (List)getPropertyValue(TEST_PATTERNS);
     }
 
 
