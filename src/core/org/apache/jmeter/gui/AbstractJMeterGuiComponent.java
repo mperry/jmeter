@@ -53,17 +53,23 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.gui;
+
+
 import java.util.Collection;
+
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.gui.tree.JMeterTreeNode;
+
+
 /**
  * This abstract class takes care of the most basic functions necessary to create a viable
  * JMeter GUI component.  It extends JPanel and implements JMeterGUIComponent.  This
  * abstract is, in turn, extended by several other abstract classes that create different
  * classes of GUI components for JMeter (ie Visualizers, Timers, Samplers, Modifiers, Controllers, etc).
- * 
+ *
  * @author mstover
  *
  * @see JMeterGuiComponent
@@ -77,111 +83,113 @@ import org.apache.jmeter.gui.tree.JMeterTreeNode;
  * @see org.apache.jmeter.samplers.gui.AbstractSamplerGui
  */
 public abstract class AbstractJMeterGuiComponent
-	extends JPanel
-	implements JMeterGUIComponent
+    extends JPanel
+    implements JMeterGUIComponent
 {
-	private boolean enabled = true;
-	private JMeterTreeNode node;
-	
-	
-	/**
-	 * When constructing a new component, this takes care of basic tasks like
-	 * setting up the Name Panel and assigning the class's static label as
-	 * the name to start.
-	 * @see java.lang.Object#Object()
-	 */
-	public AbstractJMeterGuiComponent()
-	{
-		namePanel = new NamePanel();
-		setName(getStaticLabel());
-	}
-	
-	/**
-	 * @see JMeterGUIComponent#setName(String)
-	 */
-	public void setName(String name)
-	{
-		namePanel.setName(name);
-	}
-	
-	/**
-	 * @see java.awt.Component#isEnabled()
-	 */
-	public boolean isEnabled()
-	{
-		return enabled;
-	}
-	
-	/**
-	 * @see java.awt.Component#setEnabled(boolean)
-	 */
-	public void setEnabled(boolean e)
-	{
-		enabled = e;
-	}
-	
-	/**
-	 * @see JMeterGUIComponent#getName()
-	 */
-	public String getName()
-	{
-		return getNamePanel().getName();
-	}
-	
-	/**
-	 * Provides the Name Panel for extending classes.  Extending classes are free to
-	 * place it as desired within the component, or not at all.
-	 * 
-	 * @return NamePanel
-	 */
-	protected NamePanel getNamePanel()
-	{
-		return namePanel;
-	}
-	
-	protected NamePanel namePanel;
-	
 
-	/**
-	 * This method should be overriden, but the extending class should also still call it, as
-	 * it does the work necessary to configure the name of the component from the
-	 * given Test Element.  Otherwise, the component can do this itself.
-	 * 
-	 * @see org.apache.jmeter.gui.JMeterGUIComponent#configure(org.apache.jmeter.testelement.TestElement)
-	 */
-	public void configure(TestElement element)
-	{
-		setName((String) element.getProperty(TestElement.NAME));
-	}
-	
-	/**
-	 * This provides a convenience for extenders when they implement the createTestElement()
-	 * method.  This method will set the name, gui class, and test class for the created
-	 * Test Element.  It should be called by every extending class when creating Test
-	 * Elements, as that will best assure consistent behavior.
-	 * @param The Test Element being created.
-	 */
-	protected void configureTestElement(TestElement mc)
-	{
-		mc.setProperty(TestElement.NAME, getName());
-		mc.setProperty(TestElement.GUI_CLASS, this.getClass().getName());
-		mc.setProperty(TestElement.TEST_CLASS, mc.getClass().getName());
-	}
-	
-	/**
-	 * @see org.apache.jmeter.gui.JMeterGUIComponent#setNode(org.apache.jmeter.gui.tree.JMeterTreeNode)
-	 */
-	public void setNode(JMeterTreeNode node)
-	{
-		this.node = node;
-		getNamePanel().setNode(node);
-	}
-	/**
-	 * Method getNode.
-	 * @return JMeterTreeNode
-	 */
-	protected JMeterTreeNode getNode()
-	{
-		return node;
-	}
+    private boolean enabled = true;
+    private JMeterTreeNode node;
+
+
+    /**
+     * When constructing a new component, this takes care of basic tasks like
+     * setting up the Name Panel and assigning the class's static label as
+     * the name to start.
+     * @see java.lang.Object#Object()
+     */
+    public AbstractJMeterGuiComponent()
+    {
+        namePanel = new NamePanel();
+        setName(getStaticLabel());
+    }
+
+    /**
+     * @see JMeterGUIComponent#setName(String)
+     */
+    public void setName(String name)
+    {
+        namePanel.setName(name);
+    }
+
+    /**
+     * @see java.awt.Component#isEnabled()
+     */
+    public boolean isEnabled()
+    {
+        return enabled;
+    }
+
+    /**
+     * @see java.awt.Component#setEnabled(boolean)
+     */
+    public void setEnabled(boolean e)
+    {
+        enabled = e;
+    }
+
+    /**
+     * @see JMeterGUIComponent#getName()
+     */
+    public String getName()
+    {
+        return getNamePanel().getName();
+    }
+
+    /**
+     * Provides the Name Panel for extending classes.  Extending classes are free to
+     * place it as desired within the component, or not at all.
+     *
+     * @return NamePanel
+     */
+    protected NamePanel getNamePanel()
+    {
+        return namePanel;
+    }
+
+    protected NamePanel namePanel;
+
+
+    /**
+     * This method should be overriden, but the extending class should also still call it, as
+     * it does the work necessary to configure the name of the component from the
+     * given Test Element.  Otherwise, the component can do this itself.
+     *
+     * @see org.apache.jmeter.gui.JMeterGUIComponent#configure(org.apache.jmeter.testelement.TestElement)
+     */
+    public void configure(TestElement element)
+    {
+        setName((String)element.getProperty(TestElement.NAME));
+    }
+
+    /**
+     * This provides a convenience for extenders when they implement the createTestElement()
+     * method.  This method will set the name, gui class, and test class for the created
+     * Test Element.  It should be called by every extending class when creating Test
+     * Elements, as that will best assure consistent behavior.
+     * @param The Test Element being created.
+     */
+    protected void configureTestElement(TestElement mc)
+    {
+        mc.setProperty(TestElement.NAME, getName());
+        mc.setProperty(TestElement.GUI_CLASS, this.getClass().getName());
+        mc.setProperty(TestElement.TEST_CLASS, mc.getClass().getName());
+    }
+
+    /**
+     * @see org.apache.jmeter.gui.JMeterGUIComponent#setNode(org.apache.jmeter.gui.tree.JMeterTreeNode)
+     */
+    public void setNode(JMeterTreeNode node)
+    {
+        this.node = node;
+        getNamePanel().setNode(node);
+    }
+
+    /**
+     * Method getNode.
+     * @return JMeterTreeNode
+     */
+    protected JMeterTreeNode getNode()
+    {
+        return node;
+    }
 }
