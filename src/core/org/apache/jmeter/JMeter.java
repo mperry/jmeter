@@ -52,7 +52,8 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
- package org.apache.jmeter;
+package org.apache.jmeter;
+
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -94,343 +95,378 @@ import org.apache.log.Logger;
 import org.apache.jorphan.collections.HashTree;
 import org.apache.jorphan.gui.ComponentUtil;
 
+
 /**
  * @author mstover
  *
  * To change this generated comment edit the template variable "typecomment":
  * Window>Preferences>Java>Templates.
  */
-public class JMeter implements JMeterPlugin {
-	transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor(
-			"jmeter");
+public class JMeter implements JMeterPlugin
+{
 
-	private final static int PROPFILE_OPT = 'p';
-	private final static int TESTFILE_OPT = 't';
-	private final static int LOGFILE_OPT = 'l';
-	private final static int NONGUI_OPT = 'n';
-	protected static final int HELP_OPT = 'h';
-	protected static final int VERSION_OPT = 'v';
-	protected static final int SERVER_OPT = 's';
-	protected static final int PROXY_HOST = 'H';
-	protected static final int PROXY_PORT = 'P';
-	protected static final int PROXY_USERNAME = 'u';
-	protected static final int PROXY_PASSWORD = 'a';
+    transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor(
+        "jmeter");
 
-	/**
-	 *  Define the understood options. Each CLOptionDescriptor contains:
-	 * - The "long" version of the option. Eg, "help" means that "--help" will
-	 * be recognised. 
-	 * - The option flags, governing the option's argument(s).
-	 * - The "short" version of the option. Eg, 'h' means that "-h" will be
-	 * recognised.
-	 * - A description of the option.
-	 */
-	protected static final CLOptionDescriptor[] options =
-		new CLOptionDescriptor[] {
-			new CLOptionDescriptor(
-				"help",
-				CLOptionDescriptor.ARGUMENT_DISALLOWED,
-				HELP_OPT,
-				"print this message and exit"),
-			new CLOptionDescriptor(
-				"version",
-				CLOptionDescriptor.ARGUMENT_DISALLOWED,
-				VERSION_OPT,
-				"print the version information and exit"),
-			new CLOptionDescriptor(
-				"propfile",
-				CLOptionDescriptor.ARGUMENT_REQUIRED,
-				PROPFILE_OPT,
-				"the jmeter property file to use"),
-			new CLOptionDescriptor(
-				"testfile",
-				CLOptionDescriptor.ARGUMENT_REQUIRED,
-				TESTFILE_OPT,
-				"the jmeter test(.jmx) file to run"),
-			new CLOptionDescriptor(
-				"logfile",
-				CLOptionDescriptor.ARGUMENT_REQUIRED,
-				LOGFILE_OPT,
-				"the file to log samples to"),
-			new CLOptionDescriptor(
-				"logfile",
-				CLOptionDescriptor.ARGUMENT_DISALLOWED,
-				NONGUI_OPT,
-				"run JMeter in nongui mode"),
-			new CLOptionDescriptor(
-				"server",
-				CLOptionDescriptor.ARGUMENT_DISALLOWED,
-				SERVER_OPT,
-				"run the JMeter server"),
-			new CLOptionDescriptor(
-				"proxyHost",
-				CLOptionDescriptor.ARGUMENT_REQUIRED,
-				PROXY_HOST,
-				"Set a proxy server for JMeter to use"),
-			new CLOptionDescriptor(
-				"proxyPort",
-				CLOptionDescriptor.ARGUMENT_REQUIRED,
-				PROXY_PORT,
-				"Set proxy server port for JMeter to use"),
-			new CLOptionDescriptor(
-				"username",
-				CLOptionDescriptor.ARGUMENT_REQUIRED,
-				PROXY_USERNAME,
-				"Set username for proxy server that JMeter is to use"),
-			new CLOptionDescriptor(
-				"password",
-				CLOptionDescriptor.ARGUMENT_REQUIRED,
-				PROXY_PASSWORD,
-				"Set password for proxy server that JMeter is to use"),
-			};
+    private final static int PROPFILE_OPT = 'p';
+    private final static int TESTFILE_OPT = 't';
+    private final static int LOGFILE_OPT = 'l';
+    private final static int NONGUI_OPT = 'n';
+    protected static final int HELP_OPT = 'h';
+    protected static final int VERSION_OPT = 'v';
+    protected static final int SERVER_OPT = 's';
+    protected static final int PROXY_HOST = 'H';
+    protected static final int PROXY_PORT = 'P';
+    protected static final int PROXY_USERNAME = 'u';
+    protected static final int PROXY_PASSWORD = 'a';
 
-	public JMeter() {
-	}
+    /**
+     *  Define the understood options. Each CLOptionDescriptor contains:
+     * - The "long" version of the option. Eg, "help" means that "--help" will
+     * be recognised.
+     * - The option flags, governing the option's argument(s).
+     * - The "short" version of the option. Eg, 'h' means that "-h" will be
+     * recognised.
+     * - A description of the option.
+     */
+    protected static final CLOptionDescriptor[] options =
+        new CLOptionDescriptor[]{
+            new CLOptionDescriptor(
+                "help",
+                CLOptionDescriptor.ARGUMENT_DISALLOWED,
+                HELP_OPT,
+                "print this message and exit"),
+            new CLOptionDescriptor(
+                "version",
+                CLOptionDescriptor.ARGUMENT_DISALLOWED,
+                VERSION_OPT,
+                "print the version information and exit"),
+            new CLOptionDescriptor(
+                "propfile",
+                CLOptionDescriptor.ARGUMENT_REQUIRED,
+                PROPFILE_OPT,
+                "the jmeter property file to use"),
+            new CLOptionDescriptor(
+                "testfile",
+                CLOptionDescriptor.ARGUMENT_REQUIRED,
+                TESTFILE_OPT,
+                "the jmeter test(.jmx) file to run"),
+            new CLOptionDescriptor(
+                "logfile",
+                CLOptionDescriptor.ARGUMENT_REQUIRED,
+                LOGFILE_OPT,
+                "the file to log samples to"),
+            new CLOptionDescriptor(
+                "logfile",
+                CLOptionDescriptor.ARGUMENT_DISALLOWED,
+                NONGUI_OPT,
+                "run JMeter in nongui mode"),
+            new CLOptionDescriptor(
+                "server",
+                CLOptionDescriptor.ARGUMENT_DISALLOWED,
+                SERVER_OPT,
+                "run the JMeter server"),
+            new CLOptionDescriptor(
+                "proxyHost",
+                CLOptionDescriptor.ARGUMENT_REQUIRED,
+                PROXY_HOST,
+                "Set a proxy server for JMeter to use"),
+            new CLOptionDescriptor(
+                "proxyPort",
+                CLOptionDescriptor.ARGUMENT_REQUIRED,
+                PROXY_PORT,
+                "Set proxy server port for JMeter to use"),
+            new CLOptionDescriptor(
+                "username",
+                CLOptionDescriptor.ARGUMENT_REQUIRED,
+                PROXY_USERNAME,
+                "Set username for proxy server that JMeter is to use"),
+            new CLOptionDescriptor(
+                "password",
+                CLOptionDescriptor.ARGUMENT_REQUIRED,
+                PROXY_PASSWORD,
+                "Set password for proxy server that JMeter is to use"),
+        };
 
-	/**
-	 * Starts up JMeter in GUI mode
-	 */
-	public void startGui(CLOption testFile) throws IllegalUserActionException, IllegalAccessException, ClassNotFoundException, InstantiationException {
+    public JMeter()
+    {
+    }
+
+    /**
+     * Starts up JMeter in GUI mode
+     */
+    public void startGui(CLOption testFile) throws IllegalUserActionException, IllegalAccessException, ClassNotFoundException, InstantiationException
+    {
 
         PluginManager.install(this, true);
-		JMeterTreeModel treeModel = new JMeterTreeModel();
-		JMeterTreeListener treeLis = new JMeterTreeListener(treeModel);
-		treeLis.setActionHandler(ActionRouter.getInstance());
-		GuiPackage guiPack = GuiPackage.getInstance(treeLis, treeModel);
-		org.apache.jmeter.gui.MainFrame main =
-			new org.apache.jmeter.gui.MainFrame(
-				ActionRouter.getInstance(),
-				treeModel,
-				treeLis);
-		main.setTitle("Apache JMeter");
-		main.setIconImage(JMeterUtils.getImage("jmeter.jpg").getImage());
-		ComponentUtil.centerComponentInWindow(main, 80);
-		main.show();
-		ActionRouter.getInstance().actionPerformed(
-			new ActionEvent(main, 1, CheckDirty.ADD_ALL));
-		if(testFile != null)
-		{
-			try
-			{
-				File f = new File(testFile.getArgument());
-				FileInputStream reader = new FileInputStream(f);
-				HashTree tree = SaveService.loadSubTree(reader);
-				new Load().insertLoadedTree(1,tree);
-			}
-			catch (Exception e)
-			{
-				log.error("Failure loading test file",e);
-			}
-		}
-	}
+        JMeterTreeModel treeModel = new JMeterTreeModel();
+        JMeterTreeListener treeLis = new JMeterTreeListener(treeModel);
+        treeLis.setActionHandler(ActionRouter.getInstance());
+        GuiPackage guiPack = GuiPackage.getInstance(treeLis, treeModel);
+        org.apache.jmeter.gui.MainFrame main =
+            new org.apache.jmeter.gui.MainFrame(
+                ActionRouter.getInstance(),
+                treeModel,
+                treeLis);
+        main.setTitle("Apache JMeter");
+        main.setIconImage(JMeterUtils.getImage("jmeter.jpg").getImage());
+        ComponentUtil.centerComponentInWindow(main, 80);
+        main.show();
+        ActionRouter.getInstance().actionPerformed(
+            new ActionEvent(main, 1, CheckDirty.ADD_ALL));
+        if (testFile != null)
+        {
+            try
+            {
+                File f = new File(testFile.getArgument());
+                FileInputStream reader = new FileInputStream(f);
+                HashTree tree = SaveService.loadSubTree(reader);
+                new Load().insertLoadedTree(1, tree);
+            } catch (Exception e)
+            {
+                log.error("Failure loading test file", e);
+            }
+        }
+    }
 
-	/**
-	 * Takes the command line arguments and uses them to determine how to startup JMeter.
-	 */
-	public void start(String[] args) {
-		
-		CLArgsParser parser = new CLArgsParser(args, options);
-		if (null != parser.getErrorString()) {
-			System.err.println("Error: " + parser.getErrorString());
-			return;
-		}
-		try {
-			initializeProperties(parser);
-			setProxy(parser);
-			if (parser.getArgumentById(VERSION_OPT) != null) {
-				System.out.println(
-					"Apache JMeter, Copyright (c) 2002 The Apache Software Foundation");
-				System.out.println("Version " + JMeterUtils.getJMeterVersion());
-			} else if (parser.getArgumentById(HELP_OPT) != null) {
-				System.out.println(
-					JMeterUtils.getResourceFileAsText("org/apache/jmeter/help.txt"));
-			} else if (parser.getArgumentById(SERVER_OPT) != null) {
-				startServer();
-			} else if (parser.getArgumentById(NONGUI_OPT) == null) {
-				startGui(parser.getArgumentById(TESTFILE_OPT));
-			} else {
-				startNonGui(
-					parser.getArgumentById(TESTFILE_OPT),
-					parser.getArgumentById(LOGFILE_OPT));
-			}
-		} catch (IllegalUserActionException e) {
-			System.out.println(e.getMessage());
-			System.out.println("Incorrect Usage");
-			System.out.println(CLUtil.describeOptions(options).toString());
-		} catch (Exception e) {
+    /**
+     * Takes the command line arguments and uses them to determine how to startup JMeter.
+     */
+    public void start(String[] args)
+    {
+
+        CLArgsParser parser = new CLArgsParser(args, options);
+        if (null != parser.getErrorString())
+        {
+            System.err.println("Error: " + parser.getErrorString());
+            return;
+        }
+        try
+        {
+            initializeProperties(parser);
+            setProxy(parser);
+            if (parser.getArgumentById(VERSION_OPT) != null)
+            {
+                System.out.println(
+                    "Apache JMeter, Copyright (c) 2002 The Apache Software Foundation");
+                System.out.println("Version " + JMeterUtils.getJMeterVersion());
+            } else if (parser.getArgumentById(HELP_OPT) != null)
+            {
+                System.out.println(
+                    JMeterUtils.getResourceFileAsText("org/apache/jmeter/help.txt"));
+            } else if (parser.getArgumentById(SERVER_OPT) != null)
+            {
+                startServer();
+            } else if (parser.getArgumentById(NONGUI_OPT) == null)
+            {
+                startGui(parser.getArgumentById(TESTFILE_OPT));
+            } else
+            {
+                startNonGui(
+                    parser.getArgumentById(TESTFILE_OPT),
+                    parser.getArgumentById(LOGFILE_OPT));
+            }
+        } catch (IllegalUserActionException e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Incorrect Usage");
+            System.out.println(CLUtil.describeOptions(options).toString());
+        } catch (Exception e)
+        {
             e.printStackTrace();
             System.out.println("An error occurred: " + e.getMessage());
             System.exit(-1);
         }
-	}
+    }
 
-	/**
-	 * Sets a proxy server for the JVM if the command line arguments are specified.
-	 */
-	private void setProxy(CLArgsParser parser) throws IllegalUserActionException {
-		if(parser.getArgumentById(PROXY_USERNAME) != null)
-		{
-			if(parser.getArgumentById(PROXY_PASSWORD) != null)
-			{
-				Authenticator.setDefault(new ProxyAuthenticator(
-						parser.getArgumentById(PROXY_USERNAME).getArgument(),
-						parser.getArgumentById(PROXY_PASSWORD).getArgument()));
-			}
-			else
-			{
-				Authenticator.setDefault(new ProxyAuthenticator(
-						parser.getArgumentById(PROXY_USERNAME).getArgument(),
-						""));
-			}
-		}
-		if (parser.getArgumentById(PROXY_HOST) != null
-			&& parser.getArgumentById(PROXY_PORT) != null) {
-			System.setProperty(
-				"http.proxyHost",
-				parser.getArgumentById(PROXY_HOST).getArgument());
-			System.setProperty(
-				"https.proxyHost",
-				parser.getArgumentById(PROXY_HOST).getArgument());
-			System.setProperty(
-				"http.proxyPort",
-				parser.getArgumentById(PROXY_PORT).getArgument());
-			System.setProperty(
-				"https.proxyPort",
-				parser.getArgumentById(PROXY_PORT).getArgument());
-		} else if (
-			parser.getArgumentById(PROXY_HOST) != null
-				|| parser.getArgumentById(PROXY_PORT) != null) {
-			throw new IllegalUserActionException(
-				JMeterUtils.getResString("proxy_cl_error"));
-		}
-	}
+    /**
+     * Sets a proxy server for the JVM if the command line arguments are specified.
+     */
+    private void setProxy(CLArgsParser parser) throws IllegalUserActionException
+    {
+        if (parser.getArgumentById(PROXY_USERNAME) != null)
+        {
+            if (parser.getArgumentById(PROXY_PASSWORD) != null)
+            {
+                Authenticator.setDefault(new ProxyAuthenticator(
+                    parser.getArgumentById(PROXY_USERNAME).getArgument(),
+                    parser.getArgumentById(PROXY_PASSWORD).getArgument()));
+            } else
+            {
+                Authenticator.setDefault(new ProxyAuthenticator(
+                    parser.getArgumentById(PROXY_USERNAME).getArgument(),
+                    ""));
+            }
+        }
+        if (parser.getArgumentById(PROXY_HOST) != null
+            && parser.getArgumentById(PROXY_PORT) != null)
+        {
+            System.setProperty(
+                "http.proxyHost",
+                parser.getArgumentById(PROXY_HOST).getArgument());
+            System.setProperty(
+                "https.proxyHost",
+                parser.getArgumentById(PROXY_HOST).getArgument());
+            System.setProperty(
+                "http.proxyPort",
+                parser.getArgumentById(PROXY_PORT).getArgument());
+            System.setProperty(
+                "https.proxyPort",
+                parser.getArgumentById(PROXY_PORT).getArgument());
+        } else if (
+            parser.getArgumentById(PROXY_HOST) != null
+            || parser.getArgumentById(PROXY_PORT) != null)
+        {
+            throw new IllegalUserActionException(
+                JMeterUtils.getResString("proxy_cl_error"));
+        }
+    }
 
-	private void initializeProperties(CLArgsParser parser) {
-		if (parser.getArgumentById(PROPFILE_OPT) != null) {
-			JMeterUtils.getProperties(parser.getArgumentById(PROPFILE_OPT).getArgument());
-		} else {
-			JMeterUtils.getProperties(NewDriver.getJMeterDir() +
-				File.separator + "bin" + File.separator + "jmeter.properties");
-		}
-		JMeterUtils.setJMeterHome(NewDriver.getJMeterDir());
-	}
+    private void initializeProperties(CLArgsParser parser)
+    {
+        if (parser.getArgumentById(PROPFILE_OPT) != null)
+        {
+            JMeterUtils.getProperties(parser.getArgumentById(PROPFILE_OPT).getArgument());
+        } else
+        {
+            JMeterUtils.getProperties(NewDriver.getJMeterDir() +
+                                      File.separator + "bin" + File.separator + "jmeter.properties");
+        }
+        JMeterUtils.setJMeterHome(NewDriver.getJMeterDir());
+    }
 
-	public void startServer() {
-		try {
-			RemoteJMeterEngine engine = new RemoteJMeterEngineImpl();
-			while (true) {
-				Thread.sleep(Long.MAX_VALUE);
-			}
-		} catch (Exception ex) {
-			log.error("",ex);
-		}
-	}
+    public void startServer()
+    {
+        try
+        {
+            RemoteJMeterEngine engine = new RemoteJMeterEngineImpl();
+            while (true)
+            {
+                Thread.sleep(Long.MAX_VALUE);
+            }
+        } catch (Exception ex)
+        {
+            log.error("", ex);
+        }
+    }
 
-	public void startNonGui(CLOption testFile, CLOption logFile)
-		throws IllegalUserActionException, IllegalAccessException, ClassNotFoundException, InstantiationException {
-		JMeter driver = new JMeter();
+    public void startNonGui(CLOption testFile, CLOption logFile)
+        throws IllegalUserActionException, IllegalAccessException, ClassNotFoundException, InstantiationException
+    {
+        JMeter driver = new JMeter();
         PluginManager.install(this, false);
 
-		if (testFile == null) {
-			throw new IllegalUserActionException();
-		}
-		if (logFile == null) {
-			driver.run(testFile.getArgument(), null);
-		} else {
-			driver.run(testFile.getArgument(), logFile.getArgument());
-		}
-	}
+        if (testFile == null)
+        {
+            throw new IllegalUserActionException();
+        }
+        if (logFile == null)
+        {
+            driver.run(testFile.getArgument(), null);
+        } else
+        {
+            driver.run(testFile.getArgument(), logFile.getArgument());
+        }
+    }
 
-	private void run(String testFile, String logFile) {
-		FileInputStream reader = null;
-		try {
-			File f = new File(testFile);
-			if (!f.exists() || !f.isFile()) {
-				println("Could not open " + testFile);
-				return;
-			}
+    private void run(String testFile, String logFile)
+    {
+        FileInputStream reader = null;
+        try
+        {
+            File f = new File(testFile);
+            if (!f.exists() || !f.isFile())
+            {
+                println("Could not open " + testFile);
+                return;
+            }
 
-			reader = new FileInputStream(f);
+            reader = new FileInputStream(f);
 
-			HashTree tree = SaveService.loadSubTree(reader);
-			if(logFile != null)
-			{
-				ResultCollector logger = new ResultCollector();
-				logger.setFilename(logFile);
-				tree.add(tree.getArray()[0],logger);
-			}
-			tree.add(tree.getArray()[0],new ListenToTest());			
-			println("Created the tree successfully");
-			StandardJMeterEngine engine = new StandardJMeterEngine();
-			engine.configure(tree);
-			println("Starting the test");
-			engine.runTest();
+            HashTree tree = SaveService.loadSubTree(reader);
+            if (logFile != null)
+            {
+                ResultCollector logger = new ResultCollector();
+                logger.setFilename(logFile);
+                tree.add(tree.getArray()[0], logger);
+            }
+            tree.add(tree.getArray()[0], new ListenToTest());
+            println("Created the tree successfully");
+            StandardJMeterEngine engine = new StandardJMeterEngine();
+            engine.configure(tree);
+            println("Starting the test");
+            engine.runTest();
 
-		} catch (Exception e) {
-			System.out.println("Error in NonGUIDriver" + e.getMessage());
-			log.error("",e);
-		}
-	}
-	
-	/**
-	 * Listen to test and exit program after test completes, after a 5 second delay to give listeners
-	 * a chance to close out their files.
-	 */
-	private class ListenToTest implements TestListener,Runnable
-	{
-		public void testEnded(String host)
-		{
-		}
-		
-		public void testEnded()
-		{
-			Thread stopSoon = new Thread(this);
-			stopSoon.start();			
-		}
-		
-		public void testStarted(String host)
-		{
-		}
-		
-		public void testStarted()
-		{
-			log.info(JMeterUtils.getResString("running_test"));
-		}
-		
-		/**
-		 * This is a hack to allow listeners a chance to close their files.  Must implement 
-		 * a queue for sample responses tied to the engine, and the engine won't deliver testEnded
-		 * signal till all sample responses have been delivered.  Should also improve performance of
-		 * remote JMeter testing.
-		 */
-		public void run()
-		{
-			try {
-				Thread.sleep(5000);
-			} catch(InterruptedException e) {
-			}
-			System.exit(0);
-		}
-	}
+        } catch (Exception e)
+        {
+            System.out.println("Error in NonGUIDriver" + e.getMessage());
+            log.error("", e);
+        }
+    }
 
-	private static void println(String str) {
-		System.out.println(str);
-	}
+    /**
+     * Listen to test and exit program after test completes, after a 5 second delay to give listeners
+     * a chance to close out their files.
+     */
+    private class ListenToTest implements TestListener, Runnable
+    {
+
+        public void testEnded(String host)
+        {
+        }
+
+        public void testEnded()
+        {
+            Thread stopSoon = new Thread(this);
+            stopSoon.start();
+        }
+
+        public void testStarted(String host)
+        {
+        }
+
+        public void testStarted()
+        {
+            log.info(JMeterUtils.getResString("running_test"));
+        }
+
+        /**
+         * This is a hack to allow listeners a chance to close their files.  Must implement
+         * a queue for sample responses tied to the engine, and the engine won't deliver testEnded
+         * signal till all sample responses have been delivered.  Should also improve performance of
+         * remote JMeter testing.
+         */
+        public void run()
+        {
+            try
+            {
+                Thread.sleep(5000);
+            } catch (InterruptedException e)
+            {
+            }
+            System.exit(0);
+        }
+    }
+
+    private static void println(String str)
+    {
+        System.out.println(str);
+    }
 
 
     public String[][] getIconMappings()
     {
-        return new String[][] {
-            { TestPlanGui.class.getName(), "org/apache/jmeter/images/beaker.gif"},
-            { AbstractTimerGui.class.getName(), "org/apache/jmeter/images/timer.gif"},
-            { ThreadGroupGui.class.getName(), "org/apache/jmeter/images/thread.gif"},
-            { AbstractVisualizer.class.getName(), "org/apache/jmeter/images/meter.png"},
-            { AbstractConfigGui.class.getName(), "org/apache/jmeter/images/testtubes.png"},
-            { AbstractModifierGui.class.getName(), "org/apache/jmeter/images/testtubes.gif"},
-            { AbstractResponseBasedModifierGui.class.getName(), "org/apache/jmeter/images/testtubes.gif"},
-            { AbstractControllerGui.class.getName(), "org/apache/jmeter/images/knob.gif"},
-            { WorkBenchGui.class.getName(), "org/apache/jmeter/images/clipboard.gif"},
-            { AbstractSamplerGui.class.getName(), "org/apache/jmeter/images/pipet.png"}
+        return new String[][]{
+            {TestPlanGui.class.getName(), "org/apache/jmeter/images/beaker.gif"},
+            {AbstractTimerGui.class.getName(), "org/apache/jmeter/images/timer.gif"},
+            {ThreadGroupGui.class.getName(), "org/apache/jmeter/images/thread.gif"},
+            {AbstractVisualizer.class.getName(), "org/apache/jmeter/images/meter.png"},
+            {AbstractConfigGui.class.getName(), "org/apache/jmeter/images/testtubes.png"},
+            {AbstractModifierGui.class.getName(), "org/apache/jmeter/images/testtubes.gif"},
+            {AbstractResponseBasedModifierGui.class.getName(), "org/apache/jmeter/images/testtubes.gif"},
+            {AbstractControllerGui.class.getName(), "org/apache/jmeter/images/knob.gif"},
+            {WorkBenchGui.class.getName(), "org/apache/jmeter/images/clipboard.gif"},
+            {AbstractSamplerGui.class.getName(), "org/apache/jmeter/images/pipet.png"}
         };
     }
 
