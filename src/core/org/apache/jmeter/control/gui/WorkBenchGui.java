@@ -53,6 +53,8 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.control.gui;
+
+
 import java.awt.Font;
 import java.util.Collection;
 
@@ -70,7 +72,9 @@ import org.apache.jmeter.gui.util.MenuFactory;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.WorkBench;
 import org.apache.jmeter.util.JMeterUtils;
+
 import org.apache.jorphan.gui.layout.VerticalLayout;
+
 
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
@@ -82,126 +86,127 @@ import org.apache.jorphan.gui.layout.VerticalLayout;
 
 public class WorkBenchGui extends JPanel implements JMeterGUIComponent
 {
+
     NamePanel namePanel;
     private JMeterTreeNode node;
 
 
-        /****************************************
-	 * !ToDo (Constructor description)
-	 ***************************************/
-	public WorkBenchGui()
-	{
-		namePanel = new NamePanel();
-		setName(getStaticLabel());
-		init();
-	}
+    /****************************************
+     * !ToDo (Constructor description)
+     ***************************************/
+    public WorkBenchGui()
+    {
+        namePanel = new NamePanel();
+        setName(getStaticLabel());
+        init();
+    }
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public Collection getMenuCategories()
-	{
-		return null;
-	}
+    /****************************************
+     * !ToDoo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public Collection getMenuCategories()
+    {
+        return null;
+    }
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public String getName()
-	{
-		return namePanel.getName();
-	}
+    /****************************************
+     * !ToDoo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public String getName()
+    {
+        return namePanel.getName();
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param name  !ToDo (Parameter description)
-	 ***************************************/
-	public void setName(String name)
-	{
-		namePanel.setName(name);
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@param name  !ToDo (Parameter description)
+     ***************************************/
+    public void setName(String name)
+    {
+        namePanel.setName(name);
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public TestElement createTestElement()
-	{
-		WorkBench wb = new WorkBench();
-		wb.setProperty(TestElement.NAME, namePanel.getName());
-		wb.setProperty(TestElement.GUI_CLASS, this.getClass().getName());
-		wb.setProperty(TestElement.TEST_CLASS, wb.getClass().getName());
-		return wb;
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public TestElement createTestElement()
+    {
+        WorkBench wb = new WorkBench();
+        wb.setProperty(TestElement.NAME, namePanel.getName());
+        wb.setProperty(TestElement.GUI_CLASS, this.getClass().getName());
+        wb.setProperty(TestElement.TEST_CLASS, wb.getClass().getName());
+        return wb;
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param element  !ToDo (Parameter description)
-	 ***************************************/
-	public void configure(TestElement element)
-	{
-		namePanel.configure(element);
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@param element  !ToDo (Parameter description)
+     ***************************************/
+    public void configure(TestElement element)
+    {
+        namePanel.configure(element);
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public JPopupMenu createPopupMenu()
-	{
-		JPopupMenu menu = new JPopupMenu();
-		JMenu addMenu = MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
-				MenuFactory.SAMPLERS, MenuFactory.CONFIG_ELEMENTS,
-				MenuFactory.NON_TEST_ELEMENTS}, JMeterUtils.getResString("Add"),
-				"Add");
-		menu.add(addMenu);
-		MenuFactory.addEditMenu(menu, false);
-		MenuFactory.addFileMenu(menu);
-		return menu;
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public JPopupMenu createPopupMenu()
+    {
+        JPopupMenu menu = new JPopupMenu();
+        JMenu addMenu = MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
+                                                           MenuFactory.SAMPLERS, MenuFactory.CONFIG_ELEMENTS,
+                                                           MenuFactory.NON_TEST_ELEMENTS}, JMeterUtils.getResString("Add"),
+                                              "Add");
+        menu.add(addMenu);
+        MenuFactory.addEditMenu(menu, false);
+        MenuFactory.addFileMenu(menu);
+        return menu;
+    }
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public String getStaticLabel()
-	{
-		return JMeterUtils.getResString("workbench");
-	}
+    /****************************************
+     * !ToDoo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public String getStaticLabel()
+    {
+        return JMeterUtils.getResString("workbench");
+    }
 
-	private void init()
-	{
-		this.setLayout(new VerticalLayout(5, VerticalLayout.LEFT, VerticalLayout.TOP));
+    private void init()
+    {
+        this.setLayout(new VerticalLayout(5, VerticalLayout.LEFT, VerticalLayout.TOP));
 
-		// MAIN PANEL
-		JPanel mainPanel = new JPanel();
-		Border margin = new EmptyBorder(10, 10, 5, 10);
-		mainPanel.setBorder(margin);
-		mainPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
+        // MAIN PANEL
+        JPanel mainPanel = new JPanel();
+        Border margin = new EmptyBorder(10, 10, 5, 10);
+        mainPanel.setBorder(margin);
+        mainPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
 
-		// TITLE
-		JLabel panelTitleLabel = new JLabel(JMeterUtils.getResString("workbench_title"));
+        // TITLE
+        JLabel panelTitleLabel = new JLabel(JMeterUtils.getResString("workbench_title"));
 
-		Font curFont = panelTitleLabel.getFont();
-		int curFontSize = curFont.getSize();
-		curFontSize += 4;
-		panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
-		mainPanel.add(panelTitleLabel);
+        Font curFont = panelTitleLabel.getFont();
+        int curFontSize = curFont.getSize();
+        curFontSize += 4;
+        panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
+        mainPanel.add(panelTitleLabel);
 
-		// NAME
-		mainPanel.add(namePanel);
+        // NAME
+        mainPanel.add(namePanel);
 
-		this.add(mainPanel);
-	}
+        this.add(mainPanel);
+    }
 
 
     public void setNode(JMeterTreeNode node)
