@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,26 +53,27 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.protocol.jdbc.control.gui;
-import java.awt.Font;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 
-import org.apache.jmeter.protocol.jdbc.config.gui.DbConfigGui;
-import org.apache.jmeter.protocol.jdbc.config.gui.PoolConfigGui;
-import org.apache.jmeter.protocol.jdbc.config.gui.SqlConfigGui;
+import java.awt.*;
+
+import javax.swing.*;
+
+import org.apache.jmeter.gui.BorderedPanel;
+import org.apache.jmeter.gui.GUIFactory;
+import org.apache.jmeter.gui.util.*;
 import org.apache.jmeter.protocol.jdbc.sampler.JDBCSampler;
 import org.apache.jmeter.samplers.gui.AbstractSamplerGui;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jorphan.gui.layout.VerticalLayout;
+import org.apache.jmeter.util.LocaleChangeEvent;
+
 
 /****************************************
  * Title: Description: Copyright: Copyright (c) 2001 Company:
  *
  *@author    Michael Stover
+ * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  *@created   $Date$
  *@version   1.0
  ***************************************/
@@ -80,75 +81,189 @@ import org.apache.jorphan.gui.layout.VerticalLayout;
 public class JdbcTestSampleGui extends AbstractSamplerGui
 {
 
-	PoolConfigGui poolGui;
-	DbConfigGui dbGui;
-	SqlConfigGui sqlGui;
+    private BorderedPanel connectionPanel;
+    private JLabel driverLabel;
+    private JTextField driverInput;
+    private JLabel urlLabel;
+    private JTextField urlInput;
+    private JLabel usernameLabel;
+    private JTextField usernameInput;
+    private JLabel passwordLabel;
+    private JTextField passwordInput;
+    private BorderedPanel poolPanel;
+    private JLabel connectionsLabel;
+    private JTextField connectionsInput;
+    private JLabel maxUsageLabel;
+    private JTextField maxUsageInput;
+    private JLabel sqlLabel;
+    private JTextArea sqlInput;
+    private JScrollPane sqlInputScroller;
 
 
-	/****************************************
-	 * !ToDo (Constructor description)
-	 ***************************************/
-	public JdbcTestSampleGui()
-	{
-		init();
-	}
+    /****************************************
+     * !ToDo (Constructor description)
+     ***************************************/
+    public JdbcTestSampleGui()
+    {
+    }
 
-	public void configure(TestElement element)
-	{
-		super.configure(element);
-		dbGui.configure(element);
-		poolGui.configure(element);
-		sqlGui.configure(element);
-	}
 
-	public String getStaticLabel()
-	{
-		return JMeterUtils.getResString("database_testing_title");
-	}
+    public void configure(TestElement element)
+    {
+        super.configure(element);
 
-	public TestElement createTestElement()
-	{
-		JDBCSampler sampler = new JDBCSampler();
-		sampler.addChildElement(dbGui.createTestElement());
-		sampler.addChildElement(poolGui.createTestElement());
-		sampler.addChildElement(sqlGui.createTestElement());
-		configureTestElement(sampler);
-		return sampler;
-	}
+        driverInput.setText((String)element.getProperty(JDBCSampler.DRIVER));
+        urlInput.setText((String)element.getProperty(JDBCSampler.URL));
+        usernameInput.setText((String)element.getProperty(JDBCSampler.USERNAME));
+        passwordInput.setText((String)element.getProperty(JDBCSampler.PASSWORD));
+        sqlInput.setText((String)element.getProperty(JDBCSampler.QUERY));
+        connectionsInput.setText((element.getProperty(JDBCSampler.CONNECTIONS)).toString());
+        maxUsageInput.setText((element.getProperty(JDBCSampler.MAXUSE)).toString());
+    }
 
-	private void init()
-	{
-		this.setLayout(new VerticalLayout(5, VerticalLayout.LEFT, VerticalLayout.TOP));
 
-		// MAIN PANEL
-		JPanel mainPanel = new JPanel();
-		Border margin = new EmptyBorder(10, 10, 5, 10);
-		mainPanel.setBorder(margin);
-		mainPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
+    public String getStaticLabel()
+    {
+        return "database_testing_title";
+    }
 
-		// TITLE
-		JLabel panelTitleLabel = new JLabel(JMeterUtils.getResString("database_testing_title"));
-		Font curFont = panelTitleLabel.getFont();
-		int curFontSize = curFont.getSize();
-		curFontSize += 4;
-		panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
-		mainPanel.add(panelTitleLabel);
 
-		// NAME
-		mainPanel.add(getNamePanel());
+    public TestElement createTestElement()
+    {
+        JDBCSampler sampler = new JDBCSampler();
+//        sampler.addChildElement(dbGui.createTestElement());
+//        sampler.addChildElement(poolGui.createTestElement());
+//        sampler.addChildElement(sqlGui.createTestElement());
+        configureTestElement(sampler);
+        return sampler;
+    }
 
-		// DATABASE
-		dbGui = new DbConfigGui(false);
-		mainPanel.add(dbGui);
 
-		// CONNECTION POOL
-		poolGui = new PoolConfigGui(false);
-		mainPanel.add(poolGui);
+    protected void initComponents()
+    {
+        super.initComponents();
 
-		// SQL
-		sqlGui = new SqlConfigGui(false);
-		mainPanel.add(sqlGui);
+        add(initConnectionPanel());
+        add(initConnectionPoolPanel());
+        add(initSqlPanel());
+    }
 
-		this.add(mainPanel);
-	}
+
+    public void localeChanged(LocaleChangeEvent event)
+    {
+        super.localeChanged(event);
+        updateLocalizedStrings(new JComponent[]{driverLabel, urlLabel, usernameLabel, passwordLabel, connectionsLabel, maxUsageLabel, sqlLabel});
+        connectionPanel.localeChanged(event);
+        poolPanel.localeChanged(event);
+    }
+
+
+    private BorderedPanel initConnectionPanel()
+    {
+        connectionPanel = GUIFactory.createBorderedPanel("database_url_jdbc_props");
+        connectionPanel.setLayout(new GridBagLayout());
+        JMeterGridBagConstraints constraints = new JMeterGridBagConstraints();
+
+        driverLabel = new JLabel(JMeterUtils.getResString("database_driver_class"));
+        driverLabel.setName("database_driver_class");
+        connectionPanel.add(driverLabel, constraints);
+        driverInput = new JTextField(30);
+        driverInput.getDocument().addDocumentListener(new StringFieldDocumentListener(JDBCSampler.DRIVER, driverInput, this));
+        constraints = constraints.incrementX();
+        connectionPanel.add(driverInput, constraints);
+        Component filler = Box.createHorizontalGlue();
+        constraints = constraints.incrementX();
+        constraints.fillHorizontal(1.0);
+        connectionPanel.add(filler, constraints);
+
+        urlLabel = new JLabel(JMeterUtils.getResString("database_url"));
+        urlLabel.setName("database_url");
+        constraints = constraints.nextRow();
+        constraints.fillNone();
+        connectionPanel.add(urlLabel, constraints);
+        urlInput = new JTextField(30);
+        urlInput.getDocument().addDocumentListener(new StringFieldDocumentListener(JDBCSampler.URL, urlInput, this));
+        constraints = constraints.incrementX();
+        connectionPanel.add(urlInput, constraints);
+
+
+        usernameLabel = new JLabel(JMeterUtils.getResString("username"));
+        usernameLabel.setName("username");
+        constraints = constraints.nextRow();
+        constraints.fillNone();
+        connectionPanel.add(usernameLabel, constraints);
+        usernameInput = new JTextField(20);
+        usernameInput.getDocument().addDocumentListener(new StringFieldDocumentListener(JDBCSampler.USERNAME, usernameInput, this));
+        constraints = constraints.incrementX();
+        connectionPanel.add(usernameInput, constraints);
+
+        passwordLabel = new JLabel(JMeterUtils.getResString("password"));
+        passwordLabel.setName("password");
+        constraints = constraints.nextRow();
+        connectionPanel.add(passwordLabel, constraints);
+        passwordInput = new JTextField(20);
+        passwordInput.getDocument().addDocumentListener(new StringFieldDocumentListener(JDBCSampler.PASSWORD, passwordInput, this));
+        constraints = constraints.incrementX();
+        connectionPanel.add(passwordInput, constraints);
+
+        return connectionPanel;
+    }
+
+
+    private BorderedPanel initConnectionPoolPanel()
+    {
+        poolPanel = GUIFactory.createBorderedPanel("database_conn_pool_props");
+        poolPanel.setLayout(new GridBagLayout());
+        JMeterGridBagConstraints constraints = new JMeterGridBagConstraints();
+
+        connectionsLabel = new JLabel(JMeterUtils.getResString("database_conn_pool_size"));
+        connectionsLabel.setName("database_conn_pool_size");
+        poolPanel.add(connectionsLabel, constraints);
+        connectionsInput = new JTextField(5);
+        connectionsInput.setHorizontalAlignment(JTextField.RIGHT);
+        connectionsInput.getDocument().addDocumentListener(new IntegerFieldDocumentListener(JDBCSampler.CONNECTIONS, connectionsInput, this));
+        constraints = constraints.incrementX();
+        poolPanel.add(connectionsInput, constraints);
+        Component filler = Box.createHorizontalGlue();
+        constraints = constraints.incrementX();
+        constraints.fillHorizontal(1.0);
+        poolPanel.add(filler, constraints);
+
+        maxUsageLabel = new JLabel(JMeterUtils.getResString("database_conn_pool_max_usage"));
+        maxUsageLabel.setName("database_conn_pool_max_usage");
+        constraints = constraints.nextRow();
+        constraints.fillNone();
+        poolPanel.add(maxUsageLabel, constraints);
+        maxUsageInput = new JTextField(5);
+        maxUsageInput.setHorizontalAlignment(JTextField.RIGHT);
+        maxUsageInput.getDocument().addDocumentListener(new IntegerFieldDocumentListener(JDBCSampler.MAXUSE, maxUsageInput, this));
+        constraints = constraints.incrementX();
+        poolPanel.add(maxUsageInput, constraints);
+
+        return poolPanel;
+    }
+
+
+    private JPanel initSqlPanel()
+    {
+        JPanel panel = GUIFactory.createPanel();
+        panel.setLayout(new GridBagLayout());
+        JMeterGridBagConstraints constraints = new JMeterGridBagConstraints();
+
+        sqlLabel = new JLabel(JMeterUtils.getResString("database_sql_query_string"));
+        sqlLabel.setName("database_sql_query_string");
+        panel.add(sqlLabel, constraints);
+        Component filler = Box.createHorizontalGlue();
+        constraints = constraints.incrementX();
+        constraints.fillHorizontal(1.0);
+        panel.add(filler, constraints);
+        sqlInput = new JTextArea(10, 60);
+        sqlInput.getDocument().addDocumentListener(new StringFieldDocumentListener(JDBCSampler.QUERY, sqlInput, this));
+        sqlInputScroller = new JScrollPane(sqlInput);
+        sqlInputScroller.setBorder(BorderFactory.createEtchedBorder());
+        constraints = constraints.nextRow();
+        panel.add(sqlInputScroller, constraints);
+
+        return panel;
+    }
 }

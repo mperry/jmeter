@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,13 +53,14 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.protocol.jdbc.sampler;
+
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.protocol.jdbc.config.DbConfig;
@@ -67,60 +68,177 @@ import org.apache.jmeter.protocol.jdbc.config.PoolConfig;
 import org.apache.jmeter.protocol.jdbc.config.SqlConfig;
 import org.apache.jmeter.protocol.jdbc.util.DBConnectionManager;
 import org.apache.jmeter.protocol.jdbc.util.DBKey;
+import org.apache.jmeter.protocol.jdbc.control.gui.JdbcTestSampleGui;
 import org.apache.jmeter.samplers.AbstractSampler;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.TestListener;
+
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
 import org.apache.jorphan.collections.Data;
+
+
 /************************************************************
  *  A sampler which understands JDBC database requests
  *
- *@author     $Author$
+ *@author     mstover
+ * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  *@created    $Date$
  *@version    $Revision$
  ***********************************************************/
 public class JDBCSampler extends AbstractSampler implements TestListener
 {
-    transient private static Logger log =
-            Hierarchy.getDefaultHierarchy().getLoggerFor("jmeter.protocol.jdbc");
-    public final static String URL = "JDBCSampler.url";
-    public final static String DRIVER = "JDBCSampler.driver";
-    public static String CONNECTIONS = "JDBCSampler.connections";
-    public static String MAXUSE = "JDBCSampler.maxuse";
-    //database connection pool manager
+
+    transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor("jmeter.protocol.jdbc");
+
+    public static final String URL = "url";
+    public static final String DRIVER = "driver";
+    public static final String CONNECTIONS = "connections";
+    public static final String MAXUSE = "maxUse";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+    public final static String QUERY = "query";
+
     transient DBConnectionManager manager = DBConnectionManager.getManager();
-    // end method
-    public final static String QUERY = "JDBCSampler.query";
+
     private static Map keyMap = new HashMap();
     private static boolean running = false;
 
-    /**
-     * Creates a JDBCSampler.
-     */
+    private String driver = "";
+    private String url = "";
+    private String username = "";
+    private String password = "";
+    private int connections = 1;
+    private int maxUse = 1;
+    private String query = "";
+
+
     public JDBCSampler()
     {
     }
 
-    public void addCustomTestElement(TestElement element)
+
+    public JDBCSampler(String name)
     {
-        if (element instanceof SqlConfig
-                || element instanceof PoolConfig
-                || element instanceof DbConfig)
-        {
-            this.mergeIn(element);
-        }
+        super(name);
     }
+
+//    public void addCustomTestElement(TestElement element)
+//    {
+//        if (element instanceof SqlConfig
+//            || element instanceof PoolConfig
+//            || element instanceof DbConfig) {
+//            this.mergeIn(element);
+//        }
+//    }
+
+
+    public String getDriver()
+    {
+        return driver;
+    }
+
+
+    public void setDriver(String driver)
+    {
+        this.driver = driver;
+    }
+
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+
+    public void setUrl(String url)
+    {
+        this.url = url;
+    }
+
+
+    public String getUsername()
+    {
+        return username;
+    }
+
+
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+
+    public void setPassword(String password)
+    {
+        this.password = password;
+    }
+
+
+    public int getConnections()
+    {
+        return connections;
+    }
+
+
+    public void setConnections(int connections)
+    {
+        this.connections = connections;
+    }
+
+
+    public int getMaxUse()
+    {
+        return maxUse;
+    }
+
+
+    public void setMaxUse(int maxUse)
+    {
+        this.maxUse = maxUse;
+    }
+
+
+    public String getQuery()
+    {
+        return query;
+    }
+
+
+    public void setQuery(String query)
+    {
+        this.query = query;
+    }
+
+
+    public Set getValidSubelementTypes()
+    {
+        Set answer = super.getValidSubelementTypes();
+
+        answer.add(SqlConfig.class);
+        answer.add(PoolConfig.class);
+        answer.add(DbConfig.class);
+        return answer;
+    }
+
 
     public void testStarted(String host)
     {
     }
 
+
     public void testEnded(String host)
     {
     }
+
 
     public synchronized void testStarted()
     {
@@ -129,6 +247,7 @@ public class JDBCSampler extends AbstractSampler implements TestListener
             running = true;
         }
     }
+
 
     public synchronized void testEnded()
     {
@@ -140,11 +259,13 @@ public class JDBCSampler extends AbstractSampler implements TestListener
         }
     }
 
-    public String getQuery()
-    {
-        return this.getPropertyAsString(QUERY);
-    }
 
+    /************************************************************
+     *  !ToDo (Method description)
+     *
+     *@param  e  !ToDo (Parameter description)
+     *@return    !ToDo (Return description)
+     ***********************************************************/
     public SampleResult sample(Entry e)
     {
         DBKey key = getKey();
@@ -167,8 +288,7 @@ public class JDBCSampler extends AbstractSampler implements TestListener
                 try
                 {
                     Thread.sleep(10);
-                }
-                catch (Exception err)
+                } catch (Exception err)
                 {
                     count++;
                 }
@@ -182,8 +302,7 @@ public class JDBCSampler extends AbstractSampler implements TestListener
                 rs = stmt.getResultSet();
                 data = getDataFromResultSet(rs);
                 rs.close();
-            }
-            else
+            } else
             {
                 int updateCount = stmt.getUpdateCount();
             }
@@ -192,16 +311,14 @@ public class JDBCSampler extends AbstractSampler implements TestListener
             res.setResponseData(data.toString().getBytes());
             res.setDataType(res.TEXT);
             res.setSuccessful(true);
-        }
-        catch (Exception ex)
+        } catch (Exception ex)
         {
             if (rs != null)
             {
                 try
                 {
                     rs.close();
-                }
-                catch (SQLException err)
+                } catch (SQLException err)
                 {
                     rs = null;
                 }
@@ -211,14 +328,13 @@ public class JDBCSampler extends AbstractSampler implements TestListener
                 try
                 {
                     stmt.close();
-                }
-                catch (SQLException err)
+                } catch (SQLException err)
                 {
                     stmt = null;
                 }
             }
             manager.releaseConnection(con);
-            log.error("Error in JDBC sampling", ex);
+            log.error("", ex);
             res.setResponseData(new byte[0]);
             res.setSuccessful(false);
         }
@@ -230,60 +346,34 @@ public class JDBCSampler extends AbstractSampler implements TestListener
         return res;
     }
 
-    public String getUrl()
-    {
-        return getPropertyAsString(URL);
-    }
-
-    public String getUsername()
-    {
-        return getPropertyAsString(ConfigTestElement.USERNAME);
-    }
-
-    public String getPassword()
-    {
-        return getPropertyAsString(ConfigTestElement.PASSWORD);
-    }
-
-    public String getDriver()
-    {
-        return getPropertyAsString(DRIVER);
-    }
-
-    public int getMaxUse()
-    {
-        return getPropertyAsInt(this.MAXUSE);
-    }
-
-    public int getNumConnections()
-    {
-        return getPropertyAsInt(CONNECTIONS);
-    }
 
     private DBKey getKey()
     {
-        DBKey key = (DBKey) keyMap.get(getUrl());
+        DBKey key = (DBKey)keyMap.get(getUrl());
         if (key == null)
         {
-            key = manager.getKey(getUrl(),
-                                 getUsername(),
-                                 getPassword(),
-                                 getDriver(),
-                                 getMaxUse(),
-                                 getNumConnections());
+            key =
+                manager.getKey(
+                    getUrl(),
+                    getUsername(),
+                    getPassword(),
+                    getDriver(),
+                    getMaxUse(),
+                    getConnections());
             keyMap.put(getUrl(), key);
         }
         return key;
     }
 
-    /**
-     * Gets a Data object from a ResultSet.
+
+    /************************************************************
+     *  Gets a Data object from a ResultSet.
      *
-     * @param  rs                      ResultSet passed in from a database query
-     * @return                         A Data object (com.stover.utils)
-     * @exception  SQLException        !ToDo (Exception description)
-     * @throws  java.sql.SQLException
-     */
+     *@param  rs                      ResultSet passed in from a database query
+     *@return                         A Data object (com.stover.utils)
+     *@exception  SQLException        !ToDo (Exception description)
+     *@throws  java.sql.SQLException
+     ***********************************************************/
     private Data getDataFromResultSet(ResultSet rs) throws SQLException
     {
         ResultSetMetaData meta;
@@ -304,10 +394,9 @@ public class JDBCSampler extends AbstractSampler implements TestListener
                 Object o = rs.getObject(count + 1);
                 if (o == null)
                 {
-                }
-                else if (o instanceof byte[])
+                } else if (o instanceof byte[])
                 {
-                    o = new String((byte[]) o);
+                    o = new String((byte[])o);
                 }
                 data.addColumnValue(dbCols[count], o);
             }
@@ -315,8 +404,11 @@ public class JDBCSampler extends AbstractSampler implements TestListener
         return data;
     }
 
+
     public String toString()
     {
-        return getUrl()+", user: "+getUsername()+"\n"+getQuery();
+        return getUrl() + ", user: " + getUsername() + "\n" + getQuery();
     }
+
+
 }
