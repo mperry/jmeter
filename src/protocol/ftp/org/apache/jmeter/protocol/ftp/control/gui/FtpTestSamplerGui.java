@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,95 +53,141 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.protocol.ftp.control.gui;
-import java.awt.Font;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 
-import org.apache.jmeter.config.gui.LoginConfigGui;
-import org.apache.jmeter.protocol.ftp.config.gui.FtpConfigGui;
+import java.awt.*;
+
+import javax.swing.*;
+
+import org.apache.jmeter.gui.*;
+import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
+import org.apache.jmeter.gui.util.StringFieldDocumentListener;
 import org.apache.jmeter.protocol.ftp.sampler.FTPSampler;
 import org.apache.jmeter.samplers.gui.AbstractSamplerGui;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jorphan.gui.layout.VerticalLayout;
+import org.apache.jmeter.util.LocaleChangeEvent;
+
 
 /****************************************
  * Title: Apache JMeter Description: Copyright: Copyright (c) 2000 Company:
  * Apache Foundation
  *
- *@author    Michael Stover
- *@created   $Date$
- *@version   1.0
+ * @author    Michael Stover
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   $Date$
+ * @version   1.0
  ***************************************/
 
 public class FtpTestSamplerGui extends AbstractSamplerGui
 {
-	private LoginConfigGui loginPanel;
-	private FtpConfigGui ftpDefaultPanel;
 
-	/****************************************
-	 * !ToDo (Constructor description)
-	 ***************************************/
-	public FtpTestSamplerGui()
-	{
-		init();
-	}
-
-	public void configure(TestElement element)
-	{
-		super.configure(element);
-		loginPanel.configure(element);
-		ftpDefaultPanel.configure(element);
-	}
+    private JLabel serverLabel;
+    private JLabel filenameLabel;
+    private JTextField serverInput;
+    private JTextField filenameInput;
+    private BorderedPanel serverPanel;
+    private JLabel usernameLabel;
+    private JTextField usernameInput;
+    private JLabel passwordLabel;
+    private JTextField passwordInput;
 
 
-	public TestElement createTestElement()
-	{
-		FTPSampler sampler = new FTPSampler();
-		sampler.addChildElement(ftpDefaultPanel.createTestElement());
-		sampler.addChildElement(loginPanel.createTestElement());
-		this.configureTestElement(sampler);
-		return sampler;
-	}
+    public FtpTestSamplerGui()
+    {
+    }
 
-	public String getStaticLabel()
-	{
-		return JMeterUtils.getResString("ftp_testing_title");
-	}
 
-	private void init()
-	{
-		this.setLayout(new VerticalLayout(5, VerticalLayout.LEFT, VerticalLayout.TOP));
+    public void configure(TestElement element)
+    {
+        super.configure(element);
 
-		// MAIN PANEL
-		JPanel mainPanel = new JPanel();
-		Border margin = new EmptyBorder(10, 10, 5, 10);
-		mainPanel.setBorder(margin);
-		mainPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
+        serverInput.setText((String)element.getProperty(FTPSampler.SERVER));
+        usernameInput.setText((String)element.getProperty(FTPSampler.USERNAME));
+        passwordInput.setText((String)element.getProperty(FTPSampler.PASSWORD));
+        filenameInput.setText((String)element.getProperty(FTPSampler.FILENAME));
+    }
 
-		// TITLE
-		JLabel panelTitleLabel = new JLabel(JMeterUtils.getResString("ftp_testing_title"));
-		Font curFont = panelTitleLabel.getFont();
-		int curFontSize = curFont.getSize();
-		curFontSize += 4;
-		panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
-		mainPanel.add(panelTitleLabel);
 
-		// NAME
-		mainPanel.add(getNamePanel());
+    public TestElement createTestElement()
+    {
+        FTPSampler sampler = new FTPSampler();
+//        sampler.addChildElement(ftpDefaultPanel.createTestElement());
+//        sampler.addChildElement(loginPanel.createTestElement());
+//        this.configureTestElement(sampler);
+        return sampler;
+    }
 
-		loginPanel = new LoginConfigGui(false);
-		ftpDefaultPanel = new FtpConfigGui(false);
-		//ftpDefaultPanel.setBorder(BorderFactory.createTitledBorder("Default Values"));
-		loginPanel.setBorder(BorderFactory.createTitledBorder(JMeterUtils.getResString("login_config")));
 
-		mainPanel.add(getNamePanel());
-		mainPanel.add(ftpDefaultPanel);
-		mainPanel.add(loginPanel);
-		this.add(mainPanel);
-	}
+    public String getStaticLabel()
+    {
+        return "ftp_testing_title";
+    }
+
+
+    protected void initComponents()
+    {
+        super.initComponents();
+
+        serverPanel = GUIFactory.createBorderedPanel("ftp_server_config");
+        serverPanel.setLayout(new GridBagLayout());
+        JMeterGridBagConstraints constraints = new JMeterGridBagConstraints();
+        serverLabel = new JLabel(JMeterUtils.getResString("server"));
+        serverLabel.setName("server");
+        serverPanel.add(serverLabel, constraints);
+        serverInput = new JTextField(30);
+        serverInput.setName(FTPSampler.SERVER);
+        serverInput.getDocument().addDocumentListener(new StringFieldDocumentListener(FTPSampler.SERVER, serverInput, this));
+        constraints = constraints.incrementX();
+        serverPanel.add(serverInput, constraints);
+        Component filler = Box.createHorizontalGlue();
+        constraints = constraints.incrementX();
+        constraints.fillHorizontal(1.0);
+        serverPanel.add(filler, constraints);
+
+        usernameLabel = new JLabel(JMeterUtils.getResString("username"));
+        usernameLabel.setName("username");
+        constraints = constraints.nextRow();
+        constraints.fillNone();
+        serverPanel.add(usernameLabel, constraints);
+        usernameInput = new JTextField(30);
+        usernameInput.setName(FTPSampler.USERNAME);
+        usernameInput.getDocument().addDocumentListener(new StringFieldDocumentListener(FTPSampler.USERNAME, usernameInput, this));
+        constraints = constraints.incrementX();
+        serverPanel.add(usernameInput, constraints);
+
+        passwordLabel = new JLabel(JMeterUtils.getResString("password"));
+        passwordLabel.setName("password");
+        constraints = constraints.nextRow();
+        serverPanel.add(passwordLabel, constraints);
+        passwordInput = new JTextField(30);
+        passwordInput.setName(FTPSampler.PASSWORD);
+        passwordInput.getDocument().addDocumentListener(new StringFieldDocumentListener(FTPSampler.PASSWORD, passwordInput, this));
+        constraints = constraints.incrementX();
+        serverPanel.add(passwordInput, constraints);
+        add(serverPanel);
+
+
+        JPanel panel = GUIFactory.createPanel();
+        panel.setLayout(new GridBagLayout());
+        filenameLabel = new JLabel(JMeterUtils.getResString("file_to_retrieve"));
+        filenameLabel.setName("file_to_retrieve");
+        constraints = new JMeterGridBagConstraints();
+        panel.add(filenameLabel, constraints);
+
+        filenameInput = new JTextField(50);
+        filenameInput.setName(FTPSampler.FILENAME);
+        filenameInput.getDocument().addDocumentListener(new StringFieldDocumentListener(FTPSampler.FILENAME, filenameInput, this));
+        constraints = constraints.incrementX();
+        panel.add(filenameInput, constraints);
+        add(panel);
+    }
+
+
+    public void localeChanged(LocaleChangeEvent event)
+    {
+        super.localeChanged(event);
+        updateLocalizedStrings(new JComponent[]{serverLabel, usernameLabel, passwordLabel, filenameLabel});
+        serverPanel.localeChanged(event);
+    }
 }

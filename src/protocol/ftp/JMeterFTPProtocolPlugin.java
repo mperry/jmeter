@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,26 +52,54 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.protocol.ftp.config.gui;
 
 
+import org.apache.jmeter.plugin.JMeterPlugin;
+import org.apache.jmeter.protocol.ftp.config.FtpConfig;
+import org.apache.jmeter.protocol.ftp.config.gui.FtpConfigGui;
 import org.apache.jmeter.protocol.ftp.control.gui.FtpTestSamplerGui;
+import org.apache.jmeter.protocol.ftp.sampler.FTPSampler;
 
 
-/****************************************
- * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
- *
- *@author    Michael Stover
- * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- *@created   $Date$
- *@version   1.0
- ***************************************/
-
-public class FtpConfigGui extends FtpTestSamplerGui
+/**
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @version $Revision$
+ */
+public class JMeterFTPProtocolPlugin implements JMeterPlugin
 {
 
-    public String getStaticLabel()
+    public String[][] getIconMappings()
     {
-        return "ftp_sample_title";
+        return new String[][]{
+        };
     }
+
+    public Class[][] getGuiMappings()
+    {
+        return new Class[][]{
+            {FTPSampler.class, FtpTestSamplerGui.class},
+            {FtpConfig.class, FtpConfigGui.class}
+        };
+    }
+
+    public Class[] getElementClasses()
+    {
+        return new Class[]{
+            FTPSampler.class,
+            FtpConfig.class
+        };
+    }
+
+
+    public Class[] getJavaSamplerClientClasses()
+    {
+        return new Class[0];
+    }
+
+
+    public String[][] getResourceBundles()
+    {
+        return new String[0][0];
+    }
+
 }

@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,13 +52,15 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
- package org.apache.jmeter.protocol.ftp.config;
+package org.apache.jmeter.protocol.ftp.config;
 
-import org.apache.jmeter.config.*;
-import org.apache.jmeter.protocol.ftp.sampler.FTPSampler;
-import org.apache.jmeter.util.JMeterUtils;
-import java.util.Collection;
+
 import java.io.*;
+
+import org.apache.jmeter.config.ConfigTestElement;
+import org.apache.jmeter.protocol.ftp.sampler.FTPSampler;
+import org.apache.jmeter.testelement.category.ConfigCategory;
+
 
 /**
  * Title:        JMeter
@@ -66,53 +68,100 @@ import java.io.*;
  * Copyright:    Copyright (c) 2000
  * Company:      Apache
  * @author Michael Stover
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version 1.0
  */
 
-public class FtpConfig extends ConfigTestElement implements Serializable
+public class FtpConfig extends ConfigTestElement implements Serializable, ConfigCategory
 {
 
-	public FtpConfig()
-	{
-	}
+    public final static String SERVER = FTPSampler.SERVER;
+    public final static String FILENAME = FTPSampler.FILENAME;
+    public final static String USERNAME = FTPSampler.USERNAME;
+    public final static String PASSWORD = FTPSampler.PASSWORD;
 
-	public boolean isComplete()
-	{
-		if ((getServer()   != null)   &&
-			 (getFilename() != null)   &&
-			 (!getServer().equals("")) &&
-			 (!getFilename().equals("")))
-		{
-			return true;
-		}
-		else return false;
-	}
 
-	public void setServer(String newServer)
-	{
-		this.setProperty(FTPSampler.SERVER,newServer);
-	}
-	public String getServer()
-	{
-		return (String)this.getProperty(FTPSampler.SERVER);
-	}
-	public void setFilename(String newFilename)
-	{
-		this.setProperty(FTPSampler.FILENAME,newFilename);
-	}
-	public String getFilename()
-	{
-		return (String)this.getProperty(FTPSampler.FILENAME);
-	}
+    private String server = "";
+    private String filename = "";
+    private String username = "";
+    private String password = "";
 
-	 /**
-	  * Returns a formatted string label describing this sampler
-	  * Example output:
-	  *      ftp://ftp.nowhere.com/pub/README.txt
-	  *
-	  * @return a formatted string label describing this sampler
-	  */
-	 public String getLabel() {
-		  return ("ftp://" + this.getServer() + "/" + this.getFilename());
-	 }
+
+    public FtpConfig()
+    {
+    }
+
+
+    public boolean isComplete()
+    {
+        if ((getServer() != null) &&
+            (getFilename() != null) &&
+            (!getServer().equals("")) &&
+            (!getFilename().equals("")))
+        {
+            return true;
+        } else
+            return false;
+    }
+
+
+    public String getServer()
+    {
+        return server;
+    }
+
+
+    public void setServer(String server)
+    {
+        this.server = server;
+    }
+
+
+    public String getFilename()
+    {
+        return filename;
+    }
+
+
+    public void setFilename(String filename)
+    {
+        this.filename = filename;
+    }
+
+
+    public String getUsername()
+    {
+        return username;
+    }
+
+
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+
+    public void setPassword(String password)
+    {
+        this.password = password;
+    }
+
+
+    /**
+     * Returns a formatted string label describing this sampler
+     * Example output:
+     *      ftp://ftp.nowhere.com/pub/README.txt
+     *
+     * @return a formatted string label describing this sampler
+     */
+    public String getLabel()
+    {
+        return ("ftp://" + this.getServer() + "/" + this.getFilename());
+    }
 }

@@ -543,7 +543,6 @@ public class JMeter implements JMeterPlugin
 //            {RecordingController.class, RecordController.class},
             // sampler
 //            {JavaSampler.class, JavaTestSamplerGui.class},
-//            {FTPSampler.class, FtpTestSamplerGui.class},
 //            {JDBCSampler.class, JdbcTestSampleGui.class},
 //            // timer
 //            // config
@@ -570,13 +569,11 @@ public class JMeter implements JMeterPlugin
             LoopController.class,
 //            // sampler
 //            JavaSampler.class,
-//            FTPSampler.class,
 //            JDBCSampler.class,
 //            // timer
 //            // config
 //            CounterConfig.class,
 //            UserParameters.class,
-//            FtpConfig.class,
 //            JavaConfig.class,
 //            JDBCConfig.class,
 //            // assertions

@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,9 +55,12 @@
 package org.apache.jmeter.protocol.ftp.sampler;
 
 import java.sql.*;
+import java.util.*;
+
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.config.*;
 import org.apache.jmeter.protocol.ftp.config.*;
+import org.apache.jmeter.protocol.ftp.control.gui.FtpTestSamplerGui;
 import org.apache.jmeter.samplers.Sampler;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.samplers.Entry;
@@ -67,58 +70,89 @@ import org.apache.jmeter.testelement.TestElement;
 /************************************************************
  *  A sampler which understands FTP file requests
  *
- *@author     $Author$
- *@created    $Date$
- *@version    $Revision$
+ * @author     mstover
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created    $Date$
+ * @version    $Revision$
  ***********************************************************/
 
 public class FTPSampler extends AbstractSampler
 {
-	public final static String SERVER = "FTPSampler.server";
-	public final static String FILENAME = "FTPSampler.filename";
+	public final static String SERVER = "server";
+	public final static String FILENAME = "filename";
+    public final static String USERNAME = "username";
+    public final static String PASSWORD = "password";
 
-	/************************************************************
-	 *  !ToDo (Constructor description)
-	 ***********************************************************/
+
+    private String server = "";
+    private String filename = "";
+    private String username = "";
+    private String password = "";
+
+
 	public FTPSampler()
 	{
 	}
 
-	public void addCustomTestElement(TestElement element)
-	{
-		if(element instanceof FtpConfig || element instanceof LoginConfig)
-		{
-			mergeIn(element);
-		}
-	}
-	
-	public String getUsername()
-	{
-		return getPropertyAsString(ConfigTestElement.USERNAME);
-	}
-	
-	public String getPassword()
-	{
-		return getPropertyAsString(ConfigTestElement.PASSWORD);
-	}
-	
-	public void setServer(String newServer)
-	{
-		this.setProperty(SERVER,newServer);
-	}
-	public String getServer()
-	{
-		return (String)this.getProperty(SERVER);
-	}
-	public void setFilename(String newFilename)
-	{
-		this.setProperty(FILENAME,newFilename);
-	}
-	public String getFilename()
-	{
-		return (String)this.getProperty(FILENAME);
-	}
-	
+
+    public Set getValidSubelementTypes()
+    {
+        Set answer = super.getValidSubelementTypes();
+
+        answer.add(FtpConfig.class);
+        answer.add(LoginConfig.class);
+        return answer;
+    }
+
+
+    public String getServer()
+    {
+        return server;
+    }
+
+
+    public void setServer(String server)
+    {
+        this.server = server;
+    }
+
+
+    public String getFilename()
+    {
+        return filename;
+    }
+
+
+    public void setFilename(String filename)
+    {
+        this.filename = filename;
+    }
+
+
+    public String getUsername()
+    {
+        return username;
+    }
+
+
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+
+    public void setPassword(String password)
+    {
+        this.password = password;
+    }
+
+
 	/**
 	  * Returns a formatted string label describing this sampler
 	  * Example output:
