@@ -141,7 +141,7 @@ public class ProxyControlGui extends JPanel implements JMeterGUIComponent, Actio
 		init();
 	}
 
-	public JPopupMenu createPopupMenu()
+	public JPopupMenu createPopupMenu(TestElement element)
 	{
 		return MenuFactory.getDefaultTimerMenu();
 	}
@@ -505,8 +505,14 @@ public class ProxyControlGui extends JPanel implements JMeterGUIComponent, Actio
 	}
 
 
-    public void setNode(JMeterTreeNode node)
+    public void setElement(TestElement element)
     {
-        namePanel.setNode(node);
+        namePanel.setElement(element);
+    }
+
+
+    public TestElement getElement()
+    {
+        return namePanel.getElement();
     }
 }

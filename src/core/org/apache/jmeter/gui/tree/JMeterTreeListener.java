@@ -70,7 +70,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.*;
 
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.JMeterGUIComponent;
@@ -112,9 +112,9 @@ public class JMeterTreeListener implements TreeSelectionListener, MouseListener,
      *
      *@param model  Description of Parameter
      ***************************************/
-    public JMeterTreeListener(JMeterTreeModel model)
+    public JMeterTreeListener(Object model)
     {
-        this.model = model;
+//        this.model = model;
         dragIcon.validate();
         dragIcon.setVisible(true);
     }
@@ -432,7 +432,7 @@ public class JMeterTreeListener implements TreeSelectionListener, MouseListener,
 
     private void displayPopUp(MouseEvent e)
     {
-        JPopupMenu pop = ((JMeterGUIComponent)getCurrentNode().getUserObject()).createPopupMenu();
+        JPopupMenu pop = ((JMeterGUIComponent)getCurrentNode().getUserObject()).createPopupMenu(null);
         displayPopUp(e, pop);
     }
 

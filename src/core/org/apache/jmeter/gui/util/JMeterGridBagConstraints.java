@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,90 +52,77 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.control;
-import java.io.*;
-import java.util.*;
-import org.apache.jmeter.config.ConfigElement;
-import org.apache.jmeter.config.Modifier;
-import org.apache.jmeter.config.ResponseBasedModifier;
-import org.apache.jmeter.gui.JMeterComponentModel;
-import org.apache.jmeter.gui.util.MenuFactory;
-import org.apache.jmeter.samplers.*;
-import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jmeter.testelement.TestElement;
 
-/****************************************
- * !ToDo (Class description)
- *
- *@author    $Author$
- *@created   $Date$
- *@version   $Revision$
- ***************************************/
+package org.apache.jmeter.gui.util;
 
-public class ModifyController extends GenericController implements SampleListener,
-		Serializable
-{
-	SampleResult currentResult;
-	private String currentResponse;
 
-	/****************************************
-	 * Constructor for the GeneratorManager object
-	 ***************************************/
-	public ModifyController()
-	{
-	}
+import java.awt.*;
 
-	/****************************************
-	 * Methods to satisfy SampleListener interface.
-	 *
-	 *@param event  !ToDo (Parameter description)
-	 ***************************************/
-	public void sampleStarted(SampleEvent event) { }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param event  !ToDo (Parameter description)
-	 ***************************************/
-	public void sampleStopped(SampleEvent event) { }
+/**
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ */
+public class JMeterGridBagConstraints extends GridBagConstraints {
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param event  !ToDo (Parameter description)
-	 ***************************************/
-	public void sampleOccurred(SampleEvent event)
-	{
-		this.currentResult = event.getResult();
-	}
 
-	/****************************************
-	 * Adds a feature to the ConfigElements attribute of the GenericController
-	 * object
-	 *
-	 *@param entry  The feature to be added to the ConfigElements attribute
-	 ***************************************/
-	protected void addConfigElements(Sampler entry)
-	{
-		if(entry != null)
-		{
-			Iterator iter = this.getConfigElements().iterator();
-			while(iter.hasNext())
-			{
-				Object item = iter.next();
-				if(item instanceof Modifier)
-				{
-					((Modifier)item).modifyEntry(entry);
-				}
-				else if(item instanceof ResponseBasedModifier)
-				{
-					((ResponseBasedModifier)item).modifyEntry(entry, currentResult);
-				}
-				else
-				{
-					entry.addChildElement((TestElement)item);
-				}
-			}
-		}
-	}
+    public JMeterGridBagConstraints()
+    {
+        this(GridBagConstraints.NONE);
+    }
+
+
+    public JMeterGridBagConstraints(int fill)
+    {
+        gridx = 0;
+        gridy = 0;
+        ipadx = 0;
+        ipady = 0;
+        insets = new Insets(3, 3, 3, 3);
+        gridheight = 1;
+        gridwidth = 1;
+        this.fill = fill;
+        weightx = 0;
+        weighty = 0;
+        anchor = GridBagConstraints.WEST;
+    }
+
+    public JMeterGridBagConstraints incrementX() {
+        JMeterGridBagConstraints answer = (JMeterGridBagConstraints)clone();
+        answer.gridx++;
+        return answer;
+    }
+
+    public JMeterGridBagConstraints incrementY() {
+        JMeterGridBagConstraints answer = (JMeterGridBagConstraints)clone();
+        answer.gridy++;
+        return answer;
+    }
+
+    public JMeterGridBagConstraints nextRow() {
+        JMeterGridBagConstraints answer = incrementY();
+        answer.gridx = 0;
+        return answer;
+    }
+
+    public void fillHorizontal(double weight) {
+        fill = GridBagConstraints.HORIZONTAL;
+        weightx = weight;
+    }
+
+    public void fillVertical(double weight) {
+        fill = GridBagConstraints.VERTICAL;
+        weighty = weight;
+    }
+
+    public void fillBoth(double weightx, double weighty) {
+        fill = GridBagConstraints.BOTH;
+        this.weightx = weightx;
+        this.weighty = weighty;
+    }
+
+    public void fillNone() {
+        fill = GridBagConstraints.NONE;
+        weightx = 0;
+        weighty = 0;
+    }
 }

@@ -64,6 +64,7 @@ import org.apache.jorphan.gui.layout.VerticalLayout;
 
 import org.apache.jmeter.gui.util.JMeterBoxedLayout;
 import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.TestElementWrapper;
 import org.apache.jmeter.util.*;
 
 
@@ -91,7 +92,8 @@ public abstract class AbstractJMeterGuiComponent
 {
 
     private TestElement element;
-    private NamePanel namePanel;
+    // todo: make this private
+    protected NamePanel namePanel;
     private JLabel panelTitleLabel;
     private boolean namedPanel = true;
 
@@ -142,7 +144,11 @@ public abstract class AbstractJMeterGuiComponent
         {
             getNamePanel().setElement(element);
         }
-        configure(element);
+        if (element instanceof TestElementWrapper) {
+            configure(((TestElementWrapper)element).unwrap());
+        } else {
+            configure(element);
+        }
     }
 
     /**
@@ -274,5 +280,11 @@ public abstract class AbstractJMeterGuiComponent
             namePanel.localeChanged(event);
             updateLocalizedStrings(new JComponent[]{panelTitleLabel});
         }
+    }
+
+
+    public JPopupMenu createPopupMenu(TestElement testElement)
+    {
+        return null;
     }
 }

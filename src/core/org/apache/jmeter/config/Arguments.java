@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001, 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,24 +72,19 @@ import org.apache.jmeter.util.JMeterUtils;
  * Title: Apache JMeter Description: Copyright: Copyright (c) 2000 Company:
  * Apache Foundation
  *
- *@author    Michael Stover
- *@created   $Date$
- *@version   1.0
+ * @author    Michael Stover
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   $Date$
+ * @version   1.0
  ***************************************/
 
 public class Arguments extends ConfigTestElement implements Serializable
 {
 
-    /****************************************
-     * !ToDo (Field description)
-     ***************************************/
-    public static String[] COLUMN_NAMES = {
-        JMeterUtils.getResString("name"),
-        JMeterUtils.getResString("value"),
-        JMeterUtils.getResString("metadata")
-    };
+    public final static String ARGUMENTS = "arguments";
 
-    private final static String ARGUMENTS = "Arguments.arguments";
+
+    private List arguments = new ArrayList();
 
 
     /****************************************
@@ -97,18 +92,20 @@ public class Arguments extends ConfigTestElement implements Serializable
      ***************************************/
     public Arguments()
     {
-        setProperty(ARGUMENTS, new ArrayList());
     }
+
 
     public List getArguments()
     {
-        return (List)getProperty(ARGUMENTS);
+        return arguments;
     }
+
 
     public void setArguments(List arguments)
     {
-        setProperty(ARGUMENTS, arguments);
+        this.arguments = arguments;
     }
+
 
     public Map getArgumentsAsMap()
     {

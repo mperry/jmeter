@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,90 +52,60 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.control;
-import java.io.*;
-import java.util.*;
-import org.apache.jmeter.config.ConfigElement;
-import org.apache.jmeter.config.Modifier;
-import org.apache.jmeter.config.ResponseBasedModifier;
-import org.apache.jmeter.gui.JMeterComponentModel;
-import org.apache.jmeter.gui.util.MenuFactory;
-import org.apache.jmeter.samplers.*;
-import org.apache.jmeter.util.JMeterUtils;
+
+package org.apache.jmeter.gui.util;
+
+
+import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.*;
+
 import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.gui.JMeterGUIComponent;
 
-/****************************************
- * !ToDo (Class description)
- *
- *@author    $Author$
- *@created   $Date$
- *@version   $Revision$
- ***************************************/
 
-public class ModifyController extends GenericController implements SampleListener,
-		Serializable
+/**
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ */
+public class IntegerFieldDocumentListener implements DocumentListener
 {
-	SampleResult currentResult;
-	private String currentResponse;
+    private JMeterGUIComponent gui;
+    private String property;
+    private JTextField field;
 
-	/****************************************
-	 * Constructor for the GeneratorManager object
-	 ***************************************/
-	public ModifyController()
-	{
-	}
 
-	/****************************************
-	 * Methods to satisfy SampleListener interface.
-	 *
-	 *@param event  !ToDo (Parameter description)
-	 ***************************************/
-	public void sampleStarted(SampleEvent event) { }
+    public IntegerFieldDocumentListener(String property, JTextField field, JMeterGUIComponent gui)
+    {
+        this.property = property;
+        this.field = field;
+        this.gui = gui;
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param event  !ToDo (Parameter description)
-	 ***************************************/
-	public void sampleStopped(SampleEvent event) { }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param event  !ToDo (Parameter description)
-	 ***************************************/
-	public void sampleOccurred(SampleEvent event)
-	{
-		this.currentResult = event.getResult();
-	}
+    public void insertUpdate(DocumentEvent e)
+    {
+        setValue();
+    }
 
-	/****************************************
-	 * Adds a feature to the ConfigElements attribute of the GenericController
-	 * object
-	 *
-	 *@param entry  The feature to be added to the ConfigElements attribute
-	 ***************************************/
-	protected void addConfigElements(Sampler entry)
-	{
-		if(entry != null)
-		{
-			Iterator iter = this.getConfigElements().iterator();
-			while(iter.hasNext())
-			{
-				Object item = iter.next();
-				if(item instanceof Modifier)
-				{
-					((Modifier)item).modifyEntry(entry);
-				}
-				else if(item instanceof ResponseBasedModifier)
-				{
-					((ResponseBasedModifier)item).modifyEntry(entry, currentResult);
-				}
-				else
-				{
-					entry.addChildElement((TestElement)item);
-				}
-			}
-		}
-	}
+
+    public void removeUpdate(DocumentEvent e)
+    {
+        setValue();
+    }
+
+
+    public void changedUpdate(DocumentEvent e)
+    {
+        //
+    }
+
+
+    private void setValue()
+    {
+        try {
+            gui.getElement().setProperty(property, new Integer(field.getText()));
+        } catch (NumberFormatException e) {
+            //
+        }
+    }
 }

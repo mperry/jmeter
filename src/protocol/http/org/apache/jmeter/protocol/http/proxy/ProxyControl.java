@@ -172,17 +172,6 @@ public class ProxyControl extends ConfigTestElement implements Serializable
 		return org.apache.jmeter.protocol.http.proxy.gui.ProxyControlGui.class;
 	}
 	/************************************************************
-	 *  !ToDo (Method description)
-	 *
-	 *@return    !ToDo (Return description)
-	 ***********************************************************/
-	public Object clone()
-	{
-		ProxyControl clone = new ProxyControl();
-		configureClone(clone);
-		return clone;
-	}
-	/************************************************************
 	 *  !ToDo
 	 *
 	 *@param  config  !ToDo

@@ -67,9 +67,10 @@ import org.apache.jmeter.gui.util.MenuFactory;
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
- *@author    Michael Stover
- *@created   March 13, 2001
- *@version   1.0
+ * @author    Michael Stover
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   March 13, 2001
+ * @version   1.0
  ***************************************/
 
 public class WorkBench extends TestPlan implements Serializable
@@ -78,20 +79,11 @@ public class WorkBench extends TestPlan implements Serializable
     private static List itemsCanAdd = null;
     private boolean isRootNode;
 
-    /****************************************
-     * Constructor for the WorkBench object
-     *
-     *@param name        Description of Parameter
-     *@param isRootNode  !ToDo (Parameter description)
-     ***************************************/
-    public WorkBench(String name, boolean isRootNode)
+    public WorkBench(String name)
     {
         setName(name);
     }
 
-    /****************************************
-     * !ToDo (Constructor description)
-     ***************************************/
     public WorkBench()
     {
     }

@@ -160,7 +160,7 @@ public class WorkBenchGui extends JPanel implements JMeterGUIComponent
      *
      *@return   !ToDo (Return description)
      ***************************************/
-    public JPopupMenu createPopupMenu()
+    public JPopupMenu createPopupMenu(TestElement element)
     {
         JPopupMenu menu = new JPopupMenu();
         JMenu addMenu = MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
@@ -209,9 +209,15 @@ public class WorkBenchGui extends JPanel implements JMeterGUIComponent
     }
 
 
-    public void setNode(JMeterTreeNode node)
+    public void setElement(TestElement element)
     {
         this.node = node;
-        namePanel.setNode(node);
+        namePanel.setElement(element);
+    }
+
+
+    public TestElement getElement()
+    {
+        return namePanel.getElement();
     }
 }

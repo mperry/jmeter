@@ -53,12 +53,12 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.gui.tree;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.*;
+
+import org.apache.jorphan.collections.HashTree;
+import org.apache.jorphan.collections.ListedHashTree;
 
 import org.apache.jmeter.config.gui.AbstractConfigGui;
 import org.apache.jmeter.control.gui.TestPlanGui;
@@ -68,8 +68,6 @@ import org.apache.jmeter.gui.JMeterGUIComponent;
 import org.apache.jmeter.gui.NamePanel;
 import org.apache.jmeter.testelement.TestPlan;
 import org.apache.jmeter.testelement.WorkBench;
-import org.apache.jorphan.collections.HashTree;
-import org.apache.jorphan.collections.ListedHashTree;
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *

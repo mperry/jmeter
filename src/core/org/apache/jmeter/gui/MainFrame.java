@@ -94,6 +94,7 @@ import org.apache.jmeter.gui.action.GlobalMouseListener;
 import org.apache.jmeter.gui.tree.JMeterCellRenderer;
 import org.apache.jmeter.gui.tree.JMeterTreeListener;
 import org.apache.jmeter.gui.util.JMeterMenuBar;
+import org.apache.jmeter.gui.panel.TestPlanPanel;
 import org.apache.jmeter.samplers.Remoteable;
 import org.apache.jmeter.testelement.TestListener;
 import org.apache.jmeter.util.JMeterUtils;
@@ -101,9 +102,10 @@ import org.apache.jorphan.gui.ComponentUtil;
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
- *@author    Michael Stover
- *@created   $Date$
- *@version   1.0
+ * @author    Michael Stover
+ * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   $Date$
+ * @version   1.0
  ***************************************/
 
 public class MainFrame extends JFrame implements TestListener,Remoteable
@@ -343,10 +345,8 @@ public class MainFrame extends JFrame implements TestListener,Remoteable
 		menuBar = new JMeterMenuBar();
 		createToolBar();
 		createMainPanel();
-		createTreePanel();
 		addThemAll();
 		addWindowListener(new WindowHappenings());
-		tree.setSelectionRow(1);
 		this.addMouseListener(new GlobalMouseListener());
 	}
 
@@ -372,20 +372,14 @@ public class MainFrame extends JFrame implements TestListener,Remoteable
 			gbc.weighty = 0;
 			all.add(toolPanel, gbc.clone());
 		}
-		JSplitPane treeAndMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		treeAndMain.setLeftComponent(treePanel);
-		treeAndMain.setRightComponent(new JScrollPane(mainPanel));
 
 		// The setResizeWeight() method was added to JDK1.3. For now, JMeter should
 		// remain compatible with JDK1.2.
 		//treeAndMain.setResizeWeight(.2);
 
-		treeAndMain.setContinuousLayout(true);
-		{
-			gbc.gridy++;
-			gbc.weighty = 1;
-			all.add(treeAndMain, gbc.clone());
-		}
+        gbc.gridy++;
+        gbc.weighty = 1;
+        all.add(mainPanel, gbc.clone());
 		this.getContentPane().add(all);
 	}
 
@@ -416,10 +410,8 @@ public class MainFrame extends JFrame implements TestListener,Remoteable
 
 	private void createMainPanel()
 	{
-		mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(1, 1));
-		mainPanel.add(Box.createGlue());
-	}
+        mainPanel = new TestPlanPanel(treeModel, treeListener);
+    }
 
 	private JTree makeTree()
 	{

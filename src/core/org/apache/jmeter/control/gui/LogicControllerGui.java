@@ -53,6 +53,8 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.control.gui;
+
+
 import java.awt.Font;
 
 import javax.swing.JLabel;
@@ -64,97 +66,35 @@ import org.apache.jmeter.control.GenericController;
 import org.apache.jmeter.gui.NamePanel;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
+
 import org.apache.jorphan.gui.layout.VerticalLayout;
 
-/****************************************
+
+/**
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
- *@author    Kevin Hammond
- *@created   $Date$
- *@version   1.0
- ***************************************/
-
+ * @author    Kevin Hammond
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   $Date$
+ * @version   1.0
+ */
 public class LogicControllerGui extends AbstractControllerGui
 {
 
-	/****************************************
-	 * !ToDo (Constructor description)
-	 ***************************************/
-	public LogicControllerGui()
-	{
-		init();
-		setName(getStaticLabel());
-	}
+    public LogicControllerGui()
+    {
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param name  !ToDo (Parameter description)
-	 ***************************************/
-	public void setName(String name)
-	{
-		namePanel.setName(name);
-	}
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public String getName()
-	{
-		return namePanel.getName();
-	}
+    public TestElement createTestElement()
+    {
+        GenericController lc = new GenericController();
+        configureTestElement(lc);
+        return lc;
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public TestElement createTestElement()
-	{
-		GenericController lc = new GenericController();
-		configureTestElement(lc);
-		return lc;
-	}
-
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public String getStaticLabel()
-	{
-		return JMeterUtils.getResString("logic_controller_title");
-	}
-
-	/****************************************
-	 * !ToDo (Method description)
-	 ***************************************/
-	public void updateGui() { }
-
-	private void init()
-	{
-		this.setLayout(new VerticalLayout(5, VerticalLayout.LEFT, VerticalLayout.TOP));
-
-		// MAIN PANEL
-		JPanel mainPanel = new JPanel();
-		Border margin = new EmptyBorder(10, 10, 5, 10);
-		mainPanel.setBorder(margin);
-		mainPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
-
-		// TITLE
-		JLabel panelTitleLabel = new JLabel(JMeterUtils.getResString("logic_controller_title"));
-		Font curFont = panelTitleLabel.getFont();
-		int curFontSize = curFont.getSize();
-		curFontSize += 4;
-		panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
-		mainPanel.add(panelTitleLabel);
-
-		// NAME
-		namePanel = new NamePanel();
-		mainPanel.add(namePanel);
-
-		this.add(mainPanel);
-	}
+    public String getStaticLabel()
+    {
+        return "logic_controller_title";
+    }
 }

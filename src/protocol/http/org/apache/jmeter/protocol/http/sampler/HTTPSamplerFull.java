@@ -488,12 +488,6 @@ public class HTTPSamplerFull extends HTTPSampler
 		return errorLevel;
 	}
 
-	public Object clone()
-	{
-		HTTPSamplerFull newSampler = new HTTPSamplerFull();
-		this.configureClone(newSampler);
-		return newSampler;
-	}
 
 	/**
 	 * Returns <code>tidy</code> as HTML parser.

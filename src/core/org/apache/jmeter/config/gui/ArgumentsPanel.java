@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001, 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,351 +53,387 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.config.gui;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.util.Collection;
-import java.util.Iterator;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.table.TableCellEditor;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.util.List;
+
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.table.*;
+
 import junit.framework.TestCase;
 
 import org.apache.jmeter.config.Argument;
 import org.apache.jmeter.config.Arguments;
-import org.apache.jmeter.gui.util.PowerTableModel;
-import org.apache.jmeter.gui.util.TextAreaCellRenderer;
-import org.apache.jmeter.gui.util.TextAreaTableCellEditor;
+import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jorphan.collections.Data;
+import org.apache.jmeter.util.LocaleChangeEvent;
+
 
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
- *@author    Michael Stover
- *@created   March 13, 2001
- *@version   1.0
+ * @author    Michael Stover
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   March 13, 2001
+ * @version   1.0
  ***************************************/
 
-public class ArgumentsPanel extends AbstractConfigGui implements FocusListener,
-		ActionListener,CellEditorListener
+public class ArgumentsPanel extends AbstractConfigGui implements ActionListener, ListSelectionListener, FocusListener
 {
-	JTable table;
-	JButton add;
-	JButton delete;
-	protected PowerTableModel tableModel;
-	String name;
-	JLabel tableLabel;
 
-	private static String ADD = "add";
-	private static String DELETE = "delete";
+    private static String ADD = "add";
+    private static String REMOVE = "remove";
 
-	/****************************************
-	 * Constructor for the ArgumentsPanel object
-	 ***************************************/
-	public ArgumentsPanel()
-	{
-		this(JMeterUtils.getResString("paramtable"));
-	}
-	
-	public void editingCanceled(ChangeEvent e)
-	{
-	}
-	
-	public void editingStopped(ChangeEvent e)
-	{
-	}
-	
-	public ArgumentsPanel(String label)
-	{
-		tableLabel = new JLabel(label);
-		init();
-	}
-	
-	protected JTable getTable()
-	{
-		return table;
-	}
-	
-	protected JButton getDeleteButton()
-	{
-		return delete;
-	}
-	
-	protected JButton getAddButton()
-	{
-		return add;
-	}
+    private JPanel argumentsPanel;
+    private JButton addButton;
+    private JButton removeButton;
+    private JTable argumentsTable;
+    private ArgumentsTableModel tableModel;
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public Collection getMenuCategories()
-	{
-		return null;
-	}
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public String getStaticLabel()
-	{
-		return "Argument List";
-	}
+    public ArgumentsPanel()
+    {
+        super(false);
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public TestElement createTestElement()
-	{
-		Data model = tableModel.getData();
-		Arguments args = new Arguments();
-		model.reset();
-		while(model.next())
-		{
-			args.addArgument((String)model.getColumnValue(Arguments.COLUMN_NAMES[0]),
-					model.getColumnValue(Arguments.COLUMN_NAMES[1]));
-		}
-		this.configureTestElement(args);
-		return (TestElement)args.clone();
-	}
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param el  !ToDo (Parameter description)
-	 ***************************************/
-	public void configure(TestElement el)
-	{
-		super.configure(el);
-		if(el instanceof Arguments)
-		{
-			tableModel.clearData();
-			Iterator iter = ((Arguments)el).getArguments().iterator();
-			while(iter.hasNext())
-			{
-				Argument arg = (Argument)iter.next();
-				tableModel.addRow(new Object[]{arg.getName(),arg.getValue()});
-			}
-		}
-		checkDeleteStatus();
-	}
+    // todo: remove when not used anymore
+    public ArgumentsPanel(String label)
+    {
+        super(false);
+    }
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void focusLost(FocusEvent e)
-	{
-	}
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void focusGained(FocusEvent e) { }
+    public String getStaticLabel()
+    {
+        // this is never used as a standalone gui
+        return "";
+    }
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void actionPerformed(ActionEvent e)
-	{
-		String action = e.getActionCommand();
-		if(action.equals(DELETE))
-		{
-			deleteArgument();
-		}
-		else if(action.equals(ADD))
-		{
-			addArgument();
-		}
-	}
 
-	protected void deleteArgument() {
-		// If a table cell is being edited, we must cancel the editing before
-		// deleting the row
-		if(table.isEditing())
-		{
-			TableCellEditor cellEditor = table.getCellEditor(table.getEditingRow(), table.getEditingColumn());
-			cellEditor.cancelCellEditing();
-		}
-		
-		int rowSelected = table.getSelectedRow();
-		if(rowSelected >= 0)
-		{
-			tableModel.removeRow(rowSelected);
-			tableModel.fireTableDataChanged();
-		
-			// Disable DELETE if there are no rows in the table to delete.
-			if(tableModel.getRowCount() == 0)
-			{
-				delete.setEnabled(false);
-			}
-		
-			// Table still contains one or more rows, so highlight (select)
-			// the appropriate one.
-			else
-			{
-				int rowToSelect = rowSelected;
-		
-				if(rowSelected >= tableModel.getRowCount())
-				{
-					rowToSelect = rowSelected - 1;
-				}
-		
-				table.setRowSelectionInterval(rowToSelect, rowToSelect);
-			}
-		}
-	}
+    public TestElement createTestElement()
+    {
+//        Data model = tableModel.getData();
+        Arguments args = new Arguments();
+//        model.reset();
+//        while (model.next()) {
+//            args.addArgument((String)model.getColumnValue(Arguments.COLUMN_NAMES[0]),
+//                             model.getColumnValue(Arguments.COLUMN_NAMES[1]));
+//        }
+//        this.configureTestElement(args);
+        return (TestElement)args.clone();
+    }
 
-	protected void addArgument() {
-		// If a table cell is being edited, we should accept the current value
-		// and stop the editing before adding a new row.
-		if(table.isEditing())
-		{
-			TableCellEditor cellEditor = table.getCellEditor(table.getEditingRow(), table.getEditingColumn());
-			cellEditor.stopCellEditing();
-		}
-		
-		tableModel.addNewRow();
-		tableModel.fireTableDataChanged();
-		
-		// Enable DELETE (which may already be enabled, but it won't hurt)
-		delete.setEnabled(true);
-		
-		// Highlight (select) the appropriate row.
-		int rowToSelect = tableModel.getRowCount() - 1;
-		table.setRowSelectionInterval(rowToSelect, rowToSelect);
-	}
 
-	/****************************************
-	 * !ToDo
-	 ***************************************/
-	public void addInnerPanel()
-	{
-		initializeTableModel();
-		table = new JTable(tableModel);
-		table.setEnabled(true);
-		table.addFocusListener(this);
-		TextAreaTableCellEditor editor = new TextAreaTableCellEditor();
-		table.setDefaultEditor(String.class,
-				editor);
-		editor.addCellEditorListener(this);
-		TextAreaCellRenderer renderer = new TextAreaCellRenderer();
-		table.setRowHeight(renderer.getPreferredHeight());
-		table.setDefaultRenderer(String.class,renderer);
-		table.setCellSelectionEnabled(true);
-		table.setRowSelectionAllowed(true);
-		table.setColumnSelectionAllowed(false);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    public void configure(TestElement element)
+    {
+        super.configure(element);
 
-		JScrollPane scroller = new JScrollPane(table);
-		Dimension tableDim = scroller.getPreferredSize();
-		tableDim.height = 70;
-		scroller.setPreferredSize(tableDim);
-		scroller.setColumnHeaderView(table.getTableHeader());
+        tableModel = createTableModel(element);
+        argumentsTable.setModel(tableModel);
 
-		add = new JButton(JMeterUtils.getResString("add"));
-		add.setActionCommand(ADD);
-		add.setEnabled(true);
+        DefaultCellEditor editor = new DefaultCellEditor(new JTextField());
+        editor.setClickCountToStart(1);
 
-		delete = new JButton(JMeterUtils.getResString("delete"));
-		delete.setActionCommand(DELETE);
+        for (int i = 0; i < tableModel.getColumnCount(); i++)
+        {
+            if (tableModel.getColumnClass(i) == String.class)
+            {
+                argumentsTable.getColumnModel().getColumn(i).setCellEditor(editor);
+            }
+        }
+        setButtonState();
+    }
 
-		checkDeleteStatus();
 
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-		add.addActionListener(this);
-		delete.addActionListener(this);
-		buttonPanel.add(add);
-		buttonPanel.add(delete);
+    protected ArgumentsTableModel createTableModel(TestElement element)
+    {
+        return new ArgumentsTableModel(((Arguments)element).getArguments());
+    }
 
-		this.add(scroller,BorderLayout.CENTER);
-		this.add(buttonPanel,BorderLayout.SOUTH);
-	}
 
-	protected void initializeTableModel() {
-		tableModel = new PowerTableModel(new String[]{Arguments.COLUMN_NAMES[0],Arguments.COLUMN_NAMES[1]},
-				new Class[]{String.class,String.class});
-	}
+    public void actionPerformed(ActionEvent e)
+    {
+        String action = e.getActionCommand();
+        if (action.equals(REMOVE))
+        {
+            deleteArgument();
+        } else if (action.equals(ADD))
+        {
+            addArgument();
+        }
+    }
 
-	protected void checkDeleteStatus() {
-		// Disable DELETE if there are no rows in the table to delete.
-		if(tableModel.getRowCount() == 0)
-		{
-			delete.setEnabled(false);
-		}
-		else
-		{
-			delete.setEnabled(true);
-		}
-	}
 
-	/****************************************
-	 * !ToDo (Method description)
-	 **************************************
-	public void removeInnerPanel()
-	{
-		table.setEnabled(false);
-		add.setEnabled(false);
-		delete.setEnabled(false);
-		tableModel.removeAllRows();
-		tableModel.fireTableDataChanged();
+    protected void deleteArgument()
+    {
+        // If a table cell is being edited, we must cancel the editing before
+        // deleting the row
+        if (argumentsTable.isEditing())
+        {
+            TableCellEditor cellEditor = argumentsTable.getCellEditor(argumentsTable.getEditingRow(), argumentsTable.getEditingColumn());
+            cellEditor.cancelCellEditing();
+        }
 
-		this.remove(innerPanel);
-		innerPanel = null;
-	}*/
+        int rowSelected = argumentsTable.getSelectedRow();
+        if (rowSelected >= 0)
+        {
+            tableModel.removeArgument(rowSelected);
 
-	private void init()
-	{
-		this.setLayout(new BorderLayout(0,0));
-		this.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-		JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		labelPanel.add(tableLabel);
-		this.add(labelPanel,BorderLayout.NORTH);
-		this.addInnerPanel();
-	}
+            if (tableModel.getRowCount() > 0)
+            {
+                int rowToSelect = rowSelected;
 
-	
-	
-	public static class Test extends TestCase {
-		
-		public Test(String name)
-		{
-			super(name);
-		}
-		
-		public void testArgumentCreation() throws Exception
-		{
-			ArgumentsPanel gui = new ArgumentsPanel();
-			gui.tableModel.addNewRow();
-			gui.tableModel.setValueAt("howdy",0,0);
-			gui.tableModel.setValueAt("doody",0,1);
-			assertEquals("=",((Argument)((Arguments)gui.createTestElement()).getArguments().get(0)).getMetaData());
-		}
-	}
+                if (rowSelected >= tableModel.getRowCount())
+                {
+                    rowToSelect = rowSelected - 1;
+                }
+                argumentsTable.clearSelection();
+                argumentsTable.setRowSelectionInterval(rowToSelect, rowToSelect);
+                argumentsTable.setColumnSelectionInterval(0, 0);
+            }
+            setButtonState();
+        }
+    }
+
+
+    protected void addArgument()
+    {
+        // If a table cell is being edited, we should accept the current value
+        // and stop the editing before adding a new row.
+        if (argumentsTable.isEditing())
+        {
+            TableCellEditor cellEditor = argumentsTable.getCellEditor(argumentsTable.getEditingRow(), argumentsTable.getEditingColumn());
+            cellEditor.stopCellEditing();
+        }
+
+        tableModel.addArgument();
+        // Highlight (select) the appropriate row.
+        int rowToSelect = tableModel.getRowCount() - 1;
+        argumentsTable.clearSelection();
+        argumentsTable.setRowSelectionInterval(rowToSelect, rowToSelect);
+        argumentsTable.setColumnSelectionInterval(0, 0);
+        setButtonState();
+    }
+
+
+    protected void initComponents()
+    {
+        super.initComponents();
+
+        argumentsPanel = new JPanel(); // GUIFactory.createPanel();
+        argumentsPanel.setLayout(new GridBagLayout());
+        JMeterGridBagConstraints constraints = new JMeterGridBagConstraints();
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridBagLayout());
+        constraints = new JMeterGridBagConstraints();
+        constraints.fillHorizontal(1.0);
+        addButton = new JButton(JMeterUtils.getResString("add"));
+        addButton.setActionCommand(ADD);
+        addButton.addActionListener(this);
+        addButton.setName("add");
+        buttonPanel.add(addButton, constraints);
+        removeButton = new JButton(JMeterUtils.getResString("remove"));
+        removeButton.setName("remove");
+        removeButton.setActionCommand(REMOVE);
+        removeButton.addActionListener(this);
+        constraints = constraints.nextRow();
+        buttonPanel.add(removeButton, constraints);
+
+        argumentsTable = new JTable(tableModel);
+        argumentsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        argumentsTable.getTableHeader().setReorderingAllowed(false);
+        argumentsTable.getSelectionModel().addListSelectionListener(this);
+        argumentsTable.addFocusListener(this);
+        JScrollPane scroller = new JScrollPane(argumentsTable);
+        Dimension tableDim = scroller.getPreferredSize();
+        tableDim.height = 140;
+        tableDim.width = (int)(tableDim.width * 1.5);
+        argumentsTable.setPreferredScrollableViewportSize(tableDim);
+        scroller.setColumnHeaderView(argumentsTable.getTableHeader());
+        constraints = constraints.nextRow();
+        constraints.fillHorizontal(1.0);
+        constraints.fillVertical(1.0);
+        argumentsPanel.add(scroller, constraints);
+        constraints = constraints.incrementX();
+        constraints.fillNone();
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+        argumentsPanel.add(buttonPanel, constraints);
+
+        add(argumentsPanel);
+    }
+
+
+    public void focusGained(FocusEvent e)
+    {
+    }
+
+
+    public void focusLost(FocusEvent e)
+    {
+//        if (argumentsTable.isEditing()) {
+//            TableCellEditor cellEditor = argumentsTable.getCellEditor(argumentsTable.getEditingRow(), argumentsTable.getEditingColumn());
+//            cellEditor.stopCellEditing();
+//        }
+    }
+
+
+    public void localeChanged(LocaleChangeEvent event)
+    {
+        super.localeChanged(event);
+        updateLocalizedStrings(new JComponent[]{addButton, removeButton});
+        if (tableModel != null)
+        {
+            updateLocalizedTableHeaders(argumentsTable, tableModel);
+        }
+    }
+
+
+    // ListSelectionListener methods
+    public void valueChanged(ListSelectionEvent e)
+    {
+        setButtonState();
+    }
+
+
+    protected void setButtonState()
+    {
+        addButton.setEnabled(true);
+        removeButton.setEnabled(argumentsTable.getSelectedRow() != -1);
+    }
+
+
+    protected static class ArgumentsTableModel extends DefaultTableModel
+    {
+
+        private List arguments;
+
+
+        public ArgumentsTableModel(List arguments)
+        {
+            this.arguments = arguments;
+        }
+
+
+        protected List getArguments()
+        {
+            return arguments;
+        }
+
+
+        public int getRowCount()
+        {
+            if (arguments == null)
+            {
+                return 0;
+            }
+            return arguments.size();
+        }
+
+
+        public int getColumnCount()
+        {
+            return 2;
+        }
+
+
+        public String getColumnName(int column)
+        {
+            switch (column)
+            {
+                case 0:
+                    return JMeterUtils.getResString("name_column");
+                case 1:
+                    return JMeterUtils.getResString("value_column");
+                default:
+                    return "";
+            }
+        }
+
+
+        public Class getColumnClass(int columnIndex)
+        {
+            return String.class;
+        }
+
+
+        public boolean isCellEditable(int row, int column)
+        {
+            return true;
+        }
+
+
+        public Object getValueAt(int row, int column)
+        {
+            Argument argument = (Argument)arguments.get(row);
+
+            switch (column)
+            {
+                case 0:
+                    return argument.getName();
+                case 1:
+                    return argument.getValue();
+                default:
+                    return null;
+            }
+        }
+
+
+        public void setValueAt(Object value, int row, int column)
+        {
+            Argument argument = (Argument)arguments.get(row);
+
+            switch (column)
+            {
+                case 0:
+                    argument.setName((String)value);
+                    break;
+                case 1:
+                    argument.setValue(value);
+                    break;
+                default:
+
+            }
+        }
+
+
+        public void addArgument()
+        {
+            arguments.add(new Argument());
+            fireTableRowsInserted(arguments.size() - 1, arguments.size() - 1);
+        }
+
+
+        public void removeArgument(int row)
+        {
+            arguments.remove(row);
+            fireTableRowsDeleted(row, row);
+        }
+    }
+
+
+    // todo: obsolete?
+    public static class Test extends TestCase
+    {
+
+        public Test(String name)
+        {
+            super(name);
+        }
+
+
+        public void testArgumentCreation() throws Exception
+        {
+            ArgumentsPanel gui = new ArgumentsPanel();
+            gui.tableModel.addArgument();
+            gui.tableModel.setValueAt("howdy", 0, 0);
+            gui.tableModel.setValueAt("doody", 0, 1);
+            assertEquals("=", ((Argument)((Arguments)gui.createTestElement()).getArguments().get(0)).getMetaData());
+        }
+    }
 }

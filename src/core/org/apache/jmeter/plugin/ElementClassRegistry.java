@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,8 +61,6 @@ import java.util.*;
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
 
-import org.apache.jmeter.protocol.java.sampler.JavaSamplerClient;
-import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.category.*;
 
 
@@ -113,20 +111,16 @@ public class ElementClassRegistry
     }
 
 
-    public synchronized void register(Class elementClass)
+    public synchronized void registerElementClass(Class elementClass)
     {
-        if (TestElement.class.isAssignableFrom(elementClass))
-        {
-            elementClasses.add(elementClass);
-            categorizeElementClass(elementClass);
-        } else if (JavaSamplerClient.class.isAssignableFrom(elementClass))
-        {
-            javaSamplerClients.add(elementClass);
-            javaSamplerClientClassNames.add(elementClass.getName());
-        } else
-        {
-            log.error("Class " + elementClass.getName() + " does not implement TestElement/JavaSamplerClient");
-        }
+        elementClasses.add(elementClass);
+        categorizeElementClass(elementClass);
+    }
+
+    public synchronized void registerJavaSamplerClientClass(Class elementClass)
+    {
+        javaSamplerClients.add(elementClass);
+        javaSamplerClientClassNames.add(elementClass.getName());
     }
 
 

@@ -296,7 +296,7 @@ public class HTTPSampler extends AbstractSampler
 		{
 			if (getProperty(ARGUMENTS) != null)
 			{
-				((Arguments) getProperty(ARGUMENTS)).addTestElement(element);
+				((Arguments) getProperty(ARGUMENTS)).addChildElement(element);
 			}
 			else
 			{
@@ -307,7 +307,7 @@ public class HTTPSampler extends AbstractSampler
 		{
 			if (getProperty(AUTH_MANAGER) != null)
 			{
-				((TestElement) getProperty(AUTH_MANAGER)).addTestElement(element);
+				((TestElement) getProperty(AUTH_MANAGER)).addChildElement(element);
 			}
 			else
 			{
@@ -318,7 +318,7 @@ public class HTTPSampler extends AbstractSampler
 		{
 			if (getProperty(COOKIE_MANAGER) != null)
 			{
-				((TestElement) getProperty(COOKIE_MANAGER)).addTestElement(element);
+				((TestElement) getProperty(COOKIE_MANAGER)).addChildElement(element);
 			}
 			else
 			{
@@ -329,7 +329,7 @@ public class HTTPSampler extends AbstractSampler
 		{
 			if (getProperty(HEADER_MANAGER) != null)
 			{
-				((TestElement) getProperty(HEADER_MANAGER)).addTestElement(element);
+				((TestElement) getProperty(HEADER_MANAGER)).addChildElement(element);
 			}
 			else
 			{

@@ -77,6 +77,16 @@ import org.apache.jmeter.testelement.TestElement;
 public abstract class AbstractConfigGui extends AbstractJMeterGuiComponent
 {
 
+    public AbstractConfigGui()
+    {
+    }
+
+
+    public AbstractConfigGui(boolean named)
+    {
+        super(named);
+    }
+
 
     /****************************************
      * !ToDo (Method description)

@@ -65,14 +65,13 @@ import javax.swing.tree.*;
 
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.JMeterGUIComponent;
-import org.apache.jmeter.testelement.TestElement;
-import org.apache.jmeter.testelement.TestElementVisitor;
+import org.apache.jmeter.testelement.*;
 
 
 /**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  */
-public class TestPlanTreeNode extends DefaultMutableTreeNode implements TestElement
+public class TestPlanTreeNode extends DefaultMutableTreeNode implements TestElementWrapper
 {
 
     private TestPlanTreeModel treeModel;
@@ -331,6 +330,11 @@ public class TestPlanTreeNode extends DefaultMutableTreeNode implements TestElem
     public String toString()
     {
         return getName();
+    }
+
+    public TestElement unwrap()
+    {
+        return getElement();
     }
 }
 

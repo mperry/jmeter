@@ -84,7 +84,7 @@ public class JMeterTreeNode extends DefaultMutableTreeNode
 	{
 		super(userObj);
 		this.treeModel = treeModel;
-		userObj.setNode(this);
+//		userObj.setNode(this);
 	}
 
 	public boolean isEnabled()
@@ -107,9 +107,9 @@ public class JMeterTreeNode extends DefaultMutableTreeNode
 		return ((JMeterGUIComponent)getUserObject()).getMenuCategories();
 	}
 
-	public JPopupMenu createPopupMenu()
+	public JPopupMenu createPopupMenu(TestElement element)
 	{
-		return ((JMeterGUIComponent)getUserObject()).createPopupMenu();
+		return ((JMeterGUIComponent)getUserObject()).createPopupMenu(element);
 	}
 
 	public void configure(TestElement element)
@@ -147,12 +147,16 @@ public class JMeterTreeNode extends DefaultMutableTreeNode
 		return ((JMeterGUIComponent)getUserObject()).getName();
 	}
 
-
-    public void setNode(JMeterTreeNode node)
+    public void setElement(TestElement element)
     {
-        ((JMeterGUIComponent)getUserObject()).setNode(node);
+        ((JMeterGUIComponent)getUserObject()).setElement(element);
     }
 
+
+    public TestElement getElement()
+    {
+        return null;
+    }
 
     public void nameChanged()
     {

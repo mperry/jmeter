@@ -51,16 +51,12 @@
  * individuals on behalf of the Apache Software Foundation.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
- */package org.apache.jmeter.gui.util;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+ */
+package org.apache.jmeter.gui.util;
+
+
+import java.util.*;
+import java.awt.event.ActionListener;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -71,6 +67,8 @@ import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.JMeterGUIComponent;
 import org.apache.jmeter.gui.action.ActionRouter;
 import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jmeter.plugin.ElementClassRegistry;
+
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
 import org.apache.jorphan.reflect.ClassFinder;
@@ -80,6 +78,7 @@ import org.apache.jorphan.util.JOrphanUtils;
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
  *@author    Michael Stover
+ * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  *@created   $Date$
  *@version   1.0
  ***************************************/
@@ -127,10 +126,6 @@ public class MenuFactory
 	public final static String LISTENERS = "menu_listener";
 	private static Map menuMap = new HashMap();
 	private static Set elementsToSkip = new HashSet();
-
-	private static List timers, controllers, samplers,
-			configElements, modifiers, responseBasedModifiers,
-			assertions, listeners, nonTestElements;
 
 	private static JMenu timerMenu;
 	private static JMenu controllerMenu;
@@ -247,6 +242,16 @@ public class MenuFactory
 		}
 		return addMenu;
 	}
+
+    public static JMenu makeMenus(String[] categories, String label, ActionListener listener)
+    {
+        JMenu addMenu = new JMenu(label);
+        for(int i = 0; i < categories.length; i++)
+        {
+            addMenu.add(makeMenu(categories[i], listener));
+        }
+        return addMenu;
+    }
 
 	/****************************************
 	 * !ToDoo (Method description)
@@ -367,6 +372,11 @@ public class MenuFactory
 		return makeMenu((Collection)menuMap.get(category), actionCommand, JMeterUtils.getResString(category));
 	}
 
+    public static JMenu makeMenu(String category, ActionListener listener)
+    {
+        return makeMenu((Collection)menuMap.get(category), listener, JMeterUtils.getResString(category));
+    }
+
 	/****************************************
 	 * !ToDo (Method description)
 	 *
@@ -383,6 +393,18 @@ public class MenuFactory
 		{
 			MenuInfo info = (MenuInfo)iter.next();
 			menu.add(makeMenuItem(info.label, info.className, actionCommand));
+		}
+		return menu;
+	}
+
+	public static JMenu makeMenu(Collection menuInfo, ActionListener listener, String menuName)
+	{
+		Iterator iter = menuInfo.iterator();
+		JMenu menu = new JMenu(menuName);
+		while(iter.hasNext())
+		{
+			MenuInfo info = (MenuInfo)iter.next();
+			menu.add(makeMenuItem(info.label, info.className, listener));
 		}
 		return menu;
 	}
@@ -421,10 +443,24 @@ public class MenuFactory
 		return newMenuChoice;
 	}
 
+    public static JMenuItem makeMenuItem(String label, String name, ActionListener listener)
+    {
+        JMenuItem newMenuChoice = new JMenuItem(label);
+        newMenuChoice.setName(name);
+        newMenuChoice.addActionListener(listener);
+        return newMenuChoice;
+    }
+
+
 	private static void initializeMenus()
 	{
 		try
 		{
+
+            List timers, controllers, samplers,
+                    configElements, modifiers, responseBasedModifiers,
+                    assertions, listeners, nonTestElements;
+
 			List guiClasses = ClassFinder.findClassesThatExtend(
 					JMeterUtils.getSearchPaths(),
 					new Class[]
@@ -471,29 +507,6 @@ public class MenuFactory
 				{
 					continue;
 				}
-				if(categories.contains(TIMERS))
-				{
-					timers.add(new MenuInfo(item.getStaticLabel(),
-							item.getClass().getName()));
-				}
-
-				if(categories.contains(CONTROLLERS))
-				{
-					controllers.add(new MenuInfo(item.getStaticLabel(),
-							item.getClass().getName()));
-				}
-
-				if(categories.contains(SAMPLERS))
-				{
-					samplers.add(new MenuInfo(item.getStaticLabel(),
-							item.getClass().getName()));
-				}
-
-				if(categories.contains(RESPONSE_BASED_MODIFIERS))
-				{
-					responseBasedModifiers.add(new MenuInfo(item.getStaticLabel(),
-							item.getClass().getName()));
-				}
 
 				if(categories.contains(NON_TEST_ELEMENTS))
 				{
@@ -513,26 +526,45 @@ public class MenuFactory
 							item.getClass().getName()));
 				}
 
-				if(categories.contains(CONFIG_ELEMENTS))
-				{
-					configElements.add(new MenuInfo(item.getStaticLabel(),
-							item.getClass().getName()));
-				}
-				if(categories.contains(ASSERTIONS))
-				{
-					assertions.add(new MenuInfo(item.getStaticLabel(),
-							item.getClass().getName()));
-				}
-
 			}
 		}
 		catch(Exception e)
 		{
 			log.error("",e);
 		}
+        menuMap.put(CONTROLLERS, initCategoryMenu(ElementClassRegistry.CONTROLLER));
+        menuMap.put(SAMPLERS, initCategoryMenu(ElementClassRegistry.SAMPLER));
+        menuMap.put(TIMERS, initCategoryMenu(ElementClassRegistry.TIMER));
+        menuMap.put(CONFIG_ELEMENTS, initCategoryMenu(ElementClassRegistry.CONFIG));
+        menuMap.put(ASSERTIONS, initCategoryMenu(ElementClassRegistry.ASSERTION));
+        menuMap.put(RESPONSE_BASED_MODIFIERS, initCategoryMenu(ElementClassRegistry.RESPONSEBASEDMODIFIER));
 	}
 
-	private static void addSeparator(JPopupMenu menu)
+
+    private static List initCategoryMenu(String category)
+    {
+        SortedSet sorted = new TreeSet(new Comparator() {
+            public int compare(Object o1, Object o2)
+            {
+                Class classA = (Class)o1;
+                Class classB = (Class)o2;
+
+                return classA.getName().compareTo(classB.getName());
+            }
+        });
+        sorted.addAll(org.apache.jmeter.plugin.ElementClassRegistry.getInstance().getElementClassesForCategory(category));
+        List items = new ArrayList(sorted.size());
+        Iterator iterator = sorted.iterator();
+
+        while (iterator.hasNext()) {
+            Class clazz = (Class)iterator.next();
+            items.add(new MenuInfo(JMeterUtils.getResString(clazz.getName()), clazz.getName()));
+        }
+        return items;
+    }
+
+
+    private static void addSeparator(JPopupMenu menu)
 	{
 		MenuElement[] elements = menu.getSubElements();
 		if((elements.length > 0) && !(elements[elements.length - 1] instanceof JPopupMenu.Separator))

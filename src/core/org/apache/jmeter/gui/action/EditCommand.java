@@ -37,7 +37,7 @@ public class EditCommand implements Command
 		guiPackage.getMainFrame().setMainPanel((javax.swing.JComponent)
 					guiPackage.getTreeListener().getCurrentNode().getUserObject());
 		guiPackage.getMainFrame().setEditMenu(
-				((JMeterGUIComponent)guiPackage.getTreeListener().getCurrentNode().getUserObject()).createPopupMenu());
+				((JMeterGUIComponent)guiPackage.getTreeListener().getCurrentNode().getUserObject()).createPopupMenu(null));
 		if(!(guiPackage.getTreeListener().getCurrentNode().getUserObject() instanceof NamePanel))
 		{
 			guiPackage.getMainFrame().setFileLoadEnabled(true);

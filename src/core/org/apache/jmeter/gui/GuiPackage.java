@@ -62,12 +62,12 @@ import org.apache.jmeter.testelement.TestPlan;
 import org.apache.jorphan.collections.HashTree;
 
 /**
- * GuiPackage is a static class that provides convenient access to information about the 
- * current state of JMeter's GUI.  Any GUI class can grab a handle to GuiPackage by 
+ * GuiPackage is a static class that provides convenient access to information about the
+ * current state of JMeter's GUI.  Any GUI class can grab a handle to GuiPackage by
  * calling the static method 'getInstance()' and then use it to query the GUI about
  * it's state.  When actions, for instance, need to affect the GUI, they
  * typically use GuiPackage to get access to different parts of the GUI.
- * 
+ *
  * Title:        JMeter
  * Description:
  * Copyright:    Copyright (c) 2000
@@ -84,7 +84,6 @@ public class GuiPackage
 
 	/**
 	 * GuiPackage is a Singleton class.
-	 * @see java.lang.Object#Object()
 	 */
 	private GuiPackage()
 	{
@@ -96,19 +95,19 @@ public class GuiPackage
 
 	/**
 	 * When GuiPackage is requested for the first time, it should be given handles to
-	 * JMeter's Tree Listener and TreeModel.  
+	 * JMeter's Tree Listener and TreeModel.
 	 * @param listener The TreeListener for JMeter's test tree.
 	 * @param treeModel The model for JMeter's test tree.
 	 * @return GuiPackage
 	 */
 	public static GuiPackage getInstance(JMeterTreeListener listener,
-							JMeterTreeModel treeModel)
+							Object treeModel)
 	{
 		if(guiPack == null)
 		{
 			guiPack = new GuiPackage();
-			guiPack.setTreeListener(listener);
-			guiPack.setTreeModel(treeModel);
+//			guiPack.setTreeListener(listener);
+//			guiPack.setTreeModel(treeModel);
 		}
 		return guiPack;
 	}
@@ -153,13 +152,13 @@ public class GuiPackage
 	{
 		return treeModel;
 	}
-	
+
 	public ValueReplacer getReplacer()
 	{
 		ValueReplacer replacer = new ValueReplacer(
 				((TestPlan)((JMeterGUIComponent)
 				getTreeModel().getTestPlan().getArray()
-				[0]).createTestElement()).getUserDefinedVariables());
+				[0]).createTestElement()).getUserDefinedVariablesMap());
 		return replacer;
 	}
 

@@ -28,14 +28,14 @@ public class PreCompiler implements HashTreeTraverser
 		replacer = new ValueReplacer();
 	}
 	/**
-	 * @see ListedHashTreeVisitor#addNode(Object, ListedHashTree)
+	 * @see ListedHashTreeVisitor#addNode(Object, org.apache.jorphan.collections.ListedHashTree)
 	 */
 	public void addNode(Object node, HashTree subTree)
 	{
 		if (node instanceof TestPlan)
 		{
 			replacer.setUserDefinedVariables(
-				((TestPlan) node).getUserDefinedVariables());
+				((TestPlan) node).getUserDefinedVariablesMap());
 		}
 		if (node instanceof TestElement)
 		{

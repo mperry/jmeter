@@ -75,20 +75,9 @@ import org.apache.jmeter.timers.Timer;
  *@created   $Date$
  *@version   1.0
  ***************************************/
-
+// todo: remove ??? or still in use
 public class ReflectionThreadGroup extends ThreadGroup
 {
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public Object clone()
-	{
-		ReflectionThreadGroup group = new ReflectionThreadGroup();
-		configureClone(group);
-		return group;
-	}
 
 }

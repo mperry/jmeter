@@ -52,90 +52,67 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.control;
-import java.io.*;
-import java.util.*;
-import org.apache.jmeter.config.ConfigElement;
-import org.apache.jmeter.config.Modifier;
-import org.apache.jmeter.config.ResponseBasedModifier;
-import org.apache.jmeter.gui.JMeterComponentModel;
-import org.apache.jmeter.gui.util.MenuFactory;
-import org.apache.jmeter.samplers.*;
-import org.apache.jmeter.util.JMeterUtils;
+
+package org.apache.jmeter.gui.action;
+
+
+import java.awt.event.*;
+
+import javax.swing.*;
+import javax.swing.tree.*;
+
+import org.apache.log.Hierarchy;
+import org.apache.log.Logger;
+
+import org.apache.jmeter.gui.GuiPackage;
+import org.apache.jmeter.gui.JMeterGUIComponent;
+import org.apache.jmeter.gui.tree.JMeterTreeNode;
 import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.util.JMeterUtils;
 
-/****************************************
- * !ToDo (Class description)
- *
- *@author    $Author$
- *@created   $Date$
- *@version   $Revision$
- ***************************************/
 
-public class ModifyController extends GenericController implements SampleListener,
-		Serializable
+/**
+ * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a> *@created    $Date$
+ */
+public class AddElement implements ActionListener
 {
-	SampleResult currentResult;
-	private String currentResponse;
 
-	/****************************************
-	 * Constructor for the GeneratorManager object
-	 ***************************************/
-	public ModifyController()
-	{
-	}
+    transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor(
+        "jmeter.gui");
 
-	/****************************************
-	 * Methods to satisfy SampleListener interface.
-	 *
-	 *@param event  !ToDo (Parameter description)
-	 ***************************************/
-	public void sampleStarted(SampleEvent event) { }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param event  !ToDo (Parameter description)
-	 ***************************************/
-	public void sampleStopped(SampleEvent event) { }
+    private TestElement element;
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param event  !ToDo (Parameter description)
-	 ***************************************/
-	public void sampleOccurred(SampleEvent event)
-	{
-		this.currentResult = event.getResult();
-	}
 
-	/****************************************
-	 * Adds a feature to the ConfigElements attribute of the GenericController
-	 * object
-	 *
-	 *@param entry  The feature to be added to the ConfigElements attribute
-	 ***************************************/
-	protected void addConfigElements(Sampler entry)
-	{
-		if(entry != null)
-		{
-			Iterator iter = this.getConfigElements().iterator();
-			while(iter.hasNext())
-			{
-				Object item = iter.next();
-				if(item instanceof Modifier)
-				{
-					((Modifier)item).modifyEntry(entry);
-				}
-				else if(item instanceof ResponseBasedModifier)
-				{
-					((ResponseBasedModifier)item).modifyEntry(entry, currentResult);
-				}
-				else
-				{
-					entry.addChildElement((TestElement)item);
-				}
-			}
-		}
-	}
+    public AddElement(TestElement element)
+    {
+        this.element = element;
+    }
+
+
+    public void actionPerformed(ActionEvent e)
+    {
+        try {
+            String className = ((JComponent)e.getSource()).getName();
+            TestElement newElement = (TestElement)Class.forName(className).newInstance();
+            newElement.setName(JMeterUtils.getResString(className));
+            element.addChildElement(newElement);
+        } catch (Exception err) {
+            log.error("", err);
+        }
+    }
+
+
+    protected void addObjectToTree(JMeterGUIComponent guiObject)
+    {
+        GuiPackage guiPackage = GuiPackage.getInstance();
+        JMeterTreeNode node = new JMeterTreeNode(guiObject, guiPackage.getTreeModel());
+        guiPackage.getTreeModel().insertNodeInto(node,
+                                                 guiPackage.getTreeListener().getCurrentNode(),
+                                                 guiPackage.getTreeListener().getCurrentNode().getChildCount());
+        guiPackage.getMainFrame().getTree().setSelectionPath(
+            new TreePath(node.getPath()));
+    }
+
+
 }

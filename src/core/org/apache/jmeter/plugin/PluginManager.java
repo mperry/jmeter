@@ -129,12 +129,12 @@ public class PluginManager
 
         for (i = 0; i < elementClasses.length; i++)
         {
-            registry.register(elementClasses[i]);
+            registry.registerElementClass(elementClasses[i]);
         }
 
         for (i = 0; i < javaSamplerClasses.length; i++)
         {
-            registry.register(javaSamplerClasses[i]);
+            registry.registerJavaSamplerClientClass(javaSamplerClasses[i]);
         }
 
         for (i = 0; i < guiMappings.length; i++)
