@@ -127,7 +127,7 @@
   <target name="init" depends="check-libs,report-missing-libs">
   	<tstamp/>
   	<!-- JMeter version -->
-  <property name="version" value="1.9"/>
+  <property name="version" value="1.9.${DSTAMP}"/>
   </target>
 
   	<!-- JMeter Javadoc version (keep in line with above) -->
@@ -231,6 +231,7 @@
     <javac srcdir="${src.http}" destdir="${build.http}" optimize="${optimize}" debug="on" target="${target.java.version}" deprecation="${deprecation}" encoding="${encoding}">
       <include name="**/*.java"/>
       <exclude name="org/apache/jmeter/protocol/http/sampler/WebServiceSampler.java" unless="javamail.complete"/>
+      <exclude name="org/apache/jmeter/protocol/http/control/gui/WebServiceSamplerGui.java" unless="javamail.complete"/>
       <classpath>
         <path refid="classpath"/>
         <pathelement location="${build.jorphan}"/>
