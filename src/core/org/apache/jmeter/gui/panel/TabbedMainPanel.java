@@ -108,7 +108,7 @@ public class TabbedMainPanel extends JTabbedPane implements JMeterDocumentManage
     private void addDocument(org.apache.jmeter.gui.document.JMeterDocument document)
     {
 
-        if (document.getRootElement() instanceof TestPlan)
+        if (document.getElement() instanceof TestPlan)
         {
             addTestPlanTab(document);
         }
@@ -118,11 +118,6 @@ public class TabbedMainPanel extends JTabbedPane implements JMeterDocumentManage
     {
         TestPlanPanel panel = new TestPlanPanel(document);
         ImageIcon icon = document.getIcon();
-
-        if (document.hasChanged())
-        {
-            icon = mergeIcons(icon, dirtyIcon);
-        }
 
         addTab(document.getFileName(), icon, panel, document.getAbsolutePath());
         setSelectedComponent(panel);
@@ -145,7 +140,7 @@ public class TabbedMainPanel extends JTabbedPane implements JMeterDocumentManage
         int index = indexOfComponent(panel);
         ImageIcon icon = document.getIcon();
 
-        if (document.hasChanged())
+        if (document.isDirty())
         {
             icon = mergeIcons(icon, dirtyIcon);
         }

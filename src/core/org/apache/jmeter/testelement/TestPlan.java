@@ -83,11 +83,14 @@ public class TestPlan extends AbstractNamedTestElement implements Serializable
     public final static String FUNCTIONAL_MODE = "functionalMode";
     public final static String USER_DEFINED_VARIABLES = "userDefinedVariables";
 
+    private Set dirtyElements = new HashSet();
+    private TestPlanObserver observer;
+
     private List threadGroups = new LinkedList();
     private List configs = new LinkedList();
     private static TestPlan plan;
-    private ElementProperty userDefinedVariables = new ElementProperty(new Arguments());
-    private BooleanProperty functionalMode = new BooleanProperty(false);
+    private ElementProperty userDefinedVariables = new ElementProperty(new Arguments(), this);
+    private BooleanProperty functionalMode = new BooleanProperty(false, this);
 
 
     public TestPlan()
@@ -103,10 +106,11 @@ public class TestPlan extends AbstractNamedTestElement implements Serializable
     }
 
 
-    public boolean isFunctionalMode() {
+    public boolean isFunctionalMode()
+    {
         return getFunctionalMode();
     }
-    
+
     public boolean getFunctionalMode()
     {
         return functionalMode.getBooleanValue();
@@ -229,4 +233,27 @@ public class TestPlan extends AbstractNamedTestElement implements Serializable
     {
         threadGroups.add(group);
     }
+
+
+    public void setObserver(TestPlanObserver observer)
+    {
+        this.observer = observer;
+    }
+
+
+    protected void notifyParent()
+    {
+        // ignore the parent (RootElement) but notify the TestPlanObserver
+        if (observer != null) {
+            observer.dirtyChanged(this);
+        }
+    }
+
+    public static interface TestPlanObserver
+    {
+
+        public void dirtyChanged(TestPlan element);
+
+    }
+
 }

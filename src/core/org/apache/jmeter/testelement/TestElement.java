@@ -110,6 +110,8 @@ public interface TestElement extends Serializable, Cloneable, Transferable
 
     public void setProperty(String key, int value);
 
+    public void propertyChanged(Property property);
+
     public Object clone();
 
     /**
@@ -136,4 +138,17 @@ public interface TestElement extends Serializable, Cloneable, Transferable
     public TestElement getParentElement();
 
     public void accept(TestElementVisitor visitor);
+
+    public boolean isDirty();
+
+    /**
+     * Clear the dirty flag.
+     */
+    public void resetDirty();
+
+    /**
+     * Used by test elements to notify their parents when the dirty flag has changed.
+     * @param childElement
+     */
+    public void dirtyFlagChanged(TestElement childElement);
 }

@@ -81,6 +81,10 @@ public class JMeterTreeNode extends DefaultMutableTreeNode
 {
     JMeterTreeModel treeModel;
 
+    public boolean isConfigured()
+    {
+        return false;
+    }
 
 	public JMeterTreeNode(JMeterGUIComponent userObj, JMeterTreeModel treeModel)
 	{

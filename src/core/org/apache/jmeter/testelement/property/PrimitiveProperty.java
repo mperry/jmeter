@@ -55,6 +55,9 @@
 package org.apache.jmeter.testelement.property;
 
 
+import org.apache.jmeter.testelement.TestElement;
+
+
 /**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$
@@ -65,6 +68,11 @@ public abstract class PrimitiveProperty extends Property
     public PrimitiveProperty(Object value)
     {
         super(value);
+    }
+
+    public PrimitiveProperty(Object value, TestElement owner)
+    {
+        super(value, owner);
     }
 
     public boolean isPrimitive()

@@ -67,6 +67,7 @@ import java.util.*;
 public class RootElement extends AbstractNamedTestElement
 {
 
+
     public RootElement()
     {
     }
@@ -84,4 +85,10 @@ public class RootElement extends AbstractNamedTestElement
         answer.add(TestPlan.class);
         return answer;
     }
+
+    protected void setDirty(boolean flag)
+    {
+        // do nothing
+    }
+
 }

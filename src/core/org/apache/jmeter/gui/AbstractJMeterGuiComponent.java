@@ -95,6 +95,7 @@ public abstract class AbstractJMeterGuiComponent
     protected NamePanel namePanel;
     private JLabel panelTitleLabel;
     private boolean namedPanel = true;
+    private boolean isConfigured = false;
 
 
     /**
@@ -138,6 +139,7 @@ public abstract class AbstractJMeterGuiComponent
      */
     public final void setElement(TestElement element)
     {
+        isConfigured = false;
         this.element = element;
         if (namedPanel)
         {
@@ -148,6 +150,7 @@ public abstract class AbstractJMeterGuiComponent
         } else {
             configure(element);
         }
+        isConfigured = true;
     }
 
     /**
@@ -285,5 +288,11 @@ public abstract class AbstractJMeterGuiComponent
     public JPopupMenu createPopupMenu(NamedTestElement testElement)
     {
         return null;
+    }
+
+
+    public boolean isConfigured()
+    {
+        return isConfigured;
     }
 }

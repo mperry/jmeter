@@ -55,6 +55,9 @@
 package org.apache.jmeter.testelement.property;
 
 
+import org.apache.jmeter.testelement.TestElement;
+
+
 /**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$
@@ -65,6 +68,11 @@ public abstract class ObjectProperty extends Property
     public ObjectProperty(Object value)
     {
         super(value);
+    }
+
+    public ObjectProperty(Object value, TestElement owner)
+    {
+        super(value, owner);
     }
 
     public boolean isObject()

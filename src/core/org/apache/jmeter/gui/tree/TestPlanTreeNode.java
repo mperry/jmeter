@@ -362,6 +362,26 @@ public class TestPlanTreeNode extends DefaultMutableTreeNode implements TestElem
     {
         return getElement();
     }
+
+    public boolean isDirty()
+    {
+        return getElement().isDirty();
+    }
+
+    public void resetDirty()
+    {
+        getElement().resetDirty();
+    }
+
+    public void propertyChanged(Property property)
+    {
+        getElement().propertyChanged(property);
+    }
+
+    public void dirtyFlagChanged(TestElement childElement)
+    {
+        getElement().dirtyFlagChanged(childElement);
+    }
 }
 
 

@@ -55,6 +55,9 @@
 package org.apache.jmeter.testelement.property;
 
 
+import org.apache.jmeter.testelement.TestElement;
+
+
 /**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$
@@ -67,7 +70,12 @@ public class BooleanProperty extends PrimitiveProperty
 
     public BooleanProperty(boolean booleanValue)
     {
-        super(new Boolean(booleanValue));
+        this(booleanValue, null);
+    }
+
+    public BooleanProperty(boolean booleanValue, TestElement owner)
+    {
+        super(new Boolean(booleanValue), owner);
         this.booleanValue = booleanValue;
     }
 

@@ -87,9 +87,11 @@ public abstract class AbstractTestElement implements TestElement, Transferable
     private static long idCounter = 0L;
 
 
+    private HashSet dirtyChildren;
     private TestElement parent;
     private List children = new LinkedList();
     private long id;
+    private boolean dirty = false;
 
 
     private static final synchronized long getNextId()
@@ -124,8 +126,8 @@ public abstract class AbstractTestElement implements TestElement, Transferable
 
             while (iterator.hasNext())
             {
-                NamedTestElement testElement = (NamedTestElement)iterator.next();
-                clone.addChildElement((NamedTestElement)testElement.clone());
+                TestElement testElement = (TestElement)iterator.next();
+                clone.addChildElement((TestElement)testElement.clone());
             }
 
             iterator = getProperties().entrySet().iterator();
@@ -170,7 +172,8 @@ public abstract class AbstractTestElement implements TestElement, Transferable
         HashMap properties = new HashMap();
         Class clazz = this.getClass();
 
-        while (AbstractTestElement.class.isAssignableFrom(clazz)) {
+        while (AbstractTestElement.class.isAssignableFrom(clazz))
+        {
             collectProperties(clazz, properties);
             clazz = clazz.getSuperclass();
         }
@@ -394,6 +397,7 @@ public abstract class AbstractTestElement implements TestElement, Transferable
         }
         children.add(element);
         element.setParent(this);
+        setDirty(true);
     }
 
 
@@ -402,6 +406,12 @@ public abstract class AbstractTestElement implements TestElement, Transferable
         if (children.remove(child))
         {
             child.setParent(null);
+            if (dirtyChildren != null && dirtyChildren.remove(child)) {
+                if (dirtyChildren.isEmpty()) {
+                    notifyParent();
+                }
+            }
+
         }
     }
 
@@ -447,7 +457,8 @@ public abstract class AbstractTestElement implements TestElement, Transferable
         {
             Field field = findField(property, getClass());
 
-            if (field == null) {
+            if (field == null)
+            {
                 throw new IllegalArgumentException("Invalid property name " + property);
             }
 
@@ -460,7 +471,8 @@ public abstract class AbstractTestElement implements TestElement, Transferable
     }
 
 
-    private Field findField(String fieldName, Class clazz) {
+    private Field findField(String fieldName, Class clazz)
+    {
         try
         {
             return clazz.getDeclaredField(fieldName);
@@ -468,7 +480,8 @@ public abstract class AbstractTestElement implements TestElement, Transferable
         {
             Class superclass = clazz.getSuperclass();
 
-            if (NamedTestElement.class.isAssignableFrom(superclass)) {
+            if (NamedTestElement.class.isAssignableFrom(superclass))
+            {
                 return findField(fieldName, superclass);
             }
         }
@@ -534,7 +547,8 @@ public abstract class AbstractTestElement implements TestElement, Transferable
         {
             Field field = findField(name, getClass());
 
-            if (field == null) {
+            if (field == null)
+            {
                 throw new IllegalArgumentException("Invalid property name " + property);
             }
 
@@ -594,4 +608,73 @@ public abstract class AbstractTestElement implements TestElement, Transferable
         visitor.visit(this);
     }
 
+    public boolean isDirty()
+    {
+        return dirty || hasDirtyChildren();
+    }
+
+    protected boolean hasDirtyChildren()
+    {
+        if (dirtyChildren == null)
+        {
+            return false;
+        }
+        return dirtyChildren.size() > 0;
+    }
+
+    public void resetDirty()
+    {
+        dirty = false;
+        if (dirtyChildren != null)
+        {
+            Iterator iterator = dirtyChildren.iterator();
+
+            while (iterator.hasNext())
+            {
+                TestElement element = (TestElement)iterator.next();
+
+                element.resetDirty();
+            }
+            dirtyChildren.clear();
+        }
+
+    }
+
+
+    public void dirtyFlagChanged(TestElement childElement)
+    {
+        if (getChildElements().contains(childElement) && childElement.isDirty()) {
+            if (dirtyChildren == null) {
+                dirtyChildren = new HashSet();
+            }
+            if (dirtyChildren.add(childElement)) {
+                notifyParent();
+            }
+        } else if (! childElement.isDirty() && dirtyChildren != null) {
+            if (dirtyChildren.remove(childElement)) {
+                notifyParent();
+            }
+        }
+    }
+
+    public void propertyChanged(Property property)
+    {
+        setDirty(true);
+
+    }
+
+    protected void setDirty(boolean flag)
+    {
+        dirty = flag;
+
+        notifyParent();
+    }
+
+    protected void notifyParent()
+    {
+        if (getParentElement() != null)
+        {
+            getParentElement().dirtyFlagChanged(this);
+        }
+    }
 }

@@ -55,6 +55,9 @@
 package org.apache.jmeter.testelement.property;
 
 
+import org.apache.jmeter.testelement.TestElement;
+
+
 /**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$
@@ -67,7 +70,12 @@ public class LongProperty extends PrimitiveProperty
 
     public LongProperty(long longValue)
     {
-        super(new Long(longValue));
+        this(longValue, null);
+    }
+
+    public LongProperty(long longValue, TestElement owner)
+    {
+        super(new Long(longValue), owner);
         this.longValue = longValue;
     }
 

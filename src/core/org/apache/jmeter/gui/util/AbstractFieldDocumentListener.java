@@ -52,42 +52,67 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.testelement.property;
+package org.apache.jmeter.gui.util;
 
 
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import javax.swing.event.*;
+import javax.swing.*;
+
+import org.apache.jmeter.gui.JMeterGUIComponent;
 
 
 /**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$
  */
-public class ElementProperty extends ObjectProperty {
+public abstract class AbstractFieldDocumentListener implements DocumentListener
+{
+
+    private JMeterGUIComponent gui;
+    private String property;
+    private JTextField field;
 
 
-    public ElementProperty(Object value)
+    public AbstractFieldDocumentListener(String property, JTextField field, JMeterGUIComponent gui)
     {
-        super(value);
+        this.gui = gui;
+        this.property = property;
+        this.field = field;
     }
 
-    public ElementProperty(Object value, TestElement owner)
+    public void insertUpdate(DocumentEvent e)
     {
-        super(value, owner);
+        if (getGui().isConfigured()) {
+            setValue();
+        }
     }
 
-    public TestElement getElement()
+    public void removeUpdate(DocumentEvent e)
     {
-        return (TestElement)getValue();
+        if (getGui().isConfigured()) {
+            setValue();
+        }
     }
 
-    public void setElement(TestElement element)
+    public void changedUpdate(DocumentEvent e)
     {
-        setValue(element);
+        //
     }
 
-    public boolean isElement()
+    protected abstract void setValue();
+
+    protected JMeterGUIComponent getGui()
     {
-        return true;
+        return gui;
+    }
+
+    protected String getProperty()
+    {
+        return property;
+    }
+
+    protected JTextField getField()
+    {
+        return field;
     }
 }

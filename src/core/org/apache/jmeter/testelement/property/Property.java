@@ -57,6 +57,8 @@ package org.apache.jmeter.testelement.property;
 
 import java.io.*;
 
+import org.apache.jmeter.testelement.TestElement;
+
 
 /**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
@@ -66,11 +68,18 @@ public class Property implements Serializable, Cloneable
 {
 
     private Object value;
+    private TestElement owner;
 
 
     public Property(Object value)
     {
         this.value = value;
+    }
+
+    public Property(Object value, TestElement owner)
+    {
+        this.value = value;
+        this.owner = owner;
     }
 
     public Object getValue()
@@ -80,7 +89,15 @@ public class Property implements Serializable, Cloneable
 
     public void setValue(Object value)
     {
+        boolean notify = false;
+
+        if (this.value == null || (this.value != null && ! this.value.equals(value))) {
+            notify = true;
+        }
         this.value = value;
+        if (notify) {
+            fireChanged();
+        }
     }
 
     public boolean isPrimitive() {
@@ -98,6 +115,12 @@ public class Property implements Serializable, Cloneable
         } catch (CloneNotSupportedException e)
         {
             throw new InternalError("Object.clone failed");
+        }
+    }
+
+    protected void fireChanged() {
+        if (owner != null) {
+            owner.propertyChanged(this);
         }
     }
 }

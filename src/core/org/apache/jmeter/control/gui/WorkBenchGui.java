@@ -88,11 +88,8 @@ public class WorkBenchGui extends JPanel implements JMeterGUIComponent
 
     NamePanel namePanel;
     private JMeterTreeNode node;
+    private boolean isConfigured = false;
 
-
-    /****************************************
-     * !ToDo (Constructor description)
-     ***************************************/
     public WorkBenchGui()
     {
         namePanel = new NamePanel();
@@ -100,41 +97,18 @@ public class WorkBenchGui extends JPanel implements JMeterGUIComponent
         init();
     }
 
-    /****************************************
-     * !ToDoo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
+    public boolean isConfigured()
+    {
+        return isConfigured;
+    }
+
     public Collection getMenuCategories()
     {
         return null;
     }
 
-    /****************************************
-     * !ToDoo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public String getName()
-    {
-        return namePanel.getName();
-    }
 
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@param name  !ToDo (Parameter description)
-     ***************************************/
-    public void setName(String name)
-    {
-        namePanel.setName(name);
-    }
 
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
     public NamedTestElement createTestElement()
     {
         WorkBench wb = new WorkBench();
@@ -144,21 +118,11 @@ public class WorkBenchGui extends JPanel implements JMeterGUIComponent
         return wb;
     }
 
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@param element  !ToDo (Parameter description)
-     ***************************************/
     public void configure(TestElement element)
     {
         namePanel.configure(element);
     }
 
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
     public JPopupMenu createPopupMenu(NamedTestElement element)
     {
         JPopupMenu menu = new JPopupMenu();
@@ -172,11 +136,6 @@ public class WorkBenchGui extends JPanel implements JMeterGUIComponent
         return menu;
     }
 
-    /****************************************
-     * !ToDoo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
     public String getStaticLabel()
     {
         return JMeterUtils.getResString("workbench");
@@ -210,8 +169,9 @@ public class WorkBenchGui extends JPanel implements JMeterGUIComponent
 
     public void setElement(TestElement element)
     {
-        this.node = node;
+        isConfigured = false;
         namePanel.setElement(element);
+        isConfigured = true;
     }
 
 

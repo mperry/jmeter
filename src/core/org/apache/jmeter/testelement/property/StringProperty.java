@@ -55,6 +55,9 @@
 package org.apache.jmeter.testelement.property;
 
 
+import org.apache.jmeter.testelement.TestElement;
+
+
 /**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$
@@ -65,6 +68,11 @@ public class StringProperty extends PrimitiveProperty
     public StringProperty(String value)
     {
         super(value);
+    }
+
+    public StringProperty(String value, TestElement owner)
+    {
+        super(value, owner);
     }
 
     public void setValue(Object value)

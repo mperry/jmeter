@@ -173,4 +173,13 @@ public interface JMeterGUIComponent
     public void setElement(TestElement element);
 
     public TestElement getElement();
+
+    /**
+     * Answer true if configuration is finished. This information is used by document listeners to
+     * decide wether a value update will be done or not.
+     * 
+     * @return
+     */
+    public boolean isConfigured();
+
 }

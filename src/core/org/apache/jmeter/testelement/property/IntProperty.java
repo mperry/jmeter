@@ -55,6 +55,9 @@
 package org.apache.jmeter.testelement.property;
 
 
+import org.apache.jmeter.testelement.TestElement;
+
+
 /**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$
@@ -65,9 +68,14 @@ public class IntProperty extends PrimitiveProperty
     private int intValue;
 
 
-    public IntProperty(int value)
+    public IntProperty(int intValue)
     {
-        super(new Integer(value));
+        this(intValue, null);
+    }
+
+    public IntProperty(int value, TestElement owner)
+    {
+        super(new Integer(value), owner);
         this.intValue = value;
     }
 

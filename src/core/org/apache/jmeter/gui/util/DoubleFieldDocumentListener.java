@@ -68,43 +68,19 @@ import org.apache.jmeter.gui.JMeterGUIComponent;
  *
  * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  */
-public class DoubleFieldDocumentListener implements DocumentListener
+public class DoubleFieldDocumentListener extends AbstractFieldDocumentListener
 {
-    private JMeterGUIComponent gui;
-    private String property;
-    private JTextField field;
-
 
     public DoubleFieldDocumentListener(String property, JTextField field, JMeterGUIComponent gui)
     {
-        this.property = property;
-        this.field = field;
-        this.gui = gui;
+        super(property, field, gui);
     }
 
 
-    public void insertUpdate(DocumentEvent e)
-    {
-        setValue();
-    }
-
-
-    public void removeUpdate(DocumentEvent e)
-    {
-        setValue();
-    }
-
-
-    public void changedUpdate(DocumentEvent e)
-    {
-        //
-    }
-
-
-    private void setValue()
+    protected void setValue()
     {
         try {
-            gui.getElement().setProperty(property, new Double(field.getText()));
+            getGui().getElement().setProperty(getProperty(), new Double(getField().getText()));
         } catch (NumberFormatException e) {
             //
         }

@@ -67,58 +67,33 @@ import org.apache.jmeter.gui.JMeterGUIComponent;
 /**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  */
-public class StringFieldDocumentListener implements DocumentListener
+public class StringFieldDocumentListener extends AbstractFieldDocumentListener
 {
-    private JMeterGUIComponent gui;
-    private String property;
-    private JTextField field;
     private JTextArea area;
 
     public StringFieldDocumentListener(String property, JTextField field, JMeterGUIComponent gui)
     {
-        this.property = property;
-        this.field = field;
-        this.gui = gui;
+        super(property, field, gui);
     }
-
 
     public StringFieldDocumentListener(String property, JTextArea area, JMeterGUIComponent gui)
     {
-        this.gui = gui;
-        this.property = property;
+        super(property, null, gui);
         this.area = area;
     }
 
 
-    public void insertUpdate(DocumentEvent e)
-    {
-        setValue();
-    }
-
-
-    public void removeUpdate(DocumentEvent e)
-    {
-        setValue();
-    }
-
-
-    public void changedUpdate(DocumentEvent e)
-    {
-        setValue();
-    }
-
-
-    private void setValue()
+    protected void setValue()
     {
         try {
             String text;
 
             if (area == null) {
-                text = field.getText();
+                text = getField().getText();
             } else {
                 text = area.getText();
             }
-            gui.getElement().setProperty(property, text);
+            getGui().getElement().setProperty(getProperty(), text);
         } catch (NumberFormatException e) {
             //
         }

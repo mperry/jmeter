@@ -70,7 +70,6 @@ import org.apache.jmeter.testelement.NamedTestElement;
 public class GUIFactory
 {
 
-    private static final Map guiMap = new HashMap();
     private static final Map iconMap = new HashMap();
     private static final Map guiClassMap = new HashMap();
 
@@ -97,17 +96,7 @@ public class GUIFactory
 
     public static synchronized JComponent getGUI(NamedTestElement element)
     {
-        String key = element.getClass().getName();
-        JComponent gui = (JComponent)guiMap.get(key);
-
-        if (gui != null)
-        {
-            return gui;
-        }
-        Class guiClass = getGuiClass(element.getClass());
-        gui = createGuiInstance(guiClass);
-        guiMap.put(key, gui);
-        return gui;
+        return createGuiInstance(getGuiClass(element.getClass()));
     }
 
 

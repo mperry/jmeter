@@ -107,10 +107,10 @@ public class ProxyControlGui extends JPanel implements JMeterGUIComponent, Actio
 		KeyListener,FocusListener
 {
 
-	NamePanel namePanel;
-	JTextField portField;
-
-	ProxyControl model;
+	private NamePanel namePanel;
+	private JTextField portField;
+    private boolean isConfigured = false;
+	private ProxyControl model;
 
 	JTable excludeTable;
 	PowerTableModel excludeModel;
@@ -130,15 +130,18 @@ public class ProxyControlGui extends JPanel implements JMeterGUIComponent, Actio
 	private final static String INCLUDE_COL = JMeterUtils.getResString("patterns_to_include");
 	private final static String EXCLUDE_COL = JMeterUtils.getResString("patterns_to_exclude");
 
-	/****************************************
-	 * !ToDo (Constructor description)
-	 ***************************************/
 	public ProxyControlGui()
 	{
 		namePanel = new NamePanel();
 		setName(getStaticLabel());
 		init();
 	}
+
+
+    public boolean isConfigured()
+    {
+        return isConfigured;
+    }
 
 	public JPopupMenu createPopupMenu(NamedTestElement element)
 	{
@@ -506,7 +509,9 @@ public class ProxyControlGui extends JPanel implements JMeterGUIComponent, Actio
 
     public void setElement(TestElement element)
     {
+        isConfigured = false;
         namePanel.setElement(element);
+        isConfigured = true;
     }
 
 

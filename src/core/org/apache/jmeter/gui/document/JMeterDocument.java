@@ -61,7 +61,7 @@ import java.lang.ref.WeakReference;
 
 import javax.swing.*;
 
-import org.apache.jmeter.testelement.NamedTestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.gui.GUIFactory;
 
 
@@ -71,11 +71,11 @@ import org.apache.jmeter.gui.GUIFactory;
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$
  */
-public class JMeterDocument
+public class JMeterDocument implements TestPlan.TestPlanObserver
 {
 
     private File file;
-    private NamedTestElement rootElement;
+    private NamedTestElement element;
     private String name;
     private NamedTestElement currentTestElement;
     private Collection listeners = new HashSet();
@@ -89,8 +89,14 @@ public class JMeterDocument
     public JMeterDocument(String name, File file, NamedTestElement rootElement)
     {
         this.file = file;
-        this.rootElement = rootElement;
+        this.element = rootElement;
         this.name = name;
+
+        rootElement.resetDirty();
+
+        if (rootElement instanceof TestPlan) {
+            ((TestPlan)element).setObserver(this);
+        }
     }
 
 
@@ -99,10 +105,15 @@ public class JMeterDocument
         return getFile() == null;
     }
 
-    public boolean hasChanged()
+    public boolean isDirty()
     {
-        // todo: implement
-        return isNew();
+        return element.isDirty();
+    }
+
+    public void resetDirty()
+    {
+        element.resetDirty();
+        notifyListeners();
     }
 
     public File getFile()
@@ -116,14 +127,14 @@ public class JMeterDocument
         notifyListeners();
     }
 
-    public NamedTestElement getRootElement()
+    public NamedTestElement getElement()
     {
-        return rootElement;
+        return element;
     }
 
-    public void setRootElement(NamedTestElement rootElement)
+    public void setElement(NamedTestElement element)
     {
-        this.rootElement = rootElement;
+        this.element = element;
     }
 
     public String getFileName()
@@ -140,7 +151,7 @@ public class JMeterDocument
 
     public ImageIcon getIcon()
     {
-        return GUIFactory.getIcon(getRootElement().getClass().getName() + "_TAB");
+        return GUIFactory.getIcon(getElement().getClass().getName() + "_TAB");
     }
 
 
@@ -171,6 +182,10 @@ public class JMeterDocument
         return name;
     }
 
+    public void dirtyChanged(TestPlan element)
+    {
+        notifyListeners();
+    }
 
     public synchronized void addListener(JMeterDocumentListener listener)
     {
@@ -217,5 +232,6 @@ public class JMeterDocument
             }
         }
     }
+
 
 }

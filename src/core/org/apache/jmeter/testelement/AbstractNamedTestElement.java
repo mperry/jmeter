@@ -65,7 +65,7 @@ import org.apache.jmeter.testelement.property.StringProperty;
 public class AbstractNamedTestElement extends AbstractTestElement implements NamedTestElement
 {
 
-    private StringProperty name = new StringProperty("");
+    private StringProperty name = new StringProperty("", this);
 
     public AbstractNamedTestElement()
     {

@@ -85,62 +85,35 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
     private JTextField nameField;
     private JLabel nameLabel;
     private NamedTestElement element;
+    private boolean isConfigured = false;
 
 
-    /****************************************
-     * !ToDo (Constructor description)
-     ***************************************/
     public NamePanel()
     {
         init();
     }
 
 
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@param testElement  !ToDo (Parameter description)
-     ***************************************/
+    public boolean isConfigured()
+    {
+        return isConfigured;
+    }
+
     public void configure(TestElement testElement)
     {
         nameField.setText(((NamedTestElement)testElement).getName());
     }
 
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
     public JPopupMenu createPopupMenu(NamedTestElement testElement)
     {
         return null;
     }
 
-    /****************************************
-     * !ToDoo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
     public String getStaticLabel()
     {
         return JMeterUtils.getResString("root");
     }
 
-    /****************************************
-     * !ToDoo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public Collection getMenuCategories()
-    {
-        return null;
-    }
-
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
     public NamedTestElement createTestElement()
     {
         WorkBench wb = new WorkBench();
@@ -165,13 +138,19 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
         {
             public void insertUpdate(DocumentEvent e)
             {
-                updateName(nameField.getText());
+                if (isConfigured())
+                {
+                    updateName(nameField.getText());
+                }
             }
 
 
             public void removeUpdate(DocumentEvent e)
             {
-                updateName(nameField.getText());
+                if (isConfigured())
+                {
+                    updateName(nameField.getText());
+                }
             }
 
 
@@ -201,8 +180,10 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
     {
         if (element instanceof NamedTestElement)
         {
+            isConfigured = false;
             this.element = (NamedTestElement)element;
             configure(element);
+            isConfigured = true;
         }
     }
 
@@ -210,5 +191,11 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
     public TestElement getElement()
     {
         return element;
+    }
+
+
+    public Collection getMenuCategories()
+    {
+        return null;
     }
 }

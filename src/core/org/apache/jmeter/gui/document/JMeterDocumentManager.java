@@ -25,8 +25,7 @@ import java.util.*;
 import java.io.*;
 import java.lang.ref.WeakReference;
 
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestPlan;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.save.SaveService;
 import org.apache.jmeter.save.JTPFileFormat;
 import org.apache.jmeter.util.*;
@@ -64,8 +63,9 @@ public class JMeterDocumentManager
 
             try
             {
-                new JTPFileFormat().store(document.getRootElement(), out);
+                new JTPFileFormat().store(document.getElement(), out);
                 document.setFile(file);
+                document.resetDirty();
             } finally
             {
                 if (out != null) {
@@ -96,7 +96,7 @@ public class JMeterDocumentManager
         }
         JMeterDocument document = createDocument(file, element);
 
-        if (singleDocument != null && singleDocument.isNew() && !singleDocument.hasChanged())
+        if (singleDocument != null && singleDocument.isNew() && !singleDocument.isDirty())
         {
             closeDocument(singleDocument);
         }
