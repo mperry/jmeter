@@ -77,7 +77,7 @@ import org.apache.jorphan.collections.ListedHashTree;
  *@created   $Date$
  *@version   1.0
  ***************************************/
-
+// todo: remove
 public class JMeterTreeModel extends DefaultTreeModel
 {
 

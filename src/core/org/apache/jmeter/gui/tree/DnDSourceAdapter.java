@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,46 +52,62 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
+
 package org.apache.jmeter.gui.tree;
 
 
-import javax.swing.tree.*;
-import javax.swing.*;
+import java.awt.*;
+import java.awt.dnd.*;
 
-import java.awt.Component;
 
 /**
- * Title:        JMeter
- * Description:
- * Copyright:    Copyright (c) 2000
- * Company:      Apache
- * @author Michael Stover
- * @version 1.0
+ * Utility class to support DnD.
+ *
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  */
-// todo: remove
-public class JMeterCellRenderer extends DefaultTreeCellRenderer
+public abstract class DnDSourceAdapter implements DragSourceListener
 {
 
-    public JMeterCellRenderer()
+    abstract public void dragDropEnd(DragSourceDropEvent event);
+
+    protected void setCursor(DragSourceEvent event, int dropAction)
     {
+        Cursor cursor = DragSource.DefaultMoveNoDrop;
+        if (dropAction == DnDConstants.ACTION_COPY)
+        {
+            cursor = DragSource.DefaultCopyDrop;
+        } else if (dropAction == DnDConstants.ACTION_MOVE)
+        {
+            cursor = DragSource.DefaultMoveDrop;
+        } else if (dropAction == DnDConstants.ACTION_LINK)
+        {
+            cursor = DragSource.DefaultLinkDrop;
+        }
+        event.getDragSourceContext().setCursor(cursor);
     }
 
-
-    public Component getTreeCellRendererComponent(JTree tree,
-                                                  Object value,
-                                                  boolean sel,
-                                                  boolean expanded,
-                                                  boolean leaf,
-                                                  int row,
-                                                  boolean hasFocus)
+    public void dragEnter(DragSourceDragEvent event)
     {
-        super.getTreeCellRendererComponent(tree, ((JMeterTreeNode)value).getName(), sel, expanded, leaf, row, hasFocus);
-        this.setEnabled(((JMeterTreeNode)value).isEnabled());
-        ImageIcon ic = ((JMeterTreeNode)value).getIcon();
-        if (ic != null) {
-            setIcon(ic);
+
+        setCursor(event, event.getDropAction());
+    }
+
+    public void dragExit(DragSourceEvent event)
+    {
+
+        setCursor(event, DnDConstants.ACTION_NONE);
+    }
+
+    public void dragOver(DragSourceDragEvent event)
+    {
+        setCursor(event, event.getDropAction());
+    }
+
+    public void dropActionChanged(DragSourceDragEvent event)
+    {
+        if (event.getTargetActions() != 0)
+        {		// get around aJRE 1.3.1 - 1.4.0 bug
+            setCursor(event, event.getUserAction());
         }
-        return this;
     }
 }
-

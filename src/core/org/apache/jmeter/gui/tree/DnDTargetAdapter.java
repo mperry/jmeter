@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,46 +52,68 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
+
 package org.apache.jmeter.gui.tree;
 
 
-import javax.swing.tree.*;
-import javax.swing.*;
+import java.awt.*;
+import java.awt.dnd.*;
 
-import java.awt.Component;
 
 /**
- * Title:        JMeter
- * Description:
- * Copyright:    Copyright (c) 2000
- * Company:      Apache
- * @author Michael Stover
- * @version 1.0
+ * Utility class to support DnD.
+ *
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  */
-// todo: remove
-public class JMeterCellRenderer extends DefaultTreeCellRenderer
+public abstract class DnDTargetAdapter implements DropTargetListener
 {
 
-    public JMeterCellRenderer()
+    /** Gets a potential Dnd target Object.
+     *
+     *	@param  point		the current mouse location.
+     *	@return Object		- if the mouse is over a potential Dnd target
+     *				Object, returns the Object;  otherwise, null.
+     */
+    abstract protected Object getTarget(Point point);
+
+
+    /** Target action on a drop (DropTargetListener implementation).
+     */
+    abstract public void drop(DropTargetDropEvent event);
+
+
+    /** Default action (DropTargetListener implementation).
+     */
+    public void dragEnter(DropTargetDragEvent event)
     {
     }
 
 
-    public Component getTreeCellRendererComponent(JTree tree,
-                                                  Object value,
-                                                  boolean sel,
-                                                  boolean expanded,
-                                                  boolean leaf,
-                                                  int row,
-                                                  boolean hasFocus)
+    /** Default action (DropTargetListener implementation).
+     */
+    public void dragExit(DropTargetEvent event)
     {
-        super.getTreeCellRendererComponent(tree, ((JMeterTreeNode)value).getName(), sel, expanded, leaf, row, hasFocus);
-        this.setEnabled(((JMeterTreeNode)value).isEnabled());
-        ImageIcon ic = ((JMeterTreeNode)value).getIcon();
-        if (ic != null) {
-            setIcon(ic);
+    }
+
+
+    /** Default action (DropTargetListener implementation).
+     */
+    public void dropActionChanged(DropTargetDragEvent event)
+    {
+    }
+
+
+    /** Default action (DropTargetListener implementation).
+     */
+    public void dragOver(DropTargetDragEvent event)
+    {
+
+        if (getTarget(event.getLocation()) != null)
+        {
+            event.acceptDrag(event.getDropAction());
+        } else
+        {
+            event.rejectDrag();
         }
-        return this;
     }
 }
-

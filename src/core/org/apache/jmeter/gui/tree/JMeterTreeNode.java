@@ -73,7 +73,7 @@ import javax.swing.ImageIcon;
  *@created    $Date$
  *@version    1.0
  ***********************************************************/
-
+// todo: remove
 public class JMeterTreeNode extends DefaultMutableTreeNode
 	implements JMeterGUIComponent
 {

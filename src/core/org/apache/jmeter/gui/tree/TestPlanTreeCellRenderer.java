@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001-2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,43 +55,26 @@
 package org.apache.jmeter.gui.tree;
 
 
-import javax.swing.tree.*;
+import java.awt.*;
+
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.*;
 
-import java.awt.Component;
 
 /**
- * Title:        JMeter
- * Description:
- * Copyright:    Copyright (c) 2000
- * Company:      Apache
- * @author Michael Stover
- * @version 1.0
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  */
-// todo: remove
-public class JMeterCellRenderer extends DefaultTreeCellRenderer
+public class TestPlanTreeCellRenderer extends DefaultTreeCellRenderer
 {
 
-    public JMeterCellRenderer()
+    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus)
     {
-    }
+        JLabel renderer = (JLabel)super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
+        ImageIcon icon = ((TestPlanTreeNode)value).getIcon();
 
-    public Component getTreeCellRendererComponent(JTree tree,
-                                                  Object value,
-                                                  boolean sel,
-                                                  boolean expanded,
-                                                  boolean leaf,
-                                                  int row,
-                                                  boolean hasFocus)
-    {
-        super.getTreeCellRendererComponent(tree, ((JMeterTreeNode)value).getName(), sel, expanded, leaf, row, hasFocus);
-        this.setEnabled(((JMeterTreeNode)value).isEnabled());
-        ImageIcon ic = ((JMeterTreeNode)value).getIcon();
-        if (ic != null) {
-            setIcon(ic);
-        }
-        return this;
+        renderer.setText(((TestPlanTreeNode)value).getName());
+        renderer.setIcon(icon);
+        return renderer;
     }
 }
-
