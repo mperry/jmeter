@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2002, 2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,23 +52,57 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.protocol.java.config.gui;
 
+
+import org.apache.jmeter.plugin.JMeterPlugin;
+import org.apache.jmeter.protocol.java.config.JavaConfig;
+import org.apache.jmeter.protocol.java.config.gui.JavaConfigGui;
 import org.apache.jmeter.protocol.java.control.gui.JavaTestSamplerGui;
+import org.apache.jmeter.protocol.java.sampler.JavaSampler;
+import org.apache.jmeter.protocol.java.test.SleepTest;
 
 
 /**
- * The <code>JavaConfigGui</code> class provides the user interface for
- * the JavaConfig object.
- * @author Brad Kiewel
- * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$
  */
-
-public class JavaConfigGui extends JavaTestSamplerGui
+public class JMeterJavaProtocolPlugin implements JMeterPlugin
 {
-	public String getStaticLabel()
-	{
-		return "protocol_java_config_tile";
-	}
+
+    public String[][] getIconMappings()
+    {
+        return new String[][]{
+        };
+    }
+
+    public Class[][] getGuiMappings()
+    {
+        return new Class[][]{
+            {JavaSampler.class, JavaTestSamplerGui.class},
+            {JavaConfig.class, JavaConfigGui.class}
+        };
+    }
+
+    public Class[] getElementClasses()
+    {
+        return new Class[]{
+            JavaSampler.class,
+            JavaConfig.class
+        };
+    }
+
+
+    public Class[] getJavaSamplerClientClasses()
+    {
+        return new Class[] {
+            SleepTest.class
+        };
+    }
+
+
+    public String[][] getResourceBundles()
+    {
+        return new String[0][0];
+    }
+
 }

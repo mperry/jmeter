@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 2002, 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,14 +54,13 @@
  */
 package org.apache.jmeter.protocol.java.config;
 
-import java.io.Serializable;
+
+import java.io.*;
 
 import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.config.ConfigTestElement;
+import org.apache.jmeter.testelement.category.ConfigCategory;
 import org.apache.jmeter.protocol.java.sampler.JavaSampler;
-import org.apache.jmeter.protocol.java.sampler.JavaSamplerClient;
-import org.apache.log.Hierarchy;
-import org.apache.log.Logger;
 
 
 /**
@@ -70,73 +69,43 @@ import org.apache.log.Logger;
  * necessary for the Java protocol.
  *
  *@author     Brad Kiewel
+ * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  *@created    $Date$
  *@version    $Revision$
  */
 
-public class JavaConfig extends ConfigTestElement implements Serializable
+public class JavaConfig extends ConfigTestElement implements Serializable, ConfigCategory
 {
 
-	/** Logging  */
-	transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor("jmeter.protocol.java");
-	
-	private transient JavaSamplerClient javaClient = null;
+    public final static String CLASSNAME = JavaSampler.CLASSNAME;
+    public final static String ARGUMENTS = JavaSampler.ARGUMENTS;
 
-	/**
-	 *  Constructor for the JavaConfig object
-	 */
-	public JavaConfig()
-	{
-		setArguments(new Arguments());
-	}
-
-	/**
-	 *  Sets the Classname attribute of the JavaConfig object
-	 *
-	 *@param  classname  The new Classname value
-	 */
-	public void setClassname(String classname)
-	{
-		setProperty(JavaSampler.CLASSNAME, classname);
-	}
+    private Arguments arguments = new Arguments();
+    private String className;
 
 
+    public Arguments getArguments()
+    {
+        return arguments;
+    }
 
-	/**
-	 *  Gets the Classname attribute of the JavaConfig object
-	 *
-	 *@return    The Classname value
-	 */
-	public String getClassname()
-	{
-		return (String) getPropertyAsString(JavaSampler.CLASSNAME);
-	}
 
-	public void addArgument(String name,String value)
-	{
-		Arguments args = this.getArguments();
-		args.addArgument(name,value);
-	}
+    public void setArguments(Arguments arguments)
+    {
+        this.arguments = arguments;
+    }
 
-	public void removeArguments()
-	{
-		this.setProperty(JavaSampler.ARGUMENTS,new Arguments());
-	}
-	
-	public void setArguments(Arguments args)
-	{
-		setProperty(JavaSampler.ARGUMENTS,args);
-	}
 
-	/**
-	 *  Gets the Arguments attribute of the JavaConfig object
-	 *
-	 *@return    The Arguments value
-	 */
-	public Arguments getArguments()
-	{
-		return (Arguments) getProperty(JavaSampler.ARGUMENTS);
-	}
+    public String getClassName()
+    {
+        return className;
+    }
+
+
+    public void setClassName(String className)
+    {
+        this.className = className;
+    }
 }
 
 

@@ -304,7 +304,7 @@
   <target name="install" depends="package" description="Install JMeter.">
     <fixcrlf srcdir="." eol="lf" includes="**/jmeter,**/jmeter-server"/>
       <copy todir="${plugin.dir}">
-          <fileset dir="${jar.dest}" includes="*components.jar, *http.jar, *ftp.jar"/>
+          <fileset dir="${jar.dest}" includes="*components.jar, *http.jar, *ftp.jar, *java.jar"/>
       </copy>
   </target>
 

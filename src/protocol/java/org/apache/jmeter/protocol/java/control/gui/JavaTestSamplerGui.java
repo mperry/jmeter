@@ -54,108 +54,150 @@
  */
 package org.apache.jmeter.protocol.java.control.gui;
 
-import java.awt.Font;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
+import javax.swing.*;
+
+import org.apache.jmeter.config.gui.ArgumentsPanel;
+import org.apache.jmeter.config.Arguments;
+import org.apache.jmeter.gui.BorderedPanel;
+import org.apache.jmeter.gui.GUIFactory;
+import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.protocol.java.config.JavaConfig;
 import org.apache.jmeter.protocol.java.config.gui.JavaConfigGui;
 import org.apache.jmeter.protocol.java.sampler.JavaSampler;
 import org.apache.jmeter.samplers.gui.AbstractSamplerGui;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jorphan.gui.layout.VerticalLayout;
+import org.apache.jmeter.util.LocaleChangeEvent;
+import org.apache.jmeter.plugin.ElementClassRegistry;
 
 
 /**
- * The <code>JavaTestSamplerGui</code> class provides the user interface 
+ * The <code>JavaTestSamplerGui</code> class provides the user interface
  * for the JavaTestSampler.
- * 
+ *
  * @author Brad Kiewel
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$
  */
 
-public class JavaTestSamplerGui extends AbstractSamplerGui {
-	
-	private JavaConfigGui javaPanel = null;
+public class JavaTestSamplerGui extends AbstractSamplerGui implements ItemListener
+{
 
-	/**
-	 * Constructor for JavaTestSamplerGui
-	 *
-	public JavaTestSamplerGui(LayoutManager arg0, boolean arg1) {
-		super(arg0, arg1);
-	}
+    private JavaConfigGui javaPanel = null;
+    private BorderedPanel requestPanel;
+    private JLabel classnameLabel;
+    private JComboBox classnameCombo;
+    private ArgumentsPanel argsPanel;
+    private JLabel argsLabel;
 
-	/**
-	 * Constructor for JavaTestSamplerGui
-	 *
-	public JavaTestSamplerGui(LayoutManager arg0) {
-		super(arg0);
-	}
 
-	/**
-	 * Constructor for JavaTestSamplerGui
-	 *
-	public JavaTestSamplerGui(boolean arg0) {
-		super(arg0);
-	}
+    public String getStaticLabel()
+    {
+        return "protocol_java_test_title";
+    }
 
-	/**
-	 * Constructor for JavaTestSamplerGui
-	 */
-	public JavaTestSamplerGui() {
-		super();
-		init();
-	}
-	
-	public String getStaticLabel()
-	{
-		return JMeterUtils.getResString("Java Request");
-	}
 
-	private void init() {
-		this.setLayout(new VerticalLayout(5, VerticalLayout.LEFT, VerticalLayout.TOP));
+    protected void initComponents()
+    {
+        super.initComponents();
 
-		// MAIN PANEL
-		JPanel mainPanel = new JPanel();
-		Border margin = new EmptyBorder(10, 10, 5, 10);
-		mainPanel.setBorder(margin);
-		mainPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
+        requestPanel = GUIFactory.createBorderedPanel("protocol_java_border");
+        requestPanel.setLayout(new GridBagLayout());
+        JMeterGridBagConstraints constraints = new JMeterGridBagConstraints();
 
-		// TITLE
-		JLabel panelTitleLabel = new JLabel(JMeterUtils.getResString("protocol_java_test_title"));
-		Font curFont = panelTitleLabel.getFont();
-		int curFontSize = curFont.getSize();
-		curFontSize += 4;
-		panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
-		mainPanel.add(panelTitleLabel);
-		
-		// NAME
-		mainPanel.add(getNamePanel());
+        classnameLabel = new JLabel(JMeterUtils.getResString("protocol_java_classname"));
+        classnameLabel.setName("protocol_java_classname");
+        requestPanel.add(classnameLabel, constraints);
+        classnameCombo = new JComboBox(new String[0]);
+        classnameCombo.addItemListener(this);
+        constraints = constraints.incrementX();
+        requestPanel.add(classnameCombo, constraints);
+        Component filler = Box.createHorizontalGlue();
+        constraints = constraints.incrementX();
+        constraints.fillHorizontal(1.0);
+        requestPanel.add(filler, constraints);
+        argsLabel = new JLabel(JMeterUtils.getResString("paramtable"));
+        argsLabel.setName("paramtable");
+        constraints = constraints.nextRow();
+        constraints.fillNone();
+        Insets insets = constraints.insets;
+        constraints.insets = new Insets(insets.top + 10, insets.left, insets.bottom, insets.right);
+        requestPanel.add(argsLabel, constraints);
+        argsPanel = new ArgumentsPanel();
+        constraints = constraints.nextRow();
+        constraints.insets = insets;
+        constraints.gridwidth = 2;
+        requestPanel.add(argsPanel, constraints);
 
-		javaPanel = new JavaConfigGui(false);
-		
-		mainPanel.add(javaPanel);
+        add(requestPanel);
+    }
 
-		this.add(mainPanel);
-	}
-	
-	public TestElement createTestElement()
-	{
-		JavaConfig config = (JavaConfig)javaPanel.createTestElement();
-		JavaSampler sampler = new JavaSampler();
-		this.configureTestElement(sampler);
-		sampler.addChildElement(config);
-		return sampler;
-	}
-	
-	public void configure(TestElement el)
-	{
-		super.configure(el);
-		javaPanel.configure(el);
-	}
+
+    public TestElement createTestElement()
+    {
+        JavaConfig config = (JavaConfig)javaPanel.createTestElement();
+        JavaSampler sampler = new JavaSampler();
+        this.configureTestElement(sampler);
+        sampler.addChildElement(config);
+        return sampler;
+    }
+
+    public void configure(TestElement element)
+    {
+        super.configure(element);
+
+        argsPanel.setElement((Arguments)element.getProperty(JavaConfig.ARGUMENTS));
+        fillComboBox(element);
+    }
+
+
+    public void localeChanged(LocaleChangeEvent event)
+    {
+        super.localeChanged(event);
+        updateLocalizedStrings(new JComponent[]{classnameLabel, argsLabel});
+        requestPanel.localeChanged(event);
+        fillComboBox(getElement());
+    }
+
+
+    public void itemStateChanged(ItemEvent e)
+    {
+        String selected = (String)classnameCombo.getSelectedObjects()[0];
+        if (JMeterUtils.getResString("select_class").equals(selected))
+        {
+            getElement().setProperty(JavaSampler.CLASSNAME, null);
+        } else
+        {
+            getElement().setProperty(JavaSampler.CLASSNAME, selected);
+        }
+    }
+
+
+    private void fillComboBox(TestElement element)
+    {
+        if (element == null)
+        {
+            // todo: remove this check as soon as gui refactoring is done
+            return;
+        }
+        String className = (String)element.getProperty(JavaSampler.CLASSNAME);
+        String selectOne = JMeterUtils.getResString("select_class");
+
+        if (className == null)
+        {
+            className = selectOne;
+        }
+        String[] classNames = ElementClassRegistry.getInstance().getJavaSamplerClientClassNames();
+        String[] comboEntries = new String[classNames.length + 1];
+        comboEntries[0] = selectOne;
+        System.arraycopy(classNames, 0, comboEntries, 1, classNames.length);
+        classnameCombo.setModel(new DefaultComboBoxModel(comboEntries));
+        classnameCombo.setSelectedItem(className);
+    }
 }
 
