@@ -461,9 +461,9 @@ public class JMeter implements JMeterPlugin
     public Class[][] getGuiMappings() {
         return new Class[][] {
             {TestPlan.class, TestPlanGui.class},
-            {org.apache.jmeter.threads.ThreadGroup.class, ThreadGroupGui.class}
+            {org.apache.jmeter.threads.ThreadGroup.class, ThreadGroupGui.class},
             // controller
-//            {GenericController.class, LogicControllerGui.class},
+            {GenericController.class, LogicControllerGui.class}
 //            {LoopController.class, LoopControlPanel.class},
 //            {OnceOnlyController.class, OnceOnlyControllerGui.class},
 //            {InterleaveControl.class, InterleaveControlGui.class},
@@ -501,9 +501,9 @@ public class JMeter implements JMeterPlugin
     public Class[] getElementClasses() {
         return new Class[] {
             TestPlan.class,
-            org.apache.jmeter.threads.ThreadGroup.class
+            org.apache.jmeter.threads.ThreadGroup.class,
             // controller
-//            GenericController.class,
+            GenericController.class
 //            LoopController.class,
 //            OnceOnlyController.class,
 //            InterleaveControl.class,

@@ -58,39 +58,29 @@ package org.apache.jmeter.control;
 import java.io.*;
 import java.util.*;
 
-import org.apache.jmeter.assertions.Assertion;
-import org.apache.jmeter.config.ConfigElement;
-import org.apache.jmeter.gui.*;
-import org.apache.jmeter.gui.util.MenuFactory;
-import org.apache.jmeter.samplers.*;
-import org.apache.jmeter.samplers.SampleResult;
+import org.apache.jmeter.samplers.AbstractSampler;
+import org.apache.jmeter.samplers.Sampler;
 import org.apache.jmeter.testelement.AbstractTestElement;
-import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.PerThreadClonable;
+import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.category.ControllerCategory;
 
 
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
- *@author    Michael Stover
- *@created   $Date$
- *@version   1.0
+ * @author    Michael Stover
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   $Date$
+ * @version   1.0
  ***************************************/
 
 public class GenericController extends AbstractTestElement implements Controller,
-  Serializable, PerThreadClonable {
+  Serializable, PerThreadClonable, ControllerCategory {
 
-  /****************************************
-   * !ToDo (Field description)
-   ***************************************/
+  // todo: make them private
   protected List subControllersAndSamplers = new ArrayList();
-  /****************************************
-   * !ToDo (Field description)
-   ***************************************/
   protected int current;
-  /****************************************
-   * !ToDo (Field description)
-   ***************************************/
   protected Iterator controlIt;
   private List configs = new LinkedList();
   private boolean returnedNull = false;
@@ -98,9 +88,6 @@ public class GenericController extends AbstractTestElement implements Controller
   private List assertions = new LinkedList();
 
 
-  /****************************************
-   * !ToDo (Constructor description)
-   ***************************************/
   public GenericController() {
   }
 
