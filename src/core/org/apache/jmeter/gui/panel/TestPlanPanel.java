@@ -43,7 +43,9 @@ import org.apache.jmeter.gui.tree.*;
 import org.apache.jmeter.gui.JMeterGUIComponent;
 import org.apache.jmeter.testelement.AbstractTestElement;
 
-
+/**
+ * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ */
 public class TestPlanPanel extends JPanel implements TreeSelectionListener, TreeModelListener, FocusListener
 {
 

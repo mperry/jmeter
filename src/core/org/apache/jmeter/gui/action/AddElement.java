@@ -72,7 +72,7 @@ import org.apache.jmeter.util.JMeterUtils;
 
 
 /**
- * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a> *@created    $Date$
+ * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  */
 public class AddElement implements ActionListener
 {

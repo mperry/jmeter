@@ -69,122 +69,77 @@ import org.apache.jmeter.testelement.TestElement;
  * Title: Apache JMeter Description: Copyright: Copyright (c) 2000 Company:
  * Apache Foundation
  *
- *@author    Michael Stover
- *@created   March 13, 2001
- *@version   1.0
+ * @author    Michael Stover
+ * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   March 13, 2001
+ * @version   1.0
  ***************************************/
 
 public class Argument extends AbstractTestElement implements Serializable
 {
 
-    protected final static String NAME = "Argument.name";
-    protected final static String VALUE = "Argument.value";
-    private final static String METADATA = "Argument.metadata";
+    public final static String NAME = "name";
+    public final static String VALUE = "value";
+    public final static String METADATA = "metaData";
 
-    /****************************************
-     * Constructor for the Argument object
-     *
-     *@param name   Description of Parameter
-     *@param value  Description of Parameter
-     *@param metadata Description of Parameter
-     ***************************************/
-    public Argument(String name, Object value, Object metadata)
+
+    private String name;
+    private Object value;
+    private Object metaData;
+
+
+    public Argument(String name, Object value, Object metaData)
     {
-        setProperty(NAME, name);
-        setProperty(VALUE, value);
-        setProperty(METADATA, metadata);
+        this.name = name;
+        this.value = value;
+        this.metaData = metaData;
     }
 
-    /****************************************
-     * Constructor for the Argument object
-     *
-     *@param name   Description of Parameter
-     *@param value  Description of Parameter
-     ***************************************/
+
     public Argument(String name, Object value)
     {
-        setProperty(NAME, name);
-        setProperty(VALUE, value);
+        this(name, value, null);
     }
 
-    /****************************************
-     * Constructor for the Argument object
-     ***************************************/
+
     public Argument()
     {
+        this("", null, null);
     }
 
-    /****************************************
-     * !ToDo
-     *
-     *@param el  !ToDo
-     ***************************************/
-    public void addTestElement(TestElement el)
-    {
-    }
 
-    /****************************************
-     * Sets the Name attribute of the Argument object
-     *
-     *@param newName  The new Name value
-     ***************************************/
-    public void setName(String newName)
-    {
-        setProperty(NAME, newName);
-    }
-
-    /****************************************
-     * Sets the Value attribute of the Argument object
-     *
-     *@param newValue  The new Value value
-     ***************************************/
-    public void setValue(Object newValue)
-    {
-        setProperty(VALUE, newValue);
-    }
-
-    /****************************************
-     * Sets the Meta Data attribute of the Argument object
-     *
-     *@param newMetaData  The new Metadata value
-     ***************************************/
-    public void setMetaData(Object newMetaData)
-    {
-        setProperty(METADATA, newMetaData);
-    }
-
-    /****************************************
-     * Gets the Name attribute of the Argument object
-     *
-     *@return   The Name value
-     ***************************************/
     public String getName()
     {
-        return (String)getProperty(NAME);
+        return name;
     }
 
-    /****************************************
-     * Gets the Value attribute of the Argument object
-     *
-     *@return   The Value value
-     ***************************************/
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+
     public Object getValue()
     {
-        return (String)getProperty(VALUE);
+        return value;
     }
 
-    /****************************************
-     * Gets the Meta Data attribute of the Argument object
-     *
-     *@return   The MetaData value
-     ***************************************/
+
+    public void setValue(Object value)
+    {
+        this.value = value;
+    }
+
+
+    public void setMetaData(Object metaData)
+    {
+        this.metaData = metaData;
+    }
+
+
     public Object getMetaData()
     {
-        String meta = (String)getProperty(METADATA);
-        if (meta == null)
-        {
-            meta = "=";
-        }
-        return meta;
+        return metaData;
     }
 }
