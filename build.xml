@@ -51,7 +51,8 @@
   <!-- Where the build result .jars will be placed -->
   <property name="jar.dest" value="lib/ext"/>
   <property name="jorphan.jar.dest" value="lib"/>
-
+  <property name="plugin.dir" value="plugin"/>
+    
   <!-- Where the API documentation lives -->
   <property name="docs.api.dest" value="docs/api"/>
 
@@ -302,6 +303,9 @@
 
   <target name="install" depends="package" description="Install JMeter.">
     <fixcrlf srcdir="." eol="lf" includes="**/jmeter,**/jmeter-server"/>
+      <copy todir="${plugin.dir}">
+          <fileset dir="${jar.dest}" includes="*components.jar, *http.jar, *ftp.jar"/>
+      </copy>
   </target>
 
   <target name="all" depends="clean,install" description="Default target: build from source and install."/>
