@@ -55,12 +55,19 @@
 
 package org.apache.jmeter.plugin;
 
-/**
- * @author Oliver Rossmueller
- */
-public interface JMeterPlugin {
 
+/**
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ */
+public interface JMeterPlugin
+{
     public String[][] getIconMappings();
+
+    public Class[][] getGuiMappings();
+
+    public Class[] getElementClasses();
+
+    public Class[] getJavaSamplerClientClasses();
 
     public String[][] getResourceBundles();
 }

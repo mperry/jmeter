@@ -61,10 +61,11 @@ import java.net.URL;
 import javax.swing.*;
 
 import org.apache.jmeter.gui.GUIFactory;
+import org.apache.jmeter.util.Resources;
 
 
 /**
- * @author Oliver Rossmueller
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  */
 public class PluginManager
 {
@@ -96,25 +97,49 @@ public class PluginManager
 
 
     private void installPlugin(JMeterPlugin plugin)
-            throws ClassNotFoundException, InstantiationException,
-		    IllegalAccessException
     {
         String[][] icons = plugin.getIconMappings();
+        String[][] resources = plugin.getResourceBundles();
+        Class[] elementClasses = plugin.getElementClasses();
+        Class[] javaSamplerClasses = plugin.getJavaSamplerClientClasses();
+        Class[][] guiMappings = plugin.getGuiMappings();
         ClassLoader classloader = plugin.getClass().getClassLoader();
+        int i;
 
-        for (int i = 0; i < icons.length; i++)
-		{
+
+        for (i = 0; i < resources.length; i++)
+        {
+            Resources.registerBundle(resources[i][0], resources[i][1], classloader);
+        }
+
+        for (i = 0; i < icons.length; i++)
+        {
             URL resource = classloader.getResource(icons[i][1].trim());
 
             if (resource == null)
-		    {
+            {
                 // todo: log or throw exception
-            }
-	    	else
-	    	{
+            } else
+            {
                 GUIFactory.registerIcon(icons[i][0], new ImageIcon(resource));
             }
         }
+
+        ElementClassRegistry registry = ElementClassRegistry.getInstance();
+
+        for (i = 0; i < elementClasses.length; i++)
+        {
+            registry.register(elementClasses[i]);
+        }
+
+        for (i = 0; i < javaSamplerClasses.length; i++)
+        {
+            registry.register(javaSamplerClasses[i]);
+        }
+
+        for (i = 0; i < guiMappings.length; i++)
+        {
+            GUIFactory.registerGUI(guiMappings[i][0], guiMappings[i][1]);
+        }
     }
-    
 }
