@@ -52,89 +52,21 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.control.gui;
+package org.apache.jmeter.testelement;
 
-
-import java.util.*;
-
-import javax.swing.*;
-
-import org.apache.jmeter.control.ModifyController;
-import org.apache.jmeter.gui.util.MenuFactory;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.util.JMeterUtils;
-
-
-/****************************************
- * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
+/**
+ * Interface for test element wrappers.
  *
- * @author    Kevin Hammond
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created   $Date$
- * @version   1.0
- ***************************************/
-// todo: remove ????
+ * @version $Revision$
+ */
+public interface TestElementConfigurationWrapper extends TestElementConfiguration {
 
-public class ModifyControllerGui extends AbstractControllerGui
-{
-
-    ModifyController model;
-
-    /****************************************
-     * !ToDo (Constructor description)
-     ***************************************/
-    public ModifyControllerGui()
-    {
-    }
-
-    /****************************************
-     * !ToDoo (Method description)
+    /**
+     * Answer the wrapped test element configuration. If this object wraps an another wrapper it has to
+     * call unwrap again to get the test element configuration in the core of all wrappers.
      *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public Collection getMenuCategories()
-    {
-        return new LinkedList();
-    }
-
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public JPopupMenu createPopupMenu()
-    {
-        JPopupMenu pop = new JPopupMenu();
-        pop.add(MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
-                                                   MenuFactory.SAMPLERS, MenuFactory.CONFIG_ELEMENTS,
-                                                   MenuFactory.MODIFIERS, MenuFactory.RESPONSE_BASED_MODIFIERS},
-                                      JMeterUtils.getResString("Add"),
-                                      "Add"));
-        MenuFactory.addEditMenu(pop, true);
-        MenuFactory.addFileMenu(pop);
-        return pop;
-    }
-
-    /****************************************
-     * !ToDoo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public String getStaticLabel()
-    {
-        return "modification_controller_title";
-    }
-
-
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public NamedTestElement createTestElement()
-    {
-        ModifyController mc = new ModifyController();
-        configureTestElement(mc);
-        return mc;
-    }
+     * @return test element configuration wrapped by this object or by other wrappers wrapped by this object
+     */
+    public TestElementConfiguration unwrap();
 }

@@ -37,7 +37,7 @@ public abstract class AbstractControllerGui extends AbstractJMeterGuiComponent
         return Arrays.asList(new String[]{MenuFactory.CONTROLLERS});
     }
 
-    public JPopupMenu createPopupMenu(NamedTestElement element)
+    public JPopupMenu createPopupMenu()
     {
         JPopupMenu pop = new JPopupMenu();
 

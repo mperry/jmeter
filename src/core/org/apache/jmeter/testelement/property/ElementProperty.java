@@ -66,14 +66,15 @@ import org.apache.jmeter.testelement.TestElement;
 public class ElementProperty extends ObjectProperty {
 
 
-    public ElementProperty(Object value)
+    public ElementProperty(TestElement value)
     {
         super(value);
     }
 
-    public ElementProperty(Object value, TestElement owner)
+    public ElementProperty(TestElement value, TestElement owner)
     {
         super(value, owner);
+        value.setParent(owner);
     }
 
     public TestElement getElement()
@@ -84,6 +85,7 @@ public class ElementProperty extends ObjectProperty {
     public void setElement(TestElement element)
     {
         setValue(element);
+        element.setParent(getOwner());
     }
 
     public boolean isElement()

@@ -63,8 +63,8 @@ import org.apache.jmeter.gui.GUIFactory;
 
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+
+import org.apache.jmeter.testelement.*;
 
 import javax.swing.ImageIcon;
 
@@ -113,14 +113,9 @@ public class JMeterTreeNode extends DefaultMutableTreeNode
 		return ((JMeterGUIComponent)getUserObject()).getMenuCategories();
 	}
 
-	public JPopupMenu createPopupMenu(NamedTestElement element)
+	public JPopupMenu createPopupMenu()
 	{
-		return ((JMeterGUIComponent)getUserObject()).createPopupMenu(element);
-	}
-
-	public void configure(TestElement element)
-	{
-		((JMeterGUIComponent)getUserObject()).configure(element);
+		return ((JMeterGUIComponent)getUserObject()).createPopupMenu();
 	}
 
 	public NamedTestElement createTestElement()
@@ -153,13 +148,13 @@ public class JMeterTreeNode extends DefaultMutableTreeNode
 		return ((JMeterGUIComponent)getUserObject()).getName();
 	}
 
-    public void setElement(TestElement element)
+    public void setElement(TestElementConfiguration config)
     {
-        ((JMeterGUIComponent)getUserObject()).setElement(element);
+        ((JMeterGUIComponent)getUserObject()).setElement(config);
     }
 
 
-    public TestElement getElement()
+    public TestElementConfiguration getElement()
     {
         return null;
     }

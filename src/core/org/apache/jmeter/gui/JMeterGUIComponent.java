@@ -60,8 +60,7 @@ import java.util.*;
 
 import javax.swing.*;
 
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 
 
 /****************************************
@@ -149,17 +148,7 @@ public interface JMeterGUIComponent
      *
      *@return   A JPopupMenu appropriate for the component.
      ***************************************/
-    public JPopupMenu createPopupMenu(NamedTestElement testElement);
-
-    /****************************************
-     * A newly created component can be initialized with the contents of
-     * a Test Element object by calling this method.  The component is
-     * responsible for querying the Test Element object for the
-     * relevant information to display in its GUI.
-     *
-     *@param element
-     ***************************************/
-    public void configure(TestElement element);
+    public JPopupMenu createPopupMenu();
 
     /****************************************
      * This is the list of menu categories this gui component will be available
@@ -170,9 +159,9 @@ public interface JMeterGUIComponent
      ***************************************/
     public Collection getMenuCategories();
 
-    public void setElement(TestElement element);
+    public void setElement(TestElementConfiguration config);
 
-    public TestElement getElement();
+    public TestElementConfiguration getElement();
 
     /**
      * Answer true if configuration is finished. This information is used by document listeners to

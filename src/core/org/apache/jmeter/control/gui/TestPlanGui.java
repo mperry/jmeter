@@ -98,7 +98,7 @@ public class TestPlanGui extends AbstractJMeterGuiComponent implements LocaleCha
     }
 
 
-    public JPopupMenu createPopupMenu(NamedTestElement testElement)
+    public JPopupMenu createPopupMenu()
     {
 //        if (popup == null) {
         ActionListener addListener = Actions.addElement;
@@ -153,12 +153,11 @@ public class TestPlanGui extends AbstractJMeterGuiComponent implements LocaleCha
     }
 
 
-    public void configure(TestElement element)
+    public void configure(TestElementConfiguration config)
     {
-        super.configure(element);
-        testPlan = (TestPlan)element;
-        functionalMode.setSelected(testPlan.getFunctionalMode());
-        argsPanel.setElement(testPlan.getUserDefinedVariables());
+        super.configure(config);
+        functionalMode.setSelected(new Boolean(config.getProperty(TestPlan.FUNCTIONAL_MODE)).booleanValue());
+        argsPanel.setElement(config);
     }
 
 

@@ -29,9 +29,10 @@ import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.save.SaveService;
 import org.apache.jmeter.save.JTPFileFormat;
 import org.apache.jmeter.util.*;
+import org.apache.jmeter.gui.action.Actions;
 
 
-public class JMeterDocumentManager
+public class JMeterDocumentManager implements JMeterDocumentListener
 {
 
     private static JMeterDocumentManager instance;
@@ -58,12 +59,12 @@ public class JMeterDocumentManager
     public void saveCurrentDocument(File file) throws IOException {
         JMeterDocument document = getCurrentDocument();
 
-        if (document != null) {
+        if (document != null && document.isDirty()) {
             FileOutputStream out = new FileOutputStream(file);
 
             try
             {
-                new JTPFileFormat().store(document.getElement(), out);
+//  todo:               new JTPFileFormat().store(document.getElement(), out);
                 document.setFile(file);
                 document.resetDirty();
             } finally
@@ -84,10 +85,10 @@ public class JMeterDocumentManager
             singleDocument = (JMeterDocument)documents.values().iterator().next();
         }
         // todo: should never happen but what if the element is not a NamedTestElement?
-        NamedTestElement element;
+        TestElementConfiguration element = null;
         try
         {
-            element = (NamedTestElement)SaveService.loadSubTree(in);
+// todo:            element = (TestElementConfiguration)SaveService.loadSubTree(in);
         } finally
         {
             if (in != null) {
@@ -105,12 +106,13 @@ public class JMeterDocumentManager
     }
 
 
-    private JMeterDocument createDocument(File file, NamedTestElement element)
+    private JMeterDocument createDocument(File file, TestElementConfiguration element)
     {
         String documentName = "document" + getCount();
         JMeterDocument document = new JMeterDocument(documentName, file, element);
 
         documents.put(documentName, document);
+        document.addListener(this);
         notifyListeners(document, false);
         return document;
     }
@@ -118,7 +120,7 @@ public class JMeterDocumentManager
     public JMeterDocument newTestPlanDocument()
     {
         // todo: i18n ?
-        TestPlan testplan = new TestPlan("Test Plan");
+        TestElementConfiguration testplan = TestElementConfigurationFactory.createConfiguration(TestPlan.class, "Test Plan");
 
         return createDocument(null, testplan);
     }
@@ -127,6 +129,7 @@ public class JMeterDocumentManager
     public void closeDocument(JMeterDocument document)
     {
         documents.remove(document.getName());
+        document.removeListener(this);
         notifyListeners(document, true);
     }
 
@@ -198,9 +201,10 @@ public class JMeterDocumentManager
     public void setCurrentDocument(JMeterDocument currentDocument)
     {
         this.currentDocument = currentDocument;
+        Actions.saveDocument.setEnabled(currentDocument.isDirty());
     }
 
-    public NamedTestElement getCurrentTestElement()
+    public TestElementConfiguration getCurrentTestElement()
     {
         if (getCurrentDocument() == null)
         {
@@ -208,6 +212,14 @@ public class JMeterDocumentManager
         }
 
         return getCurrentDocument().getCurrentTestElement();
+    }
+
+
+    public void documentChanged(JMeterDocument document)
+    {
+        if (document == getCurrentDocument()) {
+            Actions.saveDocument.setEnabled(document.isDirty());
+        }
     }
 }
 

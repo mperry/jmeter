@@ -432,7 +432,7 @@ public class JMeterTreeListener implements TreeSelectionListener, MouseListener,
 
     private void displayPopUp(MouseEvent e)
     {
-        JPopupMenu pop = ((JMeterGUIComponent)getCurrentNode().getUserObject()).createPopupMenu(null);
+        JPopupMenu pop = ((JMeterGUIComponent)getCurrentNode().getUserObject()).createPopupMenu();
         displayPopUp(e, pop);
     }
 

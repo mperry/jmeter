@@ -73,8 +73,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
 
 import org.apache.jmeter.assertions.SizeAssertion;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
@@ -139,10 +138,10 @@ public class SizeAssertionGui extends AbstractAssertionGui implements FocusListe
 	/****************************************
 	 * !ToDo (Method description)
 	 ***************************************/
-	public void configure(TestElement el)
+	public void configure(TestElementConfiguration config)
 	{
-		super.configure(el);
-		SizeAssertion assertion = (SizeAssertion)el;
+		super.configure(config);
+		SizeAssertion assertion = (SizeAssertion)config;
 		size.setText(String.valueOf(assertion.getAllowedSize()));
 	}
 

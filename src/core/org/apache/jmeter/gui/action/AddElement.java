@@ -68,7 +68,7 @@ import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.JMeterGUIComponent;
 import org.apache.jmeter.gui.document.JMeterDocumentManager;
 import org.apache.jmeter.gui.tree.JMeterTreeNode;
-import org.apache.jmeter.testelement.NamedTestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.JMeterClassLoader;
 
@@ -101,15 +101,14 @@ public class AddElement extends JMeterAction
     {
         try
         {
-            String className = ((JComponent)e.getSource()).getName();
-            // todo: use correct classloader
-            NamedTestElement newElement = (NamedTestElement)JMeterClassLoader.classForName(className).newInstance();
-            newElement.setName(JMeterUtils.getResString(className));
-            NamedTestElement element = JMeterDocumentManager.getInstance().getCurrentTestElement();
+            TestElementConfiguration element = JMeterDocumentManager.getInstance().getCurrentTestElement();
 
             if (element != null)
             {
-                element.addChildElement(newElement);
+                String className = ((JComponent)e.getSource()).getName();
+                Class elementClass = JMeterClassLoader.classForName(className);
+                TestElementConfiguration config = TestElementConfigurationFactory.createConfiguration(elementClass, JMeterUtils.getResString(className));
+                element.addChild(config);
             }
         } catch (Exception err)
         {

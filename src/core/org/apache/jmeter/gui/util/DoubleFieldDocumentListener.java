@@ -80,7 +80,7 @@ public class DoubleFieldDocumentListener extends AbstractFieldDocumentListener
     protected void setValue()
     {
         try {
-            getGui().getElement().setProperty(getProperty(), new Double(getField().getText()));
+            getGui().getElement().setProperty(getProperty(), new Double(getField().getText()).toString());
         } catch (NumberFormatException e) {
             //
         }

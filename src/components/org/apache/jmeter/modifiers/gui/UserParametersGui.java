@@ -69,8 +69,7 @@ import org.apache.jmeter.config.gui.AbstractConfigGui;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.modifiers.UserParameters;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
 
@@ -106,11 +105,12 @@ public class UserParametersGui extends AbstractConfigGui implements TableColumnM
     }
 
 
-    public void configure(TestElement el)
+    public void configure(TestElementConfiguration config)
     {
-        super.configure(el);
+        super.configure(config);
 
-        tableModel = new ParameterTableModel((List)el.getPropertyValue(UserParameters.PARAMETERS));
+// todo:        tableModel = new ParameterTableModel((List)config.getPropertyValue(UserParameters.PARAMETERS));
+        tableModel = new ParameterTableModel(new ArrayList());
         parameterTable.setModel(tableModel);
         updateColumns();
         setButtonState();

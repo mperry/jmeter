@@ -84,7 +84,7 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
 
     private JTextField nameField;
     private JLabel nameLabel;
-    private NamedTestElement element;
+    private TestElementConfiguration element;
     private boolean isConfigured = false;
 
 
@@ -99,12 +99,12 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
         return isConfigured;
     }
 
-    public void configure(TestElement testElement)
+    public void configure(TestElementConfiguration testElement)
     {
-        nameField.setText(((NamedTestElement)testElement).getName());
+        nameField.setText(testElement.getName());
     }
 
-    public JPopupMenu createPopupMenu(NamedTestElement testElement)
+    public JPopupMenu createPopupMenu()
     {
         return null;
     }
@@ -166,7 +166,7 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
     {
         if (getElement() != null)
         {
-            ((NamedTestElement)getElement()).setName(newValue);
+            getElement().setName(newValue);
         }
     }
 
@@ -176,19 +176,16 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
         nameLabel.setText(JMeterUtils.getResString(nameLabel.getName()));
     }
 
-    public void setElement(TestElement element)
+    public void setElement(TestElementConfiguration config)
     {
-        if (element instanceof NamedTestElement)
-        {
             isConfigured = false;
-            this.element = (NamedTestElement)element;
+            this.element = config;
             configure(element);
             isConfigured = true;
-        }
     }
 
 
-    public TestElement getElement()
+    public TestElementConfiguration getElement()
     {
         return element;
     }

@@ -64,8 +64,7 @@ import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.DoubleFieldDocumentListener;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.gui.util.LongFieldDocumentListener;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.timers.RandomTimer;
 import org.apache.jmeter.timers.UniformRandomTimer;
 import org.apache.jmeter.util.JMeterUtils;
@@ -129,12 +128,12 @@ public class UniformRandomTimerGui extends AbstractTimerGui implements KeyListen
     }
 
 
-    public void configure(TestElement element)
+    public void configure(TestElementConfiguration config)
     {
-        super.configure(element);
+        super.configure(config);
         // todo: variable substitution
-        delayInput.setText(String.valueOf(((UniformRandomTimer)element).getDelay()));
-        rangeInput.setText(String.valueOf(((UniformRandomTimer)element).getRange()));
+//        delayInput.setText(String.valueOf(((UniformRandomTimer)element).getDelay()));
+//        rangeInput.setText(String.valueOf(((UniformRandomTimer)element).getRange()));
     }
 
 

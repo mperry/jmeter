@@ -66,8 +66,7 @@ import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.config.gui.AbstractConfigGui;
 import org.apache.jmeter.config.gui.LoginConfigGui;
 import org.apache.jmeter.protocol.jdbc.sampler.JDBCSampler;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.gui.layout.VerticalLayout;
 
@@ -125,12 +124,12 @@ public class DbConfigGui extends AbstractConfigGui
 		return element;
 	}
 
-	public void configure(TestElement element)
+	public void configure(TestElementConfiguration config)
 	{
-		super.configure(element);
-		urlField.setText((String)element.getPropertyValue(JDBCSampler.URL));
-		driverField.setText((String)element.getPropertyValue(JDBCSampler.DRIVER));
-		loginGui.configure(element);
+		super.configure(config);
+		urlField.setText(config.getProperty(JDBCSampler.URL));
+		driverField.setText(config.getProperty(JDBCSampler.DRIVER));
+		loginGui.configure(config);
 	}
 
 	private void init()

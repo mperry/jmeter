@@ -156,7 +156,7 @@ public class HttpRequestHdr
 		throws MalformedURLException, IOException, ProtocolException
 	{
 		HttpTestSampleGui tempGui = new HttpTestSampleGui();
-		tempGui.configure(createSampler());
+// todo:		tempGui.configure(config);
 		HTTPSampler result = (HTTPSampler) tempGui.createTestElement();
 		result.setFollowRedirects(false);
 		result.setKeepAlive(true);

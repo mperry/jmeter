@@ -123,4 +123,9 @@ public class Property implements Serializable, Cloneable
             owner.propertyChanged(this);
         }
     }
+
+    protected TestElement getOwner()
+    {
+        return owner;
+    }
 }

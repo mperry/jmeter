@@ -79,7 +79,7 @@ public class IntegerFieldDocumentListener extends AbstractFieldDocumentListener
     protected void setValue()
     {
         try {
-            getGui().getElement().setProperty(getProperty(), new Integer(getField().getText()));
+            getGui().getElement().setProperty(getProperty(), new Integer(getField().getText()).toString());
         } catch (NumberFormatException e) {
             //
         }

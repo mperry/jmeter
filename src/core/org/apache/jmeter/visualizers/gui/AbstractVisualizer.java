@@ -14,8 +14,7 @@ import org.apache.jmeter.gui.util.FilePanel;
 import org.apache.jmeter.gui.util.MenuFactory;
 import org.apache.jmeter.reporters.AbstractListenerElement;
 import org.apache.jmeter.reporters.ResultCollector;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.visualizers.Visualizer;
 import org.apache.log.Hierarchy;
@@ -117,11 +116,11 @@ public abstract class AbstractVisualizer extends AbstractJMeterGuiComponent
 		return (NamedTestElement)collector.clone();
 	}
 	
-	public void configure(TestElement el)
+	public void configure(TestElementConfiguration config)
 	{
-		super.configure(el);
-		setFile(el.getPropertyAsString(ResultCollector.FILENAME));
-		ResultCollector rc = (ResultCollector)el;
+		super.configure(config);
+		setFile(config.getProperty(ResultCollector.FILENAME));
+		ResultCollector rc = (ResultCollector)config;
 		errorLogging.setSelected(rc.isErrorLogging());
 	}
 

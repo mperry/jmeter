@@ -108,7 +108,7 @@ public class TabbedMainPanel extends JTabbedPane implements JMeterDocumentManage
     private void addDocument(org.apache.jmeter.gui.document.JMeterDocument document)
     {
 
-        if (document.getElement() instanceof TestPlan)
+        if (document.getElement().getElementClass() == TestPlan.class)
         {
             addTestPlanTab(document);
         }

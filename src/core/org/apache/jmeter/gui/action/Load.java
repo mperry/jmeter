@@ -171,7 +171,7 @@ public class Load extends JMeterAction
         {
             gui = new WorkBenchGui();
         }
-        gui.configure(item);
+//        gui.configure(item);
         return gui;
     }
 

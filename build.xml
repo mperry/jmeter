@@ -283,6 +283,7 @@
 
   <target name="package" depends="compile">
     <mkdir dir="${jar.dest}"/>
+
     <jar jarfile="${jar.dest}/ApacheJMeter_core.jar" excludes="**/NewDriver*" manifest="${src.core}/MANIFEST">
       <fileset dir="${build.core}"/>
       <fileset dir="${src.core}" includes="org/apache/jmeter/images/"/>
@@ -290,6 +291,7 @@
         <exclude name="*eucJP*"/>
       </fileset>
       <fileset dir="${src.core}" includes="org/apache/jmeter/help.txt"/>
+        <fileset dir="${src.core}" includes="**/*.betwixt"/>
     </jar>
     <jar jarfile="bin/ApacheJMeter.jar" includes="**/NewDriver*" manifest="${src.core}/MANIFEST" basedir="${build.core}"/>
     <jar jarfile="${jar.dest}/ApacheJMeter_components.jar" basedir="${build.components}"/>

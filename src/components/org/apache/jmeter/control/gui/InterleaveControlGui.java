@@ -63,8 +63,7 @@ import javax.swing.*;
 import org.apache.jmeter.control.InterleaveControl;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
 
@@ -91,10 +90,10 @@ public class InterleaveControlGui extends AbstractControllerGui implements ItemL
     }
 
 
-    public void configure(TestElement element)
+    public void configure(TestElementConfiguration config)
     {
-        super.configure(element);
-        int styleValue = ((Integer)element.getPropertyValue(InterleaveControl.STYLE)).intValue();
+        super.configure(config);
+        int styleValue = new Integer(config.getProperty(InterleaveControl.STYLE)).intValue();
 
         if (styleValue == InterleaveControl.DEFAULT_STYLE)
         {
@@ -149,10 +148,10 @@ public class InterleaveControlGui extends AbstractControllerGui implements ItemL
     {
         if (e.getStateChange() == ItemEvent.SELECTED)
         {
-            getElement().setProperty(InterleaveControl.STYLE, new Integer(InterleaveControl.DEFAULT_STYLE));
+            getElement().setProperty(InterleaveControl.STYLE, new Integer(InterleaveControl.DEFAULT_STYLE).toString());
         } else
         {
-            getElement().setProperty(InterleaveControl.STYLE, new Integer(InterleaveControl.NEW_STYLE));
+            getElement().setProperty(InterleaveControl.STYLE, new Integer(InterleaveControl.NEW_STYLE).toString());
         }
 
     }

@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2002 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,120 +52,156 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-
-package org.apache.jmeter.gui;
+package org.apache.jmeter.testelement;
 
 
 import java.util.*;
+import java.awt.datatransfer.*;
+import java.io.*;
 
-import javax.swing.*;
-import javax.swing.border.*;
-
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElementConfiguration;
+import org.apache.jmeter.testelement.property.Property;
 
 
 /**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @version $Revision$
  */
-public class GUIFactory
+public class DefaultTestElementConfiguration implements TestElementConfiguration
 {
 
-    private static final Map iconMap = new HashMap();
-    private static final Map guiClassMap = new HashMap();
+    private Class elementClass;
+    private String name;
+    private Map properties;
+    private List children;
+    private TestElementConfiguration parent;
 
-    public static ImageIcon getIcon(Class elementClass)
+    public DefaultTestElementConfiguration(Class elementClass, String name, Map properties)
     {
-        String key = elementClass.getName();
-        ImageIcon icon = (ImageIcon)iconMap.get(key);
-
-        if (icon != null)
-        {
-            return icon;
-        }
-        if (elementClass.getSuperclass() != null)
-        {
-            return getIcon(elementClass.getSuperclass());
-        }
-        return null;
+        this.elementClass = elementClass;
+        this.name = name;
+        this.properties = properties;
     }
 
-    public static ImageIcon getIcon(String key)
+    public String getName()
     {
-        return (ImageIcon)iconMap.get(key);
+        return name;
     }
 
-    public static synchronized JComponent getGUI(Class elementClass)
+    public void setName(String name)
     {
-        return createGuiInstance(getGuiClass(elementClass));
+        this.name = name;
     }
 
-    public static synchronized JComponent getGUI(TestElementConfiguration element)
+    public Class getElementClass()
     {
-        return createGuiInstance(getGuiClass(element.getElementClass()));
+        return elementClass;
     }
 
-    private static Class getGuiClass(Class elementClass)
+    public String getProperty(String property)
     {
-        Class answer = (Class)guiClassMap.get(elementClass);
+        Property prop = (Property)getProperties().get(property);
 
-        if (answer != null)
-        {
-            return answer;
-        }
-        if (elementClass.getSuperclass() == null)
+        if (prop == null)
         {
             return null;
         }
-        return getGuiClass(elementClass.getSuperclass());
+        return (String)prop.getValue();
     }
 
-
-    public static void registerIcon(String key, ImageIcon icon)
+    public void setProperty(String property, String value) throws IllegalArgumentException
     {
-        iconMap.put(key, icon);
-    }
+        Property prop = (Property)getProperties().get(property);
 
-
-    private static JComponent createGuiInstance(Class guiClass)
-    {
-        try
+        if (prop != null)
         {
-            JMeterGUIComponent gui = (JMeterGUIComponent)guiClass.newInstance();
-            return (JComponent)gui;
-        } catch (InstantiationException e)
-        {
-            throw new IllegalArgumentException("Can not create gui instance " + e.getMessage());
-        } catch (IllegalAccessException e)
-        {
-            throw new IllegalArgumentException("Can not create gui instance " + e.getMessage());
-        }
-    }
-
-
-    public static void registerGUI(Class elementClass, Class guiClass)
-    {
-        if (JMeterGUIComponent.class.isAssignableFrom(guiClass) && (JComponent.class.isAssignableFrom(guiClass)))
-        {
-            guiClassMap.put(elementClass, guiClass);
+            prop.setValue(value);
         } else
         {
-            throw new IllegalArgumentException("Class " + guiClass.getName() + " does not implement JComponent/JMeterGUIComponent");
+            throw new IllegalArgumentException("Unknown property " + property);
+        }
+    }
+
+    public String[] getPropertyNames()
+    {
+        Collection names = getProperties().keySet();
+        String[] answer = new String[names.size()];
+
+        names.toArray(answer);
+        return answer;
+    }
+
+    public List getChildren()
+    {
+        if (children == null)
+        {
+            return Collections.EMPTY_LIST;
+        }
+        return children;
+    }
+
+    public void addChild(TestElementConfiguration child)
+    {
+        if (children == null)
+        {
+            children = new LinkedList();
+        }
+        children.add(child);
+        child.setParentElement(this);
+    }
+
+    public void removeChild(TestElementConfiguration child)
+    {
+        if (children == null)
+        {
+            return;
+        }
+        children.remove(child);
+        child.setParentElement(null);
+    }
+
+    public void accept(TestElementConfigurationVisitor visitor)
+    {
+        visitor.visit(this);
+    }
+
+    public TestElementConfiguration getParentElement()
+    {
+        return parent;
+    }
+
+    public void setParentElement(TestElementConfiguration parent)
+    {
+        this.parent = parent;
+    }
+
+
+    public DataFlavor[] getTransferDataFlavors()
+    {
+        return new DataFlavor[]{DATAFLAVOR};
+    }
+
+
+    public boolean isDataFlavorSupported(DataFlavor flavor)
+    {
+        return flavor.equals(DATAFLAVOR);
+    }
+
+
+    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException
+    {
+        if (flavor.equals(DATAFLAVOR))
+        {
+            return this;
+        } else
+        {
+            return null;
         }
     }
 
 
-    public static final JPanel createPanel()
-    {
-        JPanel mainPanel = new JPanel();
-        Border margin = new EmptyBorder(5, 10, 1, 10);
-        mainPanel.setBorder(margin);
-        return mainPanel;
-    }
 
-
-    public static final BorderedPanel createBorderedPanel(String title)
+    protected Map getProperties()
     {
-        return new BorderedPanel(title);
+        return properties;
     }
 }

@@ -57,6 +57,7 @@ package org.apache.jmeter.config.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
@@ -68,8 +69,7 @@ import junit.framework.TestCase;
 import org.apache.jmeter.config.Argument;
 import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
 
@@ -130,11 +130,11 @@ public class ArgumentsPanel extends AbstractConfigGui implements ActionListener,
     }
 
 
-    public void configure(TestElement element)
+    public void configure(TestElementConfiguration config)
     {
-        super.configure(element);
+        super.configure(config);
 
-        tableModel = createTableModel(element);
+        tableModel = createTableModel(config);
         argumentsTable.setModel(tableModel);
 
         DefaultCellEditor editor = new DefaultCellEditor(new JTextField());
@@ -151,9 +151,11 @@ public class ArgumentsPanel extends AbstractConfigGui implements ActionListener,
     }
 
 
-    protected ArgumentsTableModel createTableModel(TestElement element)
+    protected ArgumentsTableModel createTableModel(TestElementConfiguration element)
     {
-        return new ArgumentsTableModel((List)element.getProperty(Arguments.ARGUMENTS));
+        // todo:
+        return new ArgumentsTableModel(new ArrayList());
+//        return new ArgumentsTableModel((List)element.getProperty(Arguments.ARGUMENTS));
     }
 
 

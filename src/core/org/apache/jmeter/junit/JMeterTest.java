@@ -72,7 +72,7 @@ public class JMeterTest extends TestCase
 			assertNull("GUI-CLASS: Failed on " + item.getClass().getName(),
 			el2.getPropertyValue("NOT"));
 			el = (NamedTestElement)SaveService.createTestElement(SaveService.getConfigForTestElement(null, el), null);
-			item.configure(el);
+// todo:			item.configure(el);
 			assertEquals("CONFIGURE-TEST: Failed on " + item.getClass().getName(),
 					el.getPropertyValue(NamedTestElement.NAME), item.getName());
 		}

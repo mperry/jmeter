@@ -57,6 +57,8 @@ package org.apache.jmeter.testelement.property;
 
 import java.util.*;
 
+import org.apache.jmeter.testelement.TestElement;
+
 
 /**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
@@ -67,6 +69,11 @@ public class ListProperty extends ObjectProperty implements List {
     public ListProperty()
     {
         super(new LinkedList());
+    }
+
+    public ListProperty(TestElement owner)
+    {
+        super(new LinkedList(), owner);
     }
 
     private LinkedList getList() {
@@ -111,12 +118,16 @@ public class ListProperty extends ObjectProperty implements List {
 
     public boolean add(Object o)
     {
-        return getList().add(o);
+        boolean answer = getList().add(o);
+        fireChanged();
+        return answer;
     }
 
     public boolean remove(Object o)
     {
-        return getList().remove(o);
+        boolean answer = getList().remove(o);
+        fireChanged();
+        return answer;
     }
 
     public boolean containsAll(Collection c)
@@ -126,17 +137,23 @@ public class ListProperty extends ObjectProperty implements List {
 
     public boolean addAll(Collection c)
     {
-        return getList().addAll(c);
+        boolean answer = getList().addAll(c);
+        fireChanged();
+        return answer;
     }
 
     public boolean addAll(int index, Collection c)
     {
-        return getList().addAll(index, c);
+        boolean answer = getList().addAll(index, c);
+        fireChanged();
+        return answer;
     }
 
     public boolean removeAll(Collection c)
     {
-        return getList().removeAll(c);
+        boolean answer = getList().removeAll(c);
+        fireChanged();
+        return answer;
     }
 
     public boolean retainAll(Collection c)
@@ -147,6 +164,7 @@ public class ListProperty extends ObjectProperty implements List {
     public void clear()
     {
         getList().clear();
+        fireChanged();
     }
 
     public Object get(int index)
@@ -162,11 +180,14 @@ public class ListProperty extends ObjectProperty implements List {
     public void add(int index, Object element)
     {
         getList().add(index, element);
+        fireChanged();
     }
 
     public Object remove(int index)
     {
-        return getList().remove(index);
+        Object answer = getList().remove(index);
+        fireChanged();
+        return answer;
     }
 
     public int indexOf(Object o)

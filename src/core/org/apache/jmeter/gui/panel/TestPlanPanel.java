@@ -52,7 +52,7 @@ public class TestPlanPanel extends DocumentPanel implements TreeSelectionListene
     public TestPlanPanel(JMeterDocument document)
     {
         super(document);
-        treeModel = new TestPlanTreeModel((TestPlan)document.getElement());
+        treeModel = new TestPlanTreeModel(document.getElement());
         init();
     }
 

@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,89 +52,59 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.control.gui;
+package org.apache.jmeter.testelement;
 
 
 import java.util.*;
+import java.beans.*;
 
-import javax.swing.*;
-
-import org.apache.jmeter.control.ModifyController;
-import org.apache.jmeter.gui.util.MenuFactory;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jmeter.testelement.property.*;
 
 
-/****************************************
- * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
- *
- * @author    Kevin Hammond
+/**
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created   $Date$
- * @version   1.0
- ***************************************/
-// todo: remove ????
+ * @version $Revision$
+ */
+public class TestElementConfigurationFactory {
 
-public class ModifyControllerGui extends AbstractControllerGui
-{
-
-    ModifyController model;
-
-    /****************************************
-     * !ToDo (Constructor description)
-     ***************************************/
-    public ModifyControllerGui()
-    {
+    public static TestElementConfiguration createConfiguration(Class elementClass, String name) {
+        Map properties = createPropertiesMap(elementClass);
+        return new DefaultTestElementConfiguration(elementClass, name, properties);
     }
 
-    /****************************************
-     * !ToDoo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public Collection getMenuCategories()
+    private static Map createPropertiesMap(Class elementClass)
     {
-        return new LinkedList();
+        try
+        {
+            BeanInfo beanInfo = Introspector.getBeanInfo(elementClass);
+            PropertyDescriptor[] props = beanInfo.getPropertyDescriptors();
+            Map answer = new HashMap();
+
+            for (int i = 0; i < props.length; i++) {
+                Class type = props[i].getPropertyType();
+                Property property = null;
+
+                if (Boolean.class == type) {
+                    property = new BooleanProperty(false);
+                } else if (String.class == type) {
+                    property = new StringProperty("");
+                } else if (Long.class == type) {
+                    property = new LongProperty(0L);
+                } else if (Integer.class == type) {
+                    property = new IntProperty(0);
+                }
+
+                if (property != null) {
+                    answer.put(props[i].getName(), property);
+                }
+            }
+            return answer;
+        } catch (IntrospectionException e)
+        {
+            // todo: log or exception
+            e.printStackTrace();
+            return new HashMap();
+        }
     }
 
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public JPopupMenu createPopupMenu()
-    {
-        JPopupMenu pop = new JPopupMenu();
-        pop.add(MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
-                                                   MenuFactory.SAMPLERS, MenuFactory.CONFIG_ELEMENTS,
-                                                   MenuFactory.MODIFIERS, MenuFactory.RESPONSE_BASED_MODIFIERS},
-                                      JMeterUtils.getResString("Add"),
-                                      "Add"));
-        MenuFactory.addEditMenu(pop, true);
-        MenuFactory.addFileMenu(pop);
-        return pop;
-    }
-
-    /****************************************
-     * !ToDoo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public String getStaticLabel()
-    {
-        return "modification_controller_title";
-    }
-
-
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public NamedTestElement createTestElement()
-    {
-        ModifyController mc = new ModifyController();
-        configureTestElement(mc);
-        return mc;
-    }
 }

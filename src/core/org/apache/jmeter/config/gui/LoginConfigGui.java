@@ -59,8 +59,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import org.apache.jmeter.config.ConfigTestElement;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.gui.layout.VerticalLayout;
 
@@ -102,11 +101,11 @@ public class LoginConfigGui extends AbstractConfigGui
 		return JMeterUtils.getResString("Login Config Element");
 	}
 
-	public void configure(TestElement element)
+	public void configure(TestElementConfiguration config)
 	{
-		super.configure(element);
-		username.setText((String)element.getPropertyValue(ConfigTestElement.USERNAME));
-		password.setText((String)element.getPropertyValue(ConfigTestElement.PASSWORD));
+		super.configure(config);
+		username.setText(config.getProperty(ConfigTestElement.USERNAME));
+		password.setText(config.getProperty(ConfigTestElement.PASSWORD));
 	}
 
 	public NamedTestElement createTestElement()

@@ -75,24 +75,24 @@ public class JMeterDocument implements TestPlan.TestPlanObserver
 {
 
     private File file;
-    private NamedTestElement element;
+    private TestElementConfiguration element;
     private String name;
-    private NamedTestElement currentTestElement;
+    private TestElementConfiguration currentTestElement;
     private Collection listeners = new HashSet();
 
 
-    public JMeterDocument(String name, NamedTestElement rootElement)
+    public JMeterDocument(String name, TestElementConfiguration rootElement)
     {
         this(name, null, rootElement);
     }
 
-    public JMeterDocument(String name, File file, NamedTestElement rootElement)
+    public JMeterDocument(String name, File file, TestElementConfiguration rootElement)
     {
         this.file = file;
         this.element = rootElement;
         this.name = name;
 
-        rootElement.resetDirty();
+//        rootElement.resetDirty();
 
         if (rootElement instanceof TestPlan) {
             ((TestPlan)element).setObserver(this);
@@ -107,13 +107,14 @@ public class JMeterDocument implements TestPlan.TestPlanObserver
 
     public boolean isDirty()
     {
-        return element.isDirty();
+//        return element.isDirty();
+        return false;
     }
 
     public void resetDirty()
     {
-        element.resetDirty();
-        notifyListeners();
+//        element.resetDirty();
+//        notifyListeners();
     }
 
     public File getFile()
@@ -127,12 +128,12 @@ public class JMeterDocument implements TestPlan.TestPlanObserver
         notifyListeners();
     }
 
-    public NamedTestElement getElement()
+    public TestElementConfiguration getElement()
     {
         return element;
     }
 
-    public void setElement(NamedTestElement element)
+    public void setElement(TestElementConfiguration element)
     {
         this.element = element;
     }
@@ -155,12 +156,12 @@ public class JMeterDocument implements TestPlan.TestPlanObserver
     }
 
 
-    public NamedTestElement getCurrentTestElement()
+    public TestElementConfiguration getCurrentTestElement()
     {
         return currentTestElement;
     }
 
-    public void setCurrentTestElement(NamedTestElement currentTestElement)
+    public void setCurrentTestElement(TestElementConfiguration currentTestElement)
     {
         this.currentTestElement = currentTestElement;
     }

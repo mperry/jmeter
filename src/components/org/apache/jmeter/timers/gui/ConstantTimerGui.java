@@ -63,8 +63,7 @@ import javax.swing.*;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.gui.util.LongFieldDocumentListener;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.timers.ConstantTimer;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
@@ -120,11 +119,11 @@ public class ConstantTimerGui extends AbstractTimerGui implements KeyListener
     }
 
 
-    public void configure(TestElement element)
+    public void configure(TestElementConfiguration config)
     {
-        super.configure(element);
+        super.configure(config);
         // todo: variable substitution
-        delayInput.setText(String.valueOf(((ConstantTimer)element).getDelay()));
+//        delayInput.setText(String.valueOf(((ConstantTimer)element).getDelay()));
     }
 
 

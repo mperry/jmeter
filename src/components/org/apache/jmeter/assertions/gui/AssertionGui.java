@@ -67,8 +67,7 @@ import javax.swing.table.*;
 import org.apache.jmeter.assertions.ResponseAssertion;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
 
@@ -159,10 +158,12 @@ public class AssertionGui extends AbstractAssertionGui implements ActionListener
     }
 
 
-    public void configure(TestElement element)
+    public void configure(TestElementConfiguration element)
     {
         super.configure(element);
-        tableModel = new PatternTableModel((List)element.getPropertyValue(ResponseAssertion.TEST_PATTERNS));
+// todo:
+//        tableModel = new PatternTableModel((List)element.getProperty(ResponseAssertion.TEST_PATTERNS));
+        tableModel = new PatternTableModel(new ArrayList());
         patternTable.setModel(tableModel);
 
         DefaultCellEditor editor = new DefaultCellEditor(new JTextField());
@@ -171,8 +172,8 @@ public class AssertionGui extends AbstractAssertionGui implements ActionListener
         patternTable.getColumnModel().getColumn(0).setCellEditor(editor);
         setButtonState();
 
-        int field = ((Integer)element.getPropertyValue(ResponseAssertion.TEST_FIELD)).intValue();
-        int mode = ((Integer)element.getPropertyValue(ResponseAssertion.TEST_MODE)).intValue();
+        int field = new Integer(element.getProperty(ResponseAssertion.TEST_FIELD)).intValue();
+        int mode = new Integer(element.getProperty(ResponseAssertion.TEST_MODE)).intValue();
 
         if (field == ResponseAssertion.TEXT_RESPONSE) {
             rbText.setSelected(true);
@@ -383,17 +384,17 @@ public class AssertionGui extends AbstractAssertionGui implements ActionListener
         } else {
             // radio button actions
             if (action.equals(FIELD_TEXT)) {
-                getElement().setProperty(ResponseAssertion.TEST_FIELD, new Integer(ResponseAssertion.TEXT_RESPONSE));
+                getElement().setProperty(ResponseAssertion.TEST_FIELD, String.valueOf(ResponseAssertion.TEXT_RESPONSE));
             } else if (action.equals(FIELD_URL)) {
-                getElement().setProperty(ResponseAssertion.TEST_FIELD, new Integer(ResponseAssertion.URL));
+                getElement().setProperty(ResponseAssertion.TEST_FIELD, String.valueOf(ResponseAssertion.URL));
             } else if (action.equals(MODE_CONTAINS)) {
-                getElement().setProperty(ResponseAssertion.TEST_MODE, new Integer(ResponseAssertion.CONTAINS));
+                getElement().setProperty(ResponseAssertion.TEST_MODE, String.valueOf(ResponseAssertion.CONTAINS));
             } else if (action.equals(MODE_CONTAINS_NOT)) {
-                getElement().setProperty(ResponseAssertion.TEST_MODE, new Integer(ResponseAssertion.CONTAINS_NOT));
+                getElement().setProperty(ResponseAssertion.TEST_MODE, String.valueOf(ResponseAssertion.CONTAINS_NOT));
             } else if (action.equals(MODE_MATCHES)) {
-                getElement().setProperty(ResponseAssertion.TEST_MODE, new Integer(ResponseAssertion.MATCH));
+                getElement().setProperty(ResponseAssertion.TEST_MODE, String.valueOf(ResponseAssertion.MATCH));
             } else if (action.equals(MODE_MATCHES_NOT)) {
-                getElement().setProperty(ResponseAssertion.TEST_MODE, new Integer(ResponseAssertion.MATCH_NOT));
+                getElement().setProperty(ResponseAssertion.TEST_MODE, String.valueOf(ResponseAssertion.MATCH_NOT));
             }
         }
         setButtonState();

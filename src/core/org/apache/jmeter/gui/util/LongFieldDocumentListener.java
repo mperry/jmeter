@@ -79,7 +79,7 @@ public class LongFieldDocumentListener extends AbstractFieldDocumentListener
     protected void setValue()
     {
         try {
-            getGui().getElement().setProperty(getProperty(), new Long(getField().getText()));
+            getGui().getElement().setProperty(getProperty(), new Long(getField().getText()).toString());
         } catch (NumberFormatException e) {
             //
         }

@@ -72,8 +72,7 @@ import org.apache.jmeter.gui.util.FileDialoger;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.protocol.http.control.AuthManager;
 import org.apache.jmeter.protocol.http.control.Authorization;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
 
@@ -126,10 +125,11 @@ public class AuthPanel extends AbstractConfigGui implements ActionListener, List
     }
 
 
-    public void configure(TestElement element)
+    public void configure(TestElementConfiguration config)
     {
-        super.configure(element);
-        tableModel = new AuthorizationTableModel((List)element.getPropertyValue(AuthManager.AUTHORIZATIONS));
+        super.configure(config);
+//  todo:       tableModel = new AuthorizationTableModel((List)config.getProperty(AuthManager.AUTHORIZATIONS));
+        tableModel = new AuthorizationTableModel(new ArrayList());
         authTable.setModel(tableModel);
         TableColumn passwordColumn = authTable.getColumnModel().getColumn(2);
         DefaultCellEditor editor = new DefaultCellEditor(new JPasswordField());

@@ -123,7 +123,7 @@ public class JMeterTreeModel extends DefaultTreeModel
 			if(item instanceof TestPlanGui)
 			{
 				current = (JMeterTreeNode)((JMeterTreeNode)getRoot()).getChildAt(0);
-				current.configure(item.createTestElement());
+//				current.configure(item.createTestElement());
 				addSubTree(subTree.getTree(item), current);
 				ret = true;
 			}

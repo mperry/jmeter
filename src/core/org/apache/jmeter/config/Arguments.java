@@ -83,7 +83,7 @@ public class Arguments extends AbstractTestElement implements Serializable
 	public final static String ARGUMENTS = "arguments";
 
 
-    private ListProperty arguments = new ListProperty();
+    private ListProperty arguments = new ListProperty(this);
 
 
 	public Arguments()

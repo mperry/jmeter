@@ -90,7 +90,7 @@ public abstract class AbstractJMeterGuiComponent
     implements JMeterGUIComponent, LocaleChangeListener
 {
 
-    private TestElement element;
+    private TestElementConfiguration element;
     // todo: make this private
     protected NamePanel namePanel;
     private JLabel panelTitleLabel;
@@ -126,30 +126,26 @@ public abstract class AbstractJMeterGuiComponent
     }
 
 
-    public TestElement getElement()
+    public TestElementConfiguration getElement()
     {
         return element;
     }
 
 
     /**
-     * Set the test element this gui will operate on.
+     * Set the test element configurationthis gui will operate on.
      *
-     * @param element the test element
+     * @param config the test element configuration
      */
-    public final void setElement(TestElement element)
+    public final void setElement(TestElementConfiguration config)
     {
         isConfigured = false;
-        this.element = element;
+        this.element = config;
         if (namedPanel)
         {
-            getNamePanel().setElement(element);
+            getNamePanel().setElement(config);
         }
-        if (element instanceof TestElementWrapper) {
-            configure(((TestElementWrapper)element).unwrap());
-        } else {
-            configure(element);
-        }
+        configure(config);
         isConfigured = true;
     }
 
@@ -172,7 +168,7 @@ public abstract class AbstractJMeterGuiComponent
      * @see org.apache.jmeter.gui.JMeterGUIComponent#configure(org.apache.jmeter.testelement.NamedTestElement)
      */
     // todo: make this protected
-    public void configure(TestElement element)
+    public void configure(TestElementConfiguration config)
     {
     }
 
@@ -285,7 +281,7 @@ public abstract class AbstractJMeterGuiComponent
     }
 
 
-    public JPopupMenu createPopupMenu(NamedTestElement testElement)
+    public JPopupMenu createPopupMenu()
     {
         return null;
     }

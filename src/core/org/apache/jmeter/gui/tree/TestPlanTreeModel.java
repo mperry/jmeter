@@ -72,31 +72,31 @@ public class TestPlanTreeModel extends DefaultTreeModel
 
     public TestPlanTreeModel()
     {
-        this(new TestPlan("Test Plan"));
-        WorkBench workbench = new WorkBench("Workbench");
-        ((TestPlanTreeNode)getRoot()).getElement().addChildElement(workbench);
+        this(TestElementConfigurationFactory.createConfiguration(TestPlan.class, "Test Plan"));
+        TestElementConfiguration workbench = TestElementConfigurationFactory.createConfiguration(WorkBench.class, "Workbench");
+        ((TestPlanTreeNode)getRoot()).getElement().addChild(workbench);
         this.insertNodeInto(new TestPlanTreeNode(workbench, this), (TestPlanTreeNode)getRoot(), 1);
     }
 
-    public TestPlanTreeModel(TestPlan testplan)
+    public TestPlanTreeModel(TestElementConfiguration testplan)
     {
-        super(new TestPlanTreeNode(new RootElement("JMeter")));
+        super(new TestPlanTreeNode(TestElementConfigurationFactory.createConfiguration(RootElement.class, "JMeter")));
         ((TestPlanTreeNode)getRoot()).setTreeModel(this);
         addChild((TestPlanTreeNode)getRoot(), testplan);
     }
 
-    public TestPlanTreeNode addChild(TestPlanTreeNode node, TestElement element)
+    public TestPlanTreeNode addChild(TestPlanTreeNode node, TestElementConfiguration element)
     {
         TestPlanTreeNode childNode = new TestPlanTreeNode(element, this);
 
-        TestElementVisitor visitor = new Visitor(this, childNode);
+        TestElementConfigurationVisitor visitor = new Visitor(this, childNode);
         childNode.accept(visitor);
         insertNodeInto(childNode, node, node.getChildCount());
         return childNode;
     }
 
 
-    private class Visitor implements TestElementVisitor
+    private class Visitor implements TestElementConfigurationVisitor
     {
 
         TestPlanTreeModel model;
@@ -109,13 +109,13 @@ public class TestPlanTreeModel extends DefaultTreeModel
         }
 
 
-        public void visit(TestElement element)
+        public void visit(TestElementConfiguration element)
         {
-            Iterator iterator = element.getChildElements().iterator();
+            Iterator iterator = element.getChildren().iterator();
 
             while (iterator.hasNext())
             {
-                NamedTestElement testElement = (NamedTestElement)iterator.next();
+                TestElementConfiguration testElement = (TestElementConfiguration)iterator.next();
                 TestPlanTreeNode node = new TestPlanTreeNode(testElement, model);
 
                 getRootNode().add(node);

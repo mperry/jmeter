@@ -66,8 +66,7 @@ import org.apache.jmeter.assertions.DurationAssertion;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.gui.util.LongFieldDocumentListener;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
 
@@ -122,10 +121,10 @@ public class DurationAssertionGui extends AbstractAssertionGui
     }
 
 
-    public void configure(TestElement element)
+    public void configure(TestElementConfiguration config)
     {
-        super.configure(element);
-        durationInput.setText(String.valueOf(element.getPropertyValue(DurationAssertion.DURATION)));
+        super.configure(config);
+        durationInput.setText(String.valueOf(config.getProperty(DurationAssertion.DURATION)));
     }
 
     protected void initComponents()

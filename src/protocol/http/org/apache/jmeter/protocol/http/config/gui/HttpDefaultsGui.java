@@ -69,8 +69,7 @@ import org.apache.jmeter.protocol.http.config.HTTPDefaults;
 import org.apache.jmeter.protocol.http.control.gui.HttpTestSampleGui;
 import org.apache.jmeter.protocol.http.gui.HTTPArgumentsPanel;
 import org.apache.jmeter.protocol.http.sampler.HTTPSampler;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 
 
@@ -120,11 +119,11 @@ public class HttpDefaultsGui extends AbstractConfigGui
     }
 
 
-    public void configure(TestElement element)
+    public void configure(TestElementConfiguration config)
     {
-        super.configure(element);
+        super.configure(config);
 
-        int port = ((Integer)element.getPropertyValue(HTTPSampler.PORT)).intValue();
+        int port = new Integer(config.getProperty(HTTPSampler.PORT)).intValue();
 
         if (port == HTTPSampler.USE_DEFAULT_PORT)
         {
@@ -134,9 +133,9 @@ public class HttpDefaultsGui extends AbstractConfigGui
             portInput.setText(String.valueOf(port));
         }
 
-        domainInput.setText(element.getPropertyAsString(HTTPDefaults.DOMAIN));
-        pathInput.setText(element.getPropertyAsString(HTTPDefaults.PATH));
-        argsPanel.configure((NamedTestElement)element.getPropertyValue(HTTPDefaults.ARGUMENTS));
+        domainInput.setText(config.getProperty(HTTPDefaults.DOMAIN));
+        pathInput.setText(config.getProperty(HTTPDefaults.PATH));
+        argsPanel.configure(config);
     }
 
 

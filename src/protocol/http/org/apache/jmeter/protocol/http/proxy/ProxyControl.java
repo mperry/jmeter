@@ -321,7 +321,7 @@ public class ProxyControl extends ConfigTestElement implements Serializable
 				removeValuesFromSampler(sampler, urlConfig);
 				replacer.reverseReplace(sampler);
 				HttpTestSampleGui test = new HttpTestSampleGui();
-				test.configure(sampler);
+//todo:				test.configure(config);
 				try
 				{
 					JMeterTreeNode newNode = treeModel.addComponent(test, node);
@@ -331,7 +331,7 @@ public class ProxyControl extends ConfigTestElement implements Serializable
 						{
 							HeaderPanel comp = new HeaderPanel();
 							replacer.reverseReplace(subConfigs[i]);
-							comp.configure(subConfigs[i]);
+//todo:							comp.configure(config);
 							treeModel.addComponent(comp, newNode);
 						}
 					}

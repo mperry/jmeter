@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,89 +52,15 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.control.gui;
 
+package org.apache.jmeter.testelement;
 
-import java.util.*;
-
-import javax.swing.*;
-
-import org.apache.jmeter.control.ModifyController;
-import org.apache.jmeter.gui.util.MenuFactory;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.util.JMeterUtils;
-
-
-/****************************************
- * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
+/**
+ * Interface for test element visitors.
  *
- * @author    Kevin Hammond
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created   $Date$
- * @version   1.0
- ***************************************/
-// todo: remove ????
-
-public class ModifyControllerGui extends AbstractControllerGui
+ */
+public interface TestElementConfigurationVisitor
 {
-
-    ModifyController model;
-
-    /****************************************
-     * !ToDo (Constructor description)
-     ***************************************/
-    public ModifyControllerGui()
-    {
-    }
-
-    /****************************************
-     * !ToDoo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public Collection getMenuCategories()
-    {
-        return new LinkedList();
-    }
-
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public JPopupMenu createPopupMenu()
-    {
-        JPopupMenu pop = new JPopupMenu();
-        pop.add(MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
-                                                   MenuFactory.SAMPLERS, MenuFactory.CONFIG_ELEMENTS,
-                                                   MenuFactory.MODIFIERS, MenuFactory.RESPONSE_BASED_MODIFIERS},
-                                      JMeterUtils.getResString("Add"),
-                                      "Add"));
-        MenuFactory.addEditMenu(pop, true);
-        MenuFactory.addFileMenu(pop);
-        return pop;
-    }
-
-    /****************************************
-     * !ToDoo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public String getStaticLabel()
-    {
-        return "modification_controller_title";
-    }
-
-
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public NamedTestElement createTestElement()
-    {
-        ModifyController mc = new ModifyController();
-        configureTestElement(mc);
-        return mc;
-    }
+    public void visit(TestElementConfiguration element);
 }

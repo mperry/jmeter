@@ -64,8 +64,7 @@ import javax.swing.border.EmptyBorder;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.config.gui.AbstractConfigGui;
 import org.apache.jmeter.protocol.jdbc.sampler.JDBCSampler;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.gui.layout.VerticalLayout;
 
@@ -106,10 +105,10 @@ public class SqlConfigGui extends AbstractConfigGui
 		return JMeterUtils.getResString("database_sql_query_title");
 	}
 
-	public void configure(TestElement element)
+	public void configure(TestElementConfiguration config)
 	{
-		sqlField.setText(element.getPropertyValue(JDBCSampler.QUERY).toString());
-		super.configure(element);
+		sqlField.setText(config.getProperty(JDBCSampler.QUERY));
+		super.configure(config);
 	}
 
 	public NamedTestElement createTestElement()

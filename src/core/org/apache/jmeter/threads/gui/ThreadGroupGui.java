@@ -68,8 +68,7 @@ import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.action.AddElement;
 import org.apache.jmeter.gui.action.Actions;
 import org.apache.jmeter.gui.util.*;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.*;
 
 
@@ -102,12 +101,12 @@ public class ThreadGroupGui extends AbstractJMeterGuiComponent implements Locale
     }
 
 
-    public void configure(TestElement element)
+    public void configure(TestElementConfiguration config)
     {
-        threadInput.setText(String.valueOf(element.getPropertyValue(org.apache.jmeter.threads.ThreadGroup.NUMBER_OF_THREADS)));
-        rampInput.setText(String.valueOf(element.getPropertyValue(org.apache.jmeter.threads.ThreadGroup.RAMP_UP_PERIOD)));
-        loopInput.setText(String.valueOf(element.getPropertyValue(org.apache.jmeter.threads.ThreadGroup.LOOP_COUNT)));
-        boolean forever = ((Boolean)element.getPropertyValue(org.apache.jmeter.threads.ThreadGroup.LOOP_FOREVER)).booleanValue();
+        threadInput.setText(String.valueOf(config.getProperty(org.apache.jmeter.threads.ThreadGroup.NUMBER_OF_THREADS)));
+        rampInput.setText(String.valueOf(config.getProperty(org.apache.jmeter.threads.ThreadGroup.RAMP_UP_PERIOD)));
+        loopInput.setText(String.valueOf(config.getProperty(org.apache.jmeter.threads.ThreadGroup.LOOP_COUNT)));
+        boolean forever = new Boolean(config.getProperty(org.apache.jmeter.threads.ThreadGroup.LOOP_FOREVER)).booleanValue();
 
         if (forever) {
             rbForever.setSelected(true);
@@ -119,7 +118,7 @@ public class ThreadGroupGui extends AbstractJMeterGuiComponent implements Locale
     }
 
 
-    public JPopupMenu createPopupMenu(NamedTestElement element)
+    public JPopupMenu createPopupMenu()
     {
         JPopupMenu pop = new JPopupMenu();
         pop.add(MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
@@ -236,10 +235,10 @@ public class ThreadGroupGui extends AbstractJMeterGuiComponent implements Locale
     {
         if (e.getActionCommand().equals("infinite")) {
             loopInput.setEnabled(false);
-            getElement().setProperty(org.apache.jmeter.threads.ThreadGroup.LOOP_FOREVER, Boolean.TRUE);
+            getElement().setProperty(org.apache.jmeter.threads.ThreadGroup.LOOP_FOREVER, "true");
         } else {
             loopInput.setEnabled(true);
-            getElement().setProperty(org.apache.jmeter.threads.ThreadGroup.LOOP_FOREVER, Boolean.FALSE);
+            getElement().setProperty(org.apache.jmeter.threads.ThreadGroup.LOOP_FOREVER, "false");
         }
     }
 

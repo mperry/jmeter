@@ -115,7 +115,7 @@ public class FunctionHelper extends JDialog implements
 				String help = (String)iter.next();
 				args.addArgument(help,"");
 			}
-			parameterPanel.configure(args);
+//	 todo:		parameterPanel.configure(args);
 			parameterPanel.revalidate();
 			getContentPane().remove(parameterPanel);
 			this.pack();

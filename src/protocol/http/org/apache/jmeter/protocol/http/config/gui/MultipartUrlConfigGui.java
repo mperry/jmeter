@@ -70,6 +70,7 @@ import javax.swing.JTextField;
 import org.apache.jmeter.gui.util.FileDialoger;
 import org.apache.jmeter.protocol.http.sampler.HTTPSampler;
 import org.apache.jmeter.testelement.NamedTestElement;
+import org.apache.jmeter.testelement.TestElementConfiguration;
 import org.apache.jmeter.util.JMeterUtils;
 
 import org.apache.jorphan.gui.layout.VerticalLayout;
@@ -135,7 +136,7 @@ public class MultipartUrlConfigGui extends UrlConfigGui implements ActionListene
      *
      *@param el  !ToDo (Parameter description)
      ***************************************/
-    public void configure(NamedTestElement el)
+    protected void configure(TestElementConfiguration el)
     {
         super.configure(el);
 //		mimetypeField.setText((String)el.getPropertyValue(HTTPSampler.MIMETYPE));

@@ -67,6 +67,7 @@ import javax.swing.event.*;
 import javax.swing.tree.*;
 
 import org.apache.jmeter.testelement.NamedTestElement;
+import org.apache.jmeter.testelement.TestElementConfiguration;
 
 
 /**
@@ -196,15 +197,15 @@ public class TestPlanJTree extends JTree implements TreeSelectionListener, DragG
                 event.rejectDrop();
             } else
             {
-                NamedTestElement element = null;
+                TestElementConfiguration element = null;
 
                 try
                 {
-                    element = (NamedTestElement)transferable.getTransferData(NamedTestElement.DATAFLAVOR);
+                    element = (TestElementConfiguration)transferable.getTransferData(TestElementConfiguration.DATAFLAVOR);
                     TestPlanTreeNode target = (TestPlanTreeNode)targetPath.getLastPathComponent();
 
                     event.acceptDrop(event.getDropAction());
-                    target.addChildElement(element);
+                    target.addChild(element);
                     targetContext.dropComplete(true);
                     return;
                 } catch (UnsupportedFlavorException e)
@@ -254,10 +255,10 @@ public class TestPlanJTree extends JTree implements TreeSelectionListener, DragG
             }
 
             TestPlanTreeNode source = (TestPlanTreeNode)dropper.getLastPathComponent();
-            if (!node.isValidSubelementType(source.getElement()))
-            {
-                return false;
-            }
+//todo:            if (!node.isValidSubelementType(source.getElement()))
+//            {
+//                return false;
+//            }
 
             return true;
         }
@@ -282,7 +283,7 @@ public class TestPlanJTree extends JTree implements TreeSelectionListener, DragG
 
             if (node != null)
             {
-                NamedTestElement element = node.getElement();
+                TestElementConfiguration element = node.getElement();
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 node.remove();
                 clipboard.setContents(element, this);
@@ -314,7 +315,7 @@ public class TestPlanJTree extends JTree implements TreeSelectionListener, DragG
 
             if (node != null)
             {
-                NamedTestElement element = node.getElement();
+                TestElementConfiguration element = node.getElement();
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(element, this);
             }
@@ -352,8 +353,8 @@ public class TestPlanJTree extends JTree implements TreeSelectionListener, DragG
                 {
                     try
                     {
-                        NamedTestElement element = (NamedTestElement)transferable.getTransferData(NamedTestElement.DATAFLAVOR);
-                        node.addChildElement(element);
+                        TestElementConfiguration element = (TestElementConfiguration)transferable.getTransferData(TestElementConfiguration.DATAFLAVOR);
+                        node.addChild(element);
                     } catch (UnsupportedFlavorException e1)
                     {
                         // todo: handle or log

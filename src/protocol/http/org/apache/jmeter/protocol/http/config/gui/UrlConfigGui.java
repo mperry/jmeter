@@ -74,8 +74,7 @@ import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.protocol.http.gui.HTTPArgumentsPanel;
 import org.apache.jmeter.protocol.http.sampler.HTTPSampler;
 import org.apache.jmeter.protocol.http.util.HTTPArgument;
-import org.apache.jmeter.testelement.AbstractTestElement;
-import org.apache.jmeter.testelement.NamedTestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 
 
@@ -172,15 +171,15 @@ public class UrlConfigGui extends JPanel
     /****************************************
      * !ToDo (Method description)
      *
-     *@param el  !ToDo (Parameter description)
+     *@param config  !ToDo (Parameter description)
      ***************************************/
-    public void configure(NamedTestElement el)
+    protected void configure(TestElementConfiguration config)
     {
-        setName((String)el.getPropertyValue(NamedTestElement.NAME));
-        argsPanel.configure((NamedTestElement)el.getPropertyValue(HTTPSampler.ARGUMENTS));
-        domain.setText((String)el.getPropertyValue(HTTPSampler.DOMAIN));
-        port.setText((String)el.getPropertyAsString(HTTPSampler.PORT));
-        if ("METHOD_POST".equals(el.getPropertyValue(HTTPSampler.METHOD)))
+        setName(config.getProperty(NamedTestElement.NAME));
+        argsPanel.configure(config);
+        domain.setText(config.getProperty(HTTPSampler.DOMAIN));
+        port.setText(config.getProperty(HTTPSampler.PORT));
+        if ("METHOD_POST".equals(config.getProperty(HTTPSampler.METHOD)))
         {
             post.setSelected(true);
             get.setSelected(false);
@@ -189,10 +188,10 @@ public class UrlConfigGui extends JPanel
             get.setSelected(true);
             post.setSelected(false);
         }
-        path.setText((String)el.getPropertyValue(HTTPSampler.PATH));
-        followRedirects.setSelected(((AbstractTestElement)el).getPropertyAsBoolean(HTTPSampler.FOLLOW_REDIRECTS));
-        useKeepAlive.setSelected(((AbstractTestElement)el).getPropertyAsBoolean(HTTPSampler.KEEP_ALIVE));
-        if ("http".equals(el.getPropertyValue(HTTPSampler.PROTOCOL)))
+        path.setText(config.getProperty(HTTPSampler.PATH));
+        followRedirects.setSelected(((AbstractTestElement)config).getPropertyAsBoolean(HTTPSampler.FOLLOW_REDIRECTS));
+        useKeepAlive.setSelected(((AbstractTestElement)config).getPropertyAsBoolean(HTTPSampler.KEEP_ALIVE));
+        if ("http".equals(config.getProperty(HTTPSampler.PROTOCOL)))
         {
             http.setSelected(true);
             https.setSelected(false);

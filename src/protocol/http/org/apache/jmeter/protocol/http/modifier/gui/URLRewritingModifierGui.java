@@ -66,8 +66,7 @@ import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.gui.util.StringFieldDocumentListener;
 import org.apache.jmeter.protocol.http.modifier.URLRewritingModifier;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
 
@@ -129,7 +128,7 @@ public class URLRewritingModifierGui extends AbstractResponseBasedModifierGui im
 
     public void itemStateChanged(ItemEvent e)
     {
-        getElement().setProperty(URLRewritingModifier.PATH_EXTENSION, new Boolean(e.getStateChange() == ItemEvent.SELECTED));
+        getElement().setProperty(URLRewritingModifier.PATH_EXTENSION, String.valueOf(e.getStateChange() == ItemEvent.SELECTED));
     }
 
 
@@ -145,12 +144,12 @@ public class URLRewritingModifierGui extends AbstractResponseBasedModifierGui im
         return modifier;
     }
 
-    public void configure(TestElement element)
+    public void configure(TestElementConfiguration config)
     {
-        super.configure(element);
+        super.configure(config);
 
-        argumentInput.setText((String)element.getPropertyValue(URLRewritingModifier.ARGUMENT_NAME));
-        pathExt.setSelected(((Boolean)element.getPropertyValue(URLRewritingModifier.PATH_EXTENSION)).booleanValue());
+        argumentInput.setText(config.getProperty(URLRewritingModifier.ARGUMENT_NAME));
+        pathExt.setSelected(new Boolean(config.getProperty(URLRewritingModifier.PATH_EXTENSION)).booleanValue());
     }
 
 

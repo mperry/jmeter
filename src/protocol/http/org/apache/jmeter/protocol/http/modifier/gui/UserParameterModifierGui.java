@@ -63,8 +63,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.jmeter.config.gui.AbstractModifierGui;
 import org.apache.jmeter.protocol.http.modifier.UserParameterModifier;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.gui.layout.VerticalLayout;
 /************************************************************
@@ -105,10 +104,10 @@ public class UserParameterModifierGui extends AbstractModifierGui {
 		return JMeterUtils.getResString("HTTP User Parameter Modifier");
 	}
 	
-	public void configure(TestElement el)
+	public void configure(TestElementConfiguration config)
 	{
-		super.configure(el);
-		fileNameField.setText(((UserParameterModifier)el).getXmlUri());
+		super.configure(config);
+//		fileNameField.setText(((UserParameterModifier)config).getXmlUri());
 	}
 	
 	/*----------------------------------------------------------------------------------------------

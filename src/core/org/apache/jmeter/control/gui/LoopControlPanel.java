@@ -67,8 +67,7 @@ import org.apache.jmeter.control.LoopController;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.util.IntegerFieldDocumentListener;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
-import org.apache.jmeter.testelement.NamedTestElement;
-import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
 
@@ -103,10 +102,10 @@ public class LoopControlPanel extends AbstractControllerGui implements KeyListen
     }
 
 
-    public void configure(TestElement element)
+    public void configure(TestElementConfiguration config)
     {
-        loopInput.setText(String.valueOf(element.getPropertyValue(LoopController.LOOP_COUNT)));
-        boolean forever = ((Boolean)element.getPropertyValue(LoopController.LOOP_FOREVER)).booleanValue();
+        loopInput.setText(String.valueOf(config.getProperty(LoopController.LOOP_COUNT)));
+        boolean forever = new Boolean(config.getProperty(LoopController.LOOP_FOREVER)).booleanValue();
 
         if (forever)
         {
@@ -146,11 +145,11 @@ public class LoopControlPanel extends AbstractControllerGui implements KeyListen
         if (e.getActionCommand().equals("infinite"))
         {
             loopInput.setEnabled(false);
-            getElement().setProperty(LoopController.LOOP_FOREVER, Boolean.TRUE);
+            getElement().setProperty(LoopController.LOOP_FOREVER, "true");
         } else
         {
             loopInput.setEnabled(true);
-            getElement().setProperty(LoopController.LOOP_FOREVER, Boolean.FALSE);
+            getElement().setProperty(LoopController.LOOP_FOREVER, "false");
         }
     }
 

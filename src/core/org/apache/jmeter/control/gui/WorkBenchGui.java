@@ -118,12 +118,12 @@ public class WorkBenchGui extends JPanel implements JMeterGUIComponent
         return wb;
     }
 
-    public void configure(TestElement element)
+    protected void configure(TestElementConfiguration element)
     {
         namePanel.configure(element);
     }
 
-    public JPopupMenu createPopupMenu(NamedTestElement element)
+    public JPopupMenu createPopupMenu()
     {
         JPopupMenu menu = new JPopupMenu();
         JMenu addMenu = MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
@@ -167,15 +167,15 @@ public class WorkBenchGui extends JPanel implements JMeterGUIComponent
     }
 
 
-    public void setElement(TestElement element)
+    public void setElement(TestElementConfiguration config)
     {
         isConfigured = false;
-        namePanel.setElement(element);
+        namePanel.setElement(config);
         isConfigured = true;
     }
 
 
-    public TestElement getElement()
+    public TestElementConfiguration getElement()
     {
         return namePanel.getElement();
     }
