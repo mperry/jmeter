@@ -61,6 +61,9 @@ import java.util.*;
 
 import javax.swing.*;
 
+import org.apache.log.Logger;
+import org.apache.log.Hierarchy;
+
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.util.Resources;
 import org.apache.jmeter.JMeterClassLoader;
@@ -71,6 +74,7 @@ import org.apache.jmeter.JMeterClassLoader;
  */
 public class PluginManager
 {
+    transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor("jmeter");
 
     private static final PluginManager instance = new PluginManager();
 
@@ -83,22 +87,14 @@ public class PluginManager
 	 * Installs a plugin.
 	 * @param plugin The plugin to install.
 	 * @param useGui Indication of whether or not the gui will be used.
-	 * @throws ClassNotFoundException
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
 	 */
     public static void install(JMeterPlugin plugin, boolean useGui)
-            throws ClassNotFoundException, InstantiationException,
-		    IllegalAccessException
     {
-    	if (useGui)
-    	{
-            instance.installPlugin(plugin);
-    	}
+            instance.installPlugin(plugin, useGui);
     }
 
 
-    private void installPlugin(JMeterPlugin plugin)
+    private void installPlugin(JMeterPlugin plugin, boolean useGui)
     {
         String[][] icons = plugin.getIconMappings();
         String[][] resources = plugin.getResourceBundles();
@@ -109,21 +105,27 @@ public class PluginManager
         int i;
 
 
+        log.info("Installing plugin " + plugin.getClass().getName());
+
         for (i = 0; i < resources.length; i++)
         {
             Resources.registerBundle(resources[i][0], resources[i][1], classloader);
         }
 
-        for (i = 0; i < icons.length; i++)
-        {
-            URL resource = classloader.getResource(icons[i][1].trim());
 
-            if (resource == null)
+        if (useGui)
+        {
+            for (i = 0; i < icons.length; i++)
             {
-                // todo: log or throw exception
-            } else
-            {
-                GUIFactory.registerIcon(icons[i][0], new ImageIcon(resource));
+                URL resource = classloader.getResource(icons[i][1].trim());
+
+                if (resource == null)
+                {
+                    // todo: log or throw exception
+                } else
+                {
+                    GUIFactory.registerIcon(icons[i][0], new ImageIcon(resource));
+                }
             }
         }
 

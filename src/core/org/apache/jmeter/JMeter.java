@@ -473,7 +473,6 @@ public class JMeter implements JMeterPlugin
         String plugin;
 
         for (int i = 0; i < jars.length; i++) {
-            System.out.println("Check for plugin " + jars[i]);
             if ((plugin = checkPlugin(jars[i])) != null) {
                 try
                 {
@@ -500,10 +499,8 @@ public class JMeter implements JMeterPlugin
             {
                 while(entries.hasMoreElements()) {
                     JarEntry entry = (JarEntry)entries.nextElement();
-                    System.out.println(entry.getName());
                     String name = entry.getName();
                     if (name.endsWith("Plugin.class")) {
-                        System.out.println("Found plugin " + entry.getName());
                         return name.substring(0, name.length() - 6).replace('/', '.');
                     }
                 }
@@ -514,7 +511,7 @@ public class JMeter implements JMeterPlugin
             return null;
         } catch (IOException e)
         {
-            e.printStackTrace();  
+            e.printStackTrace();
             return null;
         }
     }
