@@ -55,6 +55,9 @@
 package org.apache.jmeter.gui.panel;
 
 
+import java.util.*;
+import java.awt.*;
+
 import javax.swing.*;
 import javax.swing.event.*;
 
@@ -72,6 +75,9 @@ import org.apache.jmeter.testelement.TestPlan;
 public class TabbedMainPanel extends JTabbedPane implements JMeterDocumentManagerListener, ChangeListener
 {
 
+    private Map documentPanels = new HashMap();
+
+
     public TabbedMainPanel()
     {
        JMeterDocumentManager.getInstance().addListener(this);
@@ -87,6 +93,12 @@ public class TabbedMainPanel extends JTabbedPane implements JMeterDocumentManage
 
     public void documentRemoved(JMeterDocument document)
     {
+        Component documentComponent = (Component)documentPanels.get(document.getName());
+
+        if (documentComponent != null) {
+            remove(documentComponent);
+            documentPanels.remove(document.getName());
+        }
     }
 
     private void addDocument(org.apache.jmeter.gui.document.JMeterDocument document)
@@ -105,6 +117,7 @@ public class TabbedMainPanel extends JTabbedPane implements JMeterDocumentManage
 
         addTab(document.getFileName(), icon, panel, document.getAbsolutePath());
         setSelectedComponent(panel);
+        documentPanels.put(document.getName(), panel);
     }
 
 

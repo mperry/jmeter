@@ -90,6 +90,15 @@ public class JMeterDocument {
     }
 
 
+    public boolean isNew() {
+        return getFile() == null;
+    }
+
+    public boolean hasChanged() {
+    // todo: implement
+        return false;
+    }
+
     public File getFile()
     {
         return file;
@@ -144,5 +153,10 @@ public class JMeterDocument {
         } else {
             return getFile().getAbsolutePath();
         }
+    }
+
+    public String getName()
+    {
+        return name;
     }
 }

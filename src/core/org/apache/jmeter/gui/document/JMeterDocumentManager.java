@@ -59,10 +59,21 @@ public class JMeterDocumentManager
     public JMeterDocument loadDocument(File file) throws IOException
     {
         FileInputStream in = new FileInputStream(file);
+        JMeterDocument singleDocument = null;
+        if (documents.size() == 1)
+        {
+            singleDocument = (JMeterDocument)documents.values().iterator().next();
+        }
         // todo: should never happen but what if the element is not a NamedTestElement?
         NamedTestElement element = (NamedTestElement)SaveService.loadSubTree(in);
-        return createDocument(file, element);
+        JMeterDocument document = createDocument(file, element);
 
+        if (singleDocument != null && singleDocument.isNew() && !singleDocument.hasChanged())
+        {
+            closeDocument(singleDocument);
+        }
+
+        return document;
     }
 
     private JMeterDocument createDocument(File file, NamedTestElement element)
@@ -81,6 +92,13 @@ public class JMeterDocumentManager
         TestPlan testplan = new TestPlan("Test Plan");
 
         return createDocument(null, testplan);
+    }
+
+
+    public void closeDocument(JMeterDocument document)
+    {
+        documents.remove(document.getName());
+        notifyListeners(document, true);
     }
 
     /**
@@ -155,7 +173,8 @@ public class JMeterDocumentManager
 
     public NamedTestElement getCurrentTestElement()
     {
-        if(getCurrentDocument() == null) {
+        if (getCurrentDocument() == null)
+        {
             return null;
         }
 
