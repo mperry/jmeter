@@ -53,6 +53,8 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.gui.tree;
+
+
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -75,8 +77,10 @@ import org.apache.jmeter.gui.JMeterGUIComponent;
 import org.apache.jmeter.gui.MainFrame;
 import org.apache.jmeter.gui.action.DragNDrop;
 import org.apache.jmeter.util.JMeterUtils;
+
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
+
 
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
@@ -86,352 +90,360 @@ import org.apache.log.Logger;
  *@version   1.0
  ***************************************/
 
-public class JMeterTreeListener implements TreeSelectionListener, MouseListener, 
-		KeyListener,MouseMotionListener
+public class JMeterTreeListener implements TreeSelectionListener, MouseListener,
+    KeyListener, MouseMotionListener
 {
-	transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor(
-			"jmeter.gui");
-	Container endWindow;
-	JPopupMenu pop;
-	TreePath currentPath;
-	ActionListener actionHandler;
 
-	private JMeterTreeModel model;
-	private JTree tree;
-	private boolean dragging = false;
-	private JMeterTreeNode draggedNode;
-	private JLabel dragIcon = new JLabel(JMeterUtils.getImage("leafnode.gif"));
+    transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor(
+        "jmeter.gui");
+    Container endWindow;
+    JPopupMenu pop;
+    TreePath currentPath;
+    ActionListener actionHandler;
 
-	/****************************************
-	 * Constructor for the JMeterTreeListener object
-	 *
-	 *@param model  Description of Parameter
-	 ***************************************/
-	public JMeterTreeListener(JMeterTreeModel model)
-	{
-		this.model = model;
-		dragIcon.validate();
-		dragIcon.setVisible(true);
-	}
-	
-	public JMeterTreeListener()
-	{
-		dragIcon.validate();
-		dragIcon.setVisible(true);
-	}
-	
-	public void setModel(JMeterTreeModel m)
-	{
-		model = m;
-	}
+    private JMeterTreeModel model;
+    private JTree tree;
+    private boolean dragging = false;
+    private JMeterTreeNode draggedNode;
+    private JLabel dragIcon = new JLabel(JMeterUtils.getImage("leafnode.gif"));
 
+    /****************************************
+     * Constructor for the JMeterTreeListener object
+     *
+     *@param model  Description of Parameter
+     ***************************************/
+    public JMeterTreeListener(JMeterTreeModel model)
+    {
+        this.model = model;
+        dragIcon.validate();
+        dragIcon.setVisible(true);
+    }
 
-	/****************************************
-	 * Sets the ActionHandler attribute of the JMeterTreeListener object
-	 *
-	 *@param ah  The new ActionHandler value
-	 ***************************************/
-	public void setActionHandler(ActionListener ah)
-	{
-		actionHandler = ah;
-	}
+    public JMeterTreeListener()
+    {
+        dragIcon.validate();
+        dragIcon.setVisible(true);
+    }
+
+    public void setModel(JMeterTreeModel m)
+    {
+        model = m;
+    }
 
 
-	/****************************************
-	 * Sets the JTree attribute of the JMeterTreeListener object
-	 *
-	 *@param tree  The new JTree value
-	 ***************************************/
-	public void setJTree(JTree tree)
-	{
-		this.tree = tree;
-	}
+    /****************************************
+     * Sets the ActionHandler attribute of the JMeterTreeListener object
+     *
+     *@param ah  The new ActionHandler value
+     ***************************************/
+    public void setActionHandler(ActionListener ah)
+    {
+        actionHandler = ah;
+    }
 
 
-	/****************************************
-	 * Sets the EndWindow attribute of the JMeterTreeListener object
-	 *
-	 *@param window  The new EndWindow value
-	 ***************************************/
-	public void setEndWindow(Container window)
-	{
-		endWindow = window;
-	}
-	
-	/****************************************
-	 * Gets the JTree attribute of the JMeterTreeListener object.
-	 *
-	 *@return tree The current JTree value.
-	 ***************************************/
-	public JTree getJTree()
-	{
-		return tree;
-	}
+    /****************************************
+     * Sets the JTree attribute of the JMeterTreeListener object
+     *
+     *@param tree  The new JTree value
+     ***************************************/
+    public void setJTree(JTree tree)
+    {
+        this.tree = tree;
+    }
 
 
-	/****************************************
-	 * Gets the CurrentNode attribute of the JMeterTreeListener object
-	 *
-	 *@return   The CurrentNode value
-	 ***************************************/
-	public JMeterTreeNode getCurrentNode()
-	{
-		if(currentPath != null)
-		{
-			if(currentPath.getLastPathComponent() != null)
-			{
-				return (JMeterTreeNode)currentPath.getLastPathComponent();
-			}
-			else
-			{
-				return (JMeterTreeNode)currentPath.getParentPath().getLastPathComponent();
-			}
-		}
-		else
-		{
-			return (JMeterTreeNode)model.getRoot();
-		}
-	}
+    /****************************************
+     * Sets the EndWindow attribute of the JMeterTreeListener object
+     *
+     *@param window  The new EndWindow value
+     ***************************************/
+    public void setEndWindow(Container window)
+    {
+        endWindow = window;
+    }
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public JMeterTreeNode[] getSelectedNodes()
-	{
-		TreePath[] paths = tree.getSelectionPaths();
-		if(paths == null)
-		{
-			return new JMeterTreeNode[]{getCurrentNode()};
-		}
-		JMeterTreeNode[] nodes = new JMeterTreeNode[paths.length];
-		for(int i = 0; i < paths.length; i++)
-		{
-			nodes[i] = (JMeterTreeNode)paths[i].getLastPathComponent();
-		}
-
-		return nodes;
-	}
-
-	/****************************************
-	 * !ToDo (Method description)
-	 ***************************************/
-	public void removedSelectedNode()
-	{
-		currentPath = currentPath.getParentPath();
-	}
+    /****************************************
+     * Gets the JTree attribute of the JMeterTreeListener object.
+     *
+     *@return tree The current JTree value.
+     ***************************************/
+    public JTree getJTree()
+    {
+        return tree;
+    }
 
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void valueChanged(TreeSelectionEvent e)
-	{
-		currentPath = e.getNewLeadSelectionPath();
-		actionHandler.actionPerformed(new ActionEvent(this, 3333, "edit"));
-	}
+    /****************************************
+     * Gets the CurrentNode attribute of the JMeterTreeListener object
+     *
+     *@return   The CurrentNode value
+     ***************************************/
+    public JMeterTreeNode getCurrentNode()
+    {
+        if (currentPath != null)
+        {
+            if (currentPath.getLastPathComponent() != null)
+            {
+                return (JMeterTreeNode)currentPath.getLastPathComponent();
+            } else
+            {
+                return (JMeterTreeNode)currentPath.getParentPath().getLastPathComponent();
+            }
+        } else
+        {
+            return (JMeterTreeNode)model.getRoot();
+        }
+    }
+
+    /****************************************
+     * !ToDoo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public JMeterTreeNode[] getSelectedNodes()
+    {
+        TreePath[] paths = tree.getSelectionPaths();
+        if (paths == null)
+        {
+            return new JMeterTreeNode[]{getCurrentNode()};
+        }
+        JMeterTreeNode[] nodes = new JMeterTreeNode[paths.length];
+        for (int i = 0; i < paths.length; i++)
+        {
+            nodes[i] = (JMeterTreeNode)paths[i].getLastPathComponent();
+        }
+
+        return nodes;
+    }
+
+    /****************************************
+     * !ToDo (Method description)
+     ***************************************/
+    public void removedSelectedNode()
+    {
+        currentPath = currentPath.getParentPath();
+    }
 
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param ev  Description of Parameter
-	 ***************************************/
-	public void mouseClicked(MouseEvent ev) { }
+    /****************************************
+     * Description of the Method
+     *
+     *@param e  Description of Parameter
+     ***************************************/
+    public void valueChanged(TreeSelectionEvent e)
+    {
+        currentPath = e.getNewLeadSelectionPath();
+        actionHandler.actionPerformed(new ActionEvent(this, 3333, "edit"));
+    }
 
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void mouseReleased(MouseEvent e) 
-	{ 
-		if(dragging && draggedNode != getCurrentNode())
-		{
-			dragging = false;
-			JPopupMenu dragNdrop = new JPopupMenu();
-			JMenuItem item = new JMenuItem(JMeterUtils.getResString("Insert Before"));
-			item.addActionListener(actionHandler);
-			item.setActionCommand(DragNDrop.INSERT_BEFORE);
-			dragNdrop.add(item);
-			item = new JMenuItem(JMeterUtils.getResString("Insert After"));
-			item.addActionListener(actionHandler);
-			item.setActionCommand(DragNDrop.INSERT_AFTER);
-			dragNdrop.add(item);
-			item = new JMenuItem(JMeterUtils.getResString("Add as Child"));
-			item.addActionListener(actionHandler);
-			item.setActionCommand(DragNDrop.ADD);
-			dragNdrop.add(item);
-			dragNdrop.addSeparator();
-			item = new JMenuItem(JMeterUtils.getResString("Cancel"));
-			dragNdrop.add(item);
-			displayPopUp(e,dragNdrop);
-		}
-		dragging = false;
-	}
-	
-	public JMeterTreeNode getDraggedNode()
-	{
-		return draggedNode;
-	}
+    /****************************************
+     * Description of the Method
+     *
+     *@param ev  Description of Parameter
+     ***************************************/
+    public void mouseClicked(MouseEvent ev)
+    {
+    }
 
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param ev  Description of Parameter
-	 ***************************************/
-	public void mouseEntered(MouseEvent e) 
-	{ 
-	}
-	
-	private void changeSelectionIfDragging(MouseEvent e)
-	{
-		if(dragging)
-		{	
-			GuiPackage.getInstance().getMainFrame().drawDraggedComponent(dragIcon,e.getX(),e.getY());
-			if(tree.getPathForLocation(e.getX(), e.getY()) != null)
-			{
-				currentPath = tree.getPathForLocation(e.getX(), e.getY());
-				if(getCurrentNode() != draggedNode)
-				{
-					tree.setSelectionPath(currentPath);
-				}
-			}
-		}
-	}
+    /****************************************
+     * Description of the Method
+     *
+     *@param e  Description of Parameter
+     ***************************************/
+    public void mouseReleased(MouseEvent e)
+    {
+        if (dragging && draggedNode != getCurrentNode())
+        {
+            dragging = false;
+            JPopupMenu dragNdrop = new JPopupMenu();
+            JMenuItem item = new JMenuItem(JMeterUtils.getResString("Insert Before"));
+            item.addActionListener(actionHandler);
+            item.setActionCommand(DragNDrop.INSERT_BEFORE);
+            dragNdrop.add(item);
+            item = new JMenuItem(JMeterUtils.getResString("Insert After"));
+            item.addActionListener(actionHandler);
+            item.setActionCommand(DragNDrop.INSERT_AFTER);
+            dragNdrop.add(item);
+            item = new JMenuItem(JMeterUtils.getResString("Add as Child"));
+            item.addActionListener(actionHandler);
+            item.setActionCommand(DragNDrop.ADD);
+            dragNdrop.add(item);
+            dragNdrop.addSeparator();
+            item = new JMenuItem(JMeterUtils.getResString("Cancel"));
+            dragNdrop.add(item);
+            displayPopUp(e, dragNdrop);
+        }
+        dragging = false;
+    }
+
+    public JMeterTreeNode getDraggedNode()
+    {
+        return draggedNode;
+    }
 
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void mousePressed(MouseEvent e)
-	{
-		// Get the Main Frame.
-		MainFrame mainFrame = GuiPackage.getInstance().getMainFrame();
+    /****************************************
+     * Description of the Method
+     *
+     *@param ev  Description of Parameter
+     ***************************************/
+    public void mouseEntered(MouseEvent e)
+    {
+    }
 
-		// Close any Main Menu that is open
-		mainFrame.closeMenu();
-		int selRow = tree.getRowForLocation(e.getX(), e.getY());
-		if(tree.getPathForLocation(e.getX(), e.getY()) != null)
-		{
-			currentPath = tree.getPathForLocation(e.getX(), e.getY());
-		}
-		if(selRow != -1)
-		{
-			//updateMainMenu(((JMeterGUIComponent)getCurrentNode().getUserObject()).createPopupMenu());
-			if(isRightClick(e))
-			{
-				if(tree.getSelectionCount() < 2)
-				{
-					tree.setSelectionPath(currentPath);
-				}
-				if(getCurrentNode().getUserObject() instanceof JMeterGUIComponent)
-				{
-					displayPopUp(e);
-				}
-			}
-		}
-	}
-	
-	public void mouseDragged(MouseEvent e)
-	{
-		if(!dragging)
-		{
-			dragging = true;
-			draggedNode = getCurrentNode();
-			
-		}
-		changeSelectionIfDragging(e);
-	}
-	
-	public void mouseMoved(MouseEvent e)
-	{
-	}
+    private void changeSelectionIfDragging(MouseEvent e)
+    {
+        if (dragging)
+        {
+            GuiPackage.getInstance().getMainFrame().drawDraggedComponent(dragIcon, e.getX(), e.getY());
+            if (tree.getPathForLocation(e.getX(), e.getY()) != null)
+            {
+                currentPath = tree.getPathForLocation(e.getX(), e.getY());
+                if (getCurrentNode() != draggedNode)
+                {
+                    tree.setSelectionPath(currentPath);
+                }
+            }
+        }
+    }
 
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param ev  Description of Parameter
-	 ***************************************/
-	public void mouseExited(MouseEvent ev) { }
+    /****************************************
+     * Description of the Method
+     *
+     *@param e  Description of Parameter
+     ***************************************/
+    public void mousePressed(MouseEvent e)
+    {
+        // Get the Main Frame.
+        MainFrame mainFrame = GuiPackage.getInstance().getMainFrame();
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void keyPressed(KeyEvent e) { }
+        // Close any Main Menu that is open
+        mainFrame.closeMenu();
+        int selRow = tree.getRowForLocation(e.getX(), e.getY());
+        if (tree.getPathForLocation(e.getX(), e.getY()) != null)
+        {
+            currentPath = tree.getPathForLocation(e.getX(), e.getY());
+        }
+        if (selRow != -1)
+        {
+            //updateMainMenu(((JMeterGUIComponent)getCurrentNode().getUserObject()).createPopupMenu());
+            if (isRightClick(e))
+            {
+                if (tree.getSelectionCount() < 2)
+                {
+                    tree.setSelectionPath(currentPath);
+                }
+                if (getCurrentNode().getUserObject() instanceof JMeterGUIComponent)
+                {
+                    displayPopUp(e);
+                }
+            }
+        }
+    }
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void keyReleased(KeyEvent e) { }
+    public void mouseDragged(MouseEvent e)
+    {
+        if (!dragging)
+        {
+            dragging = true;
+            draggedNode = getCurrentNode();
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void keyTyped(KeyEvent e) { }
+        }
+        changeSelectionIfDragging(e);
+    }
 
-
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 *@return   Description of the Returned Value
-	 ***************************************/
-	private boolean isRightClick(MouseEvent e)
-	{
-		return (MouseEvent.BUTTON2_MASK & e.getModifiers()) > 0 ||
-				(MouseEvent.BUTTON3_MASK == e.getModifiers());
-	}
+    public void mouseMoved(MouseEvent e)
+    {
+    }
 
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param addMenu  Description of Parameter
-	 ***************************************/
-	private void updateMainMenu(JPopupMenu menu)
-	{
-		try
-		{
-			Object model = getCurrentNode().getUserObject();
-			MainFrame mainFrame = GuiPackage.getInstance().getMainFrame();
-			mainFrame.setEditMenu(menu);
-		}
-		catch(NullPointerException e)
-		{
-			log.error("Null pointer: JMeterTreeListener.updateMenuItem()",e);
-			log.error("",e);
-		}
-	}
+    /****************************************
+     * Description of the Method
+     *
+     *@param ev  Description of Parameter
+     ***************************************/
+    public void mouseExited(MouseEvent ev)
+    {
+    }
 
-	private void displayPopUp(MouseEvent e)
-	{
-		JPopupMenu pop = ((JMeterGUIComponent)getCurrentNode().getUserObject()).createPopupMenu();
-		displayPopUp(e,pop);
-	}
-	
-	private void displayPopUp(MouseEvent e,JPopupMenu popup)
-	{
-		if(popup != null)
-		{
-			popup.pack();
-			popup.show(tree, e.getX(), e.getY());
-			popup.setVisible(true);
-			popup.requestFocus();
-		}
-	}
+    /****************************************
+     * Description of the Method
+     *
+     *@param e  Description of Parameter
+     ***************************************/
+    public void keyPressed(KeyEvent e)
+    {
+    }
+
+    /****************************************
+     * Description of the Method
+     *
+     *@param e  Description of Parameter
+     ***************************************/
+    public void keyReleased(KeyEvent e)
+    {
+    }
+
+    /****************************************
+     * Description of the Method
+     *
+     *@param e  Description of Parameter
+     ***************************************/
+    public void keyTyped(KeyEvent e)
+    {
+    }
+
+
+    /****************************************
+     * Description of the Method
+     *
+     *@param e  Description of Parameter
+     *@return   Description of the Returned Value
+     ***************************************/
+    private boolean isRightClick(MouseEvent e)
+    {
+        return (MouseEvent.BUTTON2_MASK & e.getModifiers()) > 0 ||
+            (MouseEvent.BUTTON3_MASK == e.getModifiers());
+    }
+
+
+    /****************************************
+     * Description of the Method
+     *
+     *@param addMenu  Description of Parameter
+     ***************************************/
+    private void updateMainMenu(JPopupMenu menu)
+    {
+        try
+        {
+            Object model = getCurrentNode().getUserObject();
+            MainFrame mainFrame = GuiPackage.getInstance().getMainFrame();
+            mainFrame.setEditMenu(menu);
+        } catch (NullPointerException e)
+        {
+            log.error("Null pointer: JMeterTreeListener.updateMenuItem()", e);
+            log.error("", e);
+        }
+    }
+
+    private void displayPopUp(MouseEvent e)
+    {
+        JPopupMenu pop = ((JMeterGUIComponent)getCurrentNode().getUserObject()).createPopupMenu();
+        displayPopUp(e, pop);
+    }
+
+    private void displayPopUp(MouseEvent e, JPopupMenu popup)
+    {
+        if (popup != null)
+        {
+            popup.pack();
+            popup.show(tree, e.getX(), e.getY());
+            popup.setVisible(true);
+            popup.requestFocus();
+        }
+    }
 }
