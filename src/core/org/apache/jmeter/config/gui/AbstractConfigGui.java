@@ -53,14 +53,18 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.config.gui;
+
+
 import java.util.Arrays;
 import java.util.Collection;
 
 import javax.swing.JPopupMenu;
+
 import org.apache.jmeter.gui.AbstractJMeterGuiComponent;
 import org.apache.jmeter.gui.NamePanel;
 import org.apache.jmeter.gui.util.MenuFactory;
 import org.apache.jmeter.testelement.TestElement;
+
 
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
@@ -73,28 +77,26 @@ import org.apache.jmeter.testelement.TestElement;
 public abstract class AbstractConfigGui extends AbstractJMeterGuiComponent
 {
 
-  
-    
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public JPopupMenu createPopupMenu()
-	{
-		return MenuFactory.getDefaultConfigElementMenu();
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public JPopupMenu createPopupMenu()
+    {
+        return MenuFactory.getDefaultConfigElementMenu();
+    }
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public Collection getMenuCategories()
-	{
-		return Arrays.asList(new String[]{MenuFactory.CONFIG_ELEMENTS});
-	}
+    /****************************************
+     * !ToDoo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public Collection getMenuCategories()
+    {
+        return Arrays.asList(new String[]{MenuFactory.CONFIG_ELEMENTS});
+    }
 
-	
+
 }

@@ -53,6 +53,8 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.config;
+
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,8 +64,10 @@ import java.util.Map;
 
 import org.apache.jmeter.util.JMeterUtils;
 
+
 // Mark Walsh, 2002-08-03 add method addArgument(String name, Object value, Object metadata)
 // modify methods toString(), addEmptyArgument(), addArgument(String name, Object value)
+
 /****************************************
  * Title: Apache JMeter Description: Copyright: Copyright (c) 2000 Company:
  * Apache Foundation
@@ -75,191 +79,194 @@ import org.apache.jmeter.util.JMeterUtils;
 
 public class Arguments extends ConfigTestElement implements Serializable
 {
-	/****************************************
-	 * !ToDo (Field description)
-	 ***************************************/
-	public static String[] COLUMN_NAMES = {
-			JMeterUtils.getResString("name"),
-			JMeterUtils.getResString("value"),
-                        JMeterUtils.getResString("metadata")
-			};
 
-	private final static String ARGUMENTS = "Arguments.arguments";
+    /****************************************
+     * !ToDo (Field description)
+     ***************************************/
+    public static String[] COLUMN_NAMES = {
+        JMeterUtils.getResString("name"),
+        JMeterUtils.getResString("value"),
+        JMeterUtils.getResString("metadata")
+    };
+
+    private final static String ARGUMENTS = "Arguments.arguments";
 
 
-	/****************************************
-	 * !ToDo (Constructor description)
-	 ***************************************/
-	public Arguments()
-	{
-		setProperty(ARGUMENTS,new ArrayList());
-	}
+    /****************************************
+     * !ToDo (Constructor description)
+     ***************************************/
+    public Arguments()
+    {
+        setProperty(ARGUMENTS, new ArrayList());
+    }
 
-	public List getArguments()
-	{
-		return (List)getProperty(ARGUMENTS);
-	}
-	
-	public void setArguments(List arguments)
-	{
-		setProperty(ARGUMENTS,arguments);
-	}
-	
-	public Map getArgumentsAsMap()
-	{
-		Iterator iter = getArguments().iterator();
-		Map argMap = new HashMap();
-		while(iter.hasNext())
-		{
-			Argument arg = (Argument)iter.next();
-			argMap.put(arg.getName(),arg.getValue());
-		}
-		return argMap;
-	}
+    public List getArguments()
+    {
+        return (List)getProperty(ARGUMENTS);
+    }
 
-	/****************************************
-	 * !ToDo
-	 *
-	 *@param name   !ToDo
-	 *@param value  !ToDo
-	 ***************************************/
-	public void addArgument(String name, Object value)
-	{
-		getArguments().add(new Argument(name, value, null));
-	}
-	
-	public void addArgument(Argument arg)
-	{
-		getArguments().add(arg);
-	}
+    public void setArguments(List arguments)
+    {
+        setProperty(ARGUMENTS, arguments);
+    }
 
-	/****************************************
-	 * !ToDo
-	 *
-	 *@param name   !ToDo
-	 *@param value  !ToDo
-	 *@param metadata  Hold addition information
-	 ***************************************/
-	public void addArgument(String name, Object value, Object metadata)
-	{
-		getArguments().add(new Argument(name, value, metadata));
-	}
+    public Map getArgumentsAsMap()
+    {
+        Iterator iter = getArguments().iterator();
+        Map argMap = new HashMap();
+        while (iter.hasNext())
+        {
+            Argument arg = (Argument)iter.next();
+            argMap.put(arg.getName(), arg.getValue());
+        }
+        return argMap;
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public Iterator iterator()
-	{
-		return getArguments().iterator();
-	}
+    /****************************************
+     * !ToDo
+     *
+     *@param name   !ToDo
+     *@param value  !ToDo
+     ***************************************/
+    public void addArgument(String name, Object value)
+    {
+        getArguments().add(new Argument(name, value, null));
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public String toString()
-	{
-		StringBuffer str = new StringBuffer();
-		Iterator iter = getArguments().iterator();
-		while(iter.hasNext())
-		{
-			Argument arg = (Argument)iter.next();
-			if (arg.getMetaData() == null) {
-			    str.append(arg.getName() + "=" + arg.getValue());
-			} else {
-			    str.append(arg.getName() + arg.getMetaData() + arg.getValue());
-			}
-			if(iter.hasNext())
-			{
-				str.append("&");
-			}
-		}
-		return str.toString();
-	}
+    public void addArgument(Argument arg)
+    {
+        getArguments().add(arg);
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param row  !ToDo (Parameter description)
-	 ***************************************/
-	public void removeArgument(int row)
-	{
-		if(row < getArguments().size())
-		{
-			getArguments().remove(row);
-		}
-	}
+    /****************************************
+     * !ToDo
+     *
+     *@param name   !ToDo
+     *@param value  !ToDo
+     *@param metadata  Hold addition information
+     ***************************************/
+    public void addArgument(String name, Object value, Object metadata)
+    {
+        getArguments().add(new Argument(name, value, metadata));
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param arg  !ToDo (Parameter description)
-	 ***************************************/
-	public void removeArgument(Argument arg)
-	{
-		getArguments().remove(arg);
-	}
-	
-	public void removeArgument(String argName)
-	{
-		Iterator iter = getArguments().iterator();
-		while(iter.hasNext())
-		{
-			Argument arg = (Argument)iter.next();
-			if(arg.getName().equals(argName))
-			{
-				iter.remove();
-			}
-		}
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public Iterator iterator()
+    {
+        return getArguments().iterator();
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 ***************************************/
-	public void removeAllArguments()
-	{
-		if(getArguments().size() > 0)
-		{
-			getArguments().clear();
-		}
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public String toString()
+    {
+        StringBuffer str = new StringBuffer();
+        Iterator iter = getArguments().iterator();
+        while (iter.hasNext())
+        {
+            Argument arg = (Argument)iter.next();
+            if (arg.getMetaData() == null)
+            {
+                str.append(arg.getName() + "=" + arg.getValue());
+            } else
+            {
+                str.append(arg.getName() + arg.getMetaData() + arg.getValue());
+            }
+            if (iter.hasNext())
+            {
+                str.append("&");
+            }
+        }
+        return str.toString();
+    }
 
-	/****************************************
-	 * !ToDo
-	 ***************************************/
-	public void addEmptyArgument()
-	{
-		getArguments().add(new Argument("", "",null));
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@param row  !ToDo (Parameter description)
+     ***************************************/
+    public void removeArgument(int row)
+    {
+        if (row < getArguments().size())
+        {
+            getArguments().remove(row);
+        }
+    }
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public int getArgumentCount()
-	{
-		return getArguments().size();
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@param arg  !ToDo (Parameter description)
+     ***************************************/
+    public void removeArgument(Argument arg)
+    {
+        getArguments().remove(arg);
+    }
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@param row  !ToDo (Parameter description)
-	 *@return     !ToDo (Return description)
-	 ***************************************/
-	public Argument getArgument(int row)
-	{
-		Argument argument = null;
+    public void removeArgument(String argName)
+    {
+        Iterator iter = getArguments().iterator();
+        while (iter.hasNext())
+        {
+            Argument arg = (Argument)iter.next();
+            if (arg.getName().equals(argName))
+            {
+                iter.remove();
+            }
+        }
+    }
 
-		if(row < getArguments().size())
-		{
-			argument = (Argument)getArguments().get(row);
-		}
+    /****************************************
+     * !ToDo (Method description)
+     ***************************************/
+    public void removeAllArguments()
+    {
+        if (getArguments().size() > 0)
+        {
+            getArguments().clear();
+        }
+    }
 
-		return argument;
-	}
+    /****************************************
+     * !ToDo
+     ***************************************/
+    public void addEmptyArgument()
+    {
+        getArguments().add(new Argument("", "", null));
+    }
+
+    /****************************************
+     * !ToDoo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public int getArgumentCount()
+    {
+        return getArguments().size();
+    }
+
+    /****************************************
+     * !ToDoo (Method description)
+     *
+     *@param row  !ToDo (Parameter description)
+     *@return     !ToDo (Return description)
+     ***************************************/
+    public Argument getArgument(int row)
+    {
+        Argument argument = null;
+
+        if (row < getArguments().size())
+        {
+            argument = (Argument)getArguments().get(row);
+        }
+
+        return argument;
+    }
 }
