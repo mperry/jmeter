@@ -56,12 +56,11 @@
 package org.apache.jmeter.gui;
 
 
-import java.util.Collection;
+import java.util.*;
 
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 
 import org.apache.jmeter.testelement.TestElement;
-import org.apache.jmeter.gui.tree.JMeterTreeNode;
 
 
 /****************************************
@@ -149,7 +148,7 @@ public interface JMeterGUIComponent
      *
      *@return   A JPopupMenu appropriate for the component.
      ***************************************/
-    public JPopupMenu createPopupMenu();
+    public JPopupMenu createPopupMenu(TestElement testElement);
 
     /****************************************
      * A newly created component can be initialized with the contents of
@@ -170,9 +169,7 @@ public interface JMeterGUIComponent
      ***************************************/
     public Collection getMenuCategories();
 
-    /**
-     *
-     *@param node
-     */
-    public void setNode(JMeterTreeNode node);
+    public void setElement(TestElement element);
+
+    public TestElement getElement();
 }

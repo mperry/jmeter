@@ -55,13 +55,16 @@
 package org.apache.jmeter.gui;
 
 
-import java.util.Collection;
+import java.awt.*;
 
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
+import javax.swing.table.*;
 
+import org.apache.jorphan.gui.layout.VerticalLayout;
+
+import org.apache.jmeter.gui.util.JMeterBoxedLayout;
 import org.apache.jmeter.testelement.TestElement;
-import org.apache.jmeter.gui.tree.JMeterTreeNode;
+import org.apache.jmeter.util.*;
 
 
 /**
@@ -72,7 +75,7 @@ import org.apache.jmeter.gui.tree.JMeterTreeNode;
  *
  * @author mstover
  *
- * @see JMeterGuiComponent
+ * @see JMeterGUIComponent
  * @see org.apache.jmeter.config.gui.AbstractConfigGui
  * @see org.apache.jmeter.config.gui.AbstractModifierGui
  * @see org.apache.jmeter.config.gui.AbstractResponseBasedModifierGui
@@ -84,81 +87,85 @@ import org.apache.jmeter.gui.tree.JMeterTreeNode;
  */
 public abstract class AbstractJMeterGuiComponent
     extends JPanel
-    implements JMeterGUIComponent
+    implements JMeterGUIComponent, LocaleChangeListener
 {
 
-    private boolean enabled = true;
-    private JMeterTreeNode node;
+    private TestElement element;
+    private NamePanel namePanel;
+    private JLabel panelTitleLabel;
+    private boolean namedPanel = true;
 
 
     /**
-     * When constructing a new component, this takes care of basic tasks like
-     * setting up the Name Panel and assigning the class's static label as
-     * the name to start.
-     * @see java.lang.Object#Object()
+     * Create a new gui component with a title and name field.
      */
     public AbstractJMeterGuiComponent()
     {
-        namePanel = new NamePanel();
-        setName(getStaticLabel());
+        this(true);
     }
 
-    /**
-     * @see JMeterGUIComponent#setName(String)
-     */
-    public void setName(String name)
-    {
-        namePanel.setName(name);
-    }
 
     /**
-     * @see java.awt.Component#isEnabled()
-     */
-    public boolean isEnabled()
-    {
-        return enabled;
-    }
-
-    /**
-     * @see java.awt.Component#setEnabled(boolean)
-     */
-    public void setEnabled(boolean e)
-    {
-        enabled = e;
-    }
-
-    /**
-     * @see JMeterGUIComponent#getName()
-     */
-    public String getName()
-    {
-        return getNamePanel().getName();
-    }
-
-    /**
-     * Provides the Name Panel for extending classes.  Extending classes are free to
-     * place it as desired within the component, or not at all.
+     * Create a new gui component. The flag indicates whether the new instance
+     * has a title and name field.
      *
-     * @return NamePanel
+     * @param named true, if title and name field are required
+     */
+    public AbstractJMeterGuiComponent(boolean named)
+    {
+        this.namedPanel = named;
+        initComponents();
+        if (named)
+        {
+            panelTitleLabel.setText(JMeterUtils.getResString(getStaticLabel()));
+            panelTitleLabel.setName(getStaticLabel());
+        }
+        JMeterUtils.addLocaleChangeListener(this);
+    }
+
+
+    public TestElement getElement()
+    {
+        return element;
+    }
+
+
+    /**
+     * Set the test element this gui will operate on.
+     *
+     * @param element the test element
+     */
+    public final void setElement(TestElement element)
+    {
+        this.element = element;
+        if (namedPanel)
+        {
+            getNamePanel().setElement(element);
+        }
+        configure(element);
+    }
+
+    /**
+     * Provides the Name Panel for extending classes.
+     *
+     * @return NamePanel name panel or null, if no name panel is present.
      */
     protected NamePanel getNamePanel()
     {
         return namePanel;
     }
 
-    protected NamePanel namePanel;
-
 
     /**
-     * This method should be overriden, but the extending class should also still call it, as
+     * This method should be overriden, but the extending class has also to call super.configure(element), as
      * it does the work necessary to configure the name of the component from the
-     * given Test Element.  Otherwise, the component can do this itself.
+     * given Test Element.
      *
      * @see org.apache.jmeter.gui.JMeterGUIComponent#configure(org.apache.jmeter.testelement.TestElement)
      */
+    // todo: make this protected
     public void configure(TestElement element)
     {
-        setName((String)element.getProperty(TestElement.NAME));
     }
 
     /**
@@ -166,8 +173,9 @@ public abstract class AbstractJMeterGuiComponent
      * method.  This method will set the name, gui class, and test class for the created
      * Test Element.  It should be called by every extending class when creating Test
      * Elements, as that will best assure consistent behavior.
-     * @param The Test Element being created.
+     * @param mc Test Element being created.
      */
+    // todo: remove this as no longer necessary
     protected void configureTestElement(TestElement mc)
     {
         mc.setProperty(TestElement.NAME, getName());
@@ -175,21 +183,96 @@ public abstract class AbstractJMeterGuiComponent
         mc.setProperty(TestElement.TEST_CLASS, mc.getClass().getName());
     }
 
-    /**
-     * @see org.apache.jmeter.gui.JMeterGUIComponent#setNode(org.apache.jmeter.gui.tree.JMeterTreeNode)
-     */
-    public void setNode(JMeterTreeNode node)
-    {
-        this.node = node;
-        getNamePanel().setNode(node);
-    }
 
     /**
-     * Method getNode.
-     * @return JMeterTreeNode
+     * Utility method to update localized messages. The given components have to have
+     * the resource key set as the component's name using setName(java.lang.String).
+     *
+     * @param components components to be updated.
      */
-    protected JMeterTreeNode getNode()
+    protected void updateLocalizedStrings(JComponent[] components)
     {
-        return node;
+        for (int i = 0; i < components.length; i++)
+        {
+            JComponent component = components[i];
+
+            if (component.getName() != null)
+            {
+                String text = JMeterUtils.getResString(component.getName());
+
+                if (component instanceof JLabel)
+                {
+                    ((JLabel)component).setText(text);
+                } else if (component instanceof JButton)
+                {
+                    ((JButton)component).setText(text);
+                } else if (component instanceof JToggleButton)
+                {
+                    ((JToggleButton)component).setText(text);
+                } else if (component instanceof JTextArea)
+                {
+                    ((JTextArea)component).setText(text);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Utility method to update localized table headers.
+     *
+     * @param table
+     * @param tableModel
+     */
+    protected void updateLocalizedTableHeaders(JTable table, TableModel tableModel)
+    {
+        TableColumnModel columns = table.getColumnModel();
+
+        for (int i = 0; i < columns.getColumnCount(); i++)
+        {
+            columns.getColumn(i).setHeaderValue(tableModel.getColumnName(i));
+        }
+        table.getTableHeader().repaint();
+    }
+
+
+    protected void initComponents()
+    {
+
+        this.setLayout(new JMeterBoxedLayout(5, VerticalLayout.BOTH, VerticalLayout.TOP));
+
+        if (namedPanel)
+        {
+            // MAIN PANEL
+            JPanel mainPanel = GUIFactory.createPanel();
+            mainPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
+
+            // TITLE
+            panelTitleLabel = new JLabel();
+            Font curFont = panelTitleLabel.getFont();
+            int curFontSize = curFont.getSize();
+            curFontSize += 4;
+            panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
+            mainPanel.add(panelTitleLabel);
+
+            // NAME
+            // todo: clean this mess up
+            namePanel = new NamePanel();
+            mainPanel.add(namePanel);
+
+            this.add(mainPanel);
+        }
+    }
+
+
+    // LocaleChangeListener methods
+
+    public void localeChanged(LocaleChangeEvent event)
+    {
+        if (namedPanel)
+        {
+            namePanel.localeChanged(event);
+            updateLocalizedStrings(new JComponent[]{panelTitleLabel});
+        }
     }
 }

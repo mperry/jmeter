@@ -55,19 +55,24 @@
 
 package org.apache.jmeter.gui;
 
+
 import java.util.*;
 
 import javax.swing.*;
+import javax.swing.border.*;
+
+import org.apache.jmeter.testelement.TestElement;
 
 
 /**
- * @author Oliver Rossmueller
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  */
-public class GUIFactory {
+public class GUIFactory
+{
 
     private static final Map guiMap = new HashMap();
     private static final Map iconMap = new HashMap();
-
+    private static final Map guiClassMap = new HashMap();
 
     public static ImageIcon getIcon(Class elementClass)
     {
@@ -75,31 +80,46 @@ public class GUIFactory {
         ImageIcon icon = (ImageIcon)iconMap.get(key);
 
         if (icon != null)
-	{
+        {
             return icon;
         }
         if (elementClass.getSuperclass() != null)
-	{
+        {
             return getIcon(elementClass.getSuperclass());
         }
         return null;
     }
 
 
-    public static JComponent getGUI(Class elementClass)
+    public static synchronized JComponent getGUI(TestElement element)
     {
-        String key = elementClass.getName();
+        String key = element.getClass().getName();
         JComponent gui = (JComponent)guiMap.get(key);
 
         if (gui != null)
-	{
+        {
             return gui;
         }
-        if (elementClass.getSuperclass() != null)
-	{
-            return getGUI(elementClass.getSuperclass());
+        Class guiClass = getGuiClass(element.getClass());
+        gui = createGuiInstance(guiClass);
+        guiMap.put(key, gui);
+        return gui;
+    }
+
+
+    private static Class getGuiClass(Class elementClass)
+    {
+        Class answer = (Class)guiClassMap.get(elementClass);
+
+        if (answer != null)
+        {
+            return answer;
         }
-        return null;
+        if (elementClass.getSuperclass() == null)
+        {
+            return null;
+        }
+        return getGuiClass(elementClass.getSuperclass());
     }
 
 
@@ -109,11 +129,45 @@ public class GUIFactory {
     }
 
 
-    public static void registerGUI(String key, Class guiClass)
-            throws InstantiationException, IllegalAccessException
+    private static JComponent createGuiInstance(Class guiClass)
     {
-        JMeterGUIComponent gui = (JMeterGUIComponent)guiClass.newInstance();
-        JComponent component = (JComponent)gui;
-        guiMap.put(key, gui);
+        try
+        {
+            JMeterGUIComponent gui = (JMeterGUIComponent)guiClass.newInstance();
+            return (JComponent)gui;
+        } catch (InstantiationException e)
+        {
+            throw new IllegalArgumentException("Can not create gui instance " + e.getMessage());
+        } catch (IllegalAccessException e)
+        {
+            throw new IllegalArgumentException("Can not create gui instance " + e.getMessage());
+        }
+    }
+
+
+    public static void registerGUI(Class elementClass, Class guiClass)
+    {
+        if (JMeterGUIComponent.class.isAssignableFrom(guiClass) && (JComponent.class.isAssignableFrom(guiClass)))
+        {
+            guiClassMap.put(elementClass, guiClass);
+        } else
+        {
+            throw new IllegalArgumentException("Class " + guiClass.getName() + " does not implement JComponent/JMeterGUIComponent");
+        }
+    }
+
+
+    public static final JPanel createPanel()
+    {
+        JPanel mainPanel = new JPanel();
+        Border margin = new EmptyBorder(5, 10, 1, 10);
+        mainPanel.setBorder(margin);
+        return mainPanel;
+    }
+
+
+    public static final BorderedPanel createBorderedPanel(String title)
+    {
+        return new BorderedPanel(title);
     }
 }

@@ -75,17 +75,18 @@ import org.apache.jmeter.gui.tree.JMeterTreeNode;
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
- *@author    Michael Stover
- *@created   $Date$
- *@version   1.0
+ * @author    Michael Stover
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   $Date$
+ * @version   1.0
  ***************************************/
 
 public class NamePanel extends JPanel implements JMeterGUIComponent
 {
 
-    private JTextField nameField = new JTextField(30);
+    private JTextField nameField;
     private JLabel nameLabel;
-    private JMeterTreeNode node;
+    private TestElement element;
 
 
     /****************************************
@@ -93,20 +94,9 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
      ***************************************/
     public NamePanel()
     {
-        setName(getStaticLabel());
         init();
     }
 
-    /****************************************
-     * !ToDo (Method description)
-     *
-     *@param name  !ToDo (Parameter description)
-     ***************************************/
-    public void setName(String name)
-    {
-        super.setName(name);
-        nameField.setText(name);
-    }
 
     /****************************************
      * !ToDo (Method description)
@@ -115,7 +105,7 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
      ***************************************/
     public void configure(TestElement testElement)
     {
-        setName((String)testElement.getProperty(TestElement.NAME));
+        nameField.setText(testElement.getName());
     }
 
     /****************************************
@@ -123,7 +113,7 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
      *
      *@return   !ToDo (Return description)
      ***************************************/
-    public JPopupMenu createPopupMenu()
+    public JPopupMenu createPopupMenu(TestElement testElement)
     {
         return null;
     }
@@ -162,22 +152,13 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
         return wb;
     }
 
-    /****************************************
-     * !ToDoo (Method description)
-     *
-     *@return   !ToDo (Return description)
-     ***************************************/
-    public String getName()
-    {
-        return nameField.getText();
-    }
 
     private void init()
     {
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
         nameLabel = new JLabel(JMeterUtils.getResString("name"));
         nameLabel.setName("name");
-
+        nameField = new JTextField(30);
         this.add(nameLabel);
         this.add(nameField);
         nameLabel.setLabelFor(nameField);
@@ -206,9 +187,9 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
 
     private void updateName(String newValue)
     {
-        if (getNode() != null)
+        if (getElement() != null)
         {
-            getNode().nameChanged();
+            getElement().setName(newValue);
         }
     }
 
@@ -218,14 +199,15 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
         nameLabel.setText(JMeterUtils.getResString(nameLabel.getName()));
     }
 
-    public void setNode(JMeterTreeNode node)
+    public void setElement(TestElement element)
     {
-        this.node = node;
+        this.element = element;
+        configure(element);
     }
 
 
-    protected JMeterTreeNode getNode()
+    public TestElement getElement()
     {
-        return node;
+        return element;
     }
 }
