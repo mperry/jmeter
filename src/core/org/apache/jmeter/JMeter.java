@@ -55,49 +55,69 @@
 package org.apache.jmeter;
 
 
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileInputStream;
+import java.awt.event.*;
+import java.io.*;
 import java.net.Authenticator;
 
-import org.apache.avalon.excalibur.cli.CLArgsParser;
-import org.apache.avalon.excalibur.cli.CLOption;
-import org.apache.avalon.excalibur.cli.CLOptionDescriptor;
-import org.apache.avalon.excalibur.cli.CLUtil;
-import org.apache.jmeter.engine.RemoteJMeterEngine;
-import org.apache.jmeter.engine.RemoteJMeterEngineImpl;
-import org.apache.jmeter.engine.StandardJMeterEngine;
-import org.apache.jmeter.exceptions.IllegalUserActionException;
-import org.apache.jmeter.gui.GuiPackage;
-import org.apache.jmeter.gui.action.ActionRouter;
-import org.apache.jmeter.gui.action.CheckDirty;
-import org.apache.jmeter.gui.action.Load;
-import org.apache.jmeter.gui.tree.JMeterTreeListener;
-import org.apache.jmeter.gui.tree.JMeterTreeModel;
-import org.apache.jmeter.reporters.ResultCollector;
-import org.apache.jmeter.save.SaveService;
-import org.apache.jmeter.testelement.TestListener;
-import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jmeter.plugin.JMeterPlugin;
-import org.apache.jmeter.plugin.PluginManager;
-import org.apache.jmeter.control.gui.TestPlanGui;
-import org.apache.jmeter.control.gui.AbstractControllerGui;
-import org.apache.jmeter.control.gui.WorkBenchGui;
-import org.apache.jmeter.threads.gui.ThreadGroupGui;
-import org.apache.jmeter.timers.gui.AbstractTimerGui;
-import org.apache.jmeter.visualizers.gui.AbstractVisualizer;
-import org.apache.jmeter.config.gui.AbstractModifierGui;
-import org.apache.jmeter.config.gui.AbstractConfigGui;
-import org.apache.jmeter.config.gui.AbstractResponseBasedModifierGui;
-import org.apache.jmeter.samplers.gui.AbstractSamplerGui;
-import org.apache.log.Hierarchy;
-import org.apache.log.Logger;
+import org.apache.avalon.excalibur.cli.*;
 import org.apache.jorphan.collections.HashTree;
 import org.apache.jorphan.gui.ComponentUtil;
+import org.apache.log.Hierarchy;
+import org.apache.log.Logger;
+
+import org.apache.jmeter.assertions.DurationAssertion;
+import org.apache.jmeter.assertions.ResponseAssertion;
+import org.apache.jmeter.assertions.gui.AssertionGui;
+import org.apache.jmeter.assertions.gui.DurationAssertionGui;
+import org.apache.jmeter.config.ConfigTestElement;
+import org.apache.jmeter.control.*;
+import org.apache.jmeter.control.gui.*;
+import org.apache.jmeter.engine.*;
+import org.apache.jmeter.exceptions.IllegalUserActionException;
+import org.apache.jmeter.gui.GuiPackage;
+import org.apache.jmeter.gui.action.*;
+import org.apache.jmeter.gui.tree.JMeterTreeListener;
+import org.apache.jmeter.modifiers.CounterConfig;
+import org.apache.jmeter.modifiers.UserParameters;
+import org.apache.jmeter.modifiers.gui.CounterConfigGui;
+import org.apache.jmeter.modifiers.gui.UserParametersGui;
+import org.apache.jmeter.plugin.JMeterPlugin;
+import org.apache.jmeter.plugin.PluginManager;
+import org.apache.jmeter.protocol.ftp.config.FtpConfig;
+import org.apache.jmeter.protocol.ftp.config.gui.FtpConfigGui;
+import org.apache.jmeter.protocol.ftp.control.gui.FtpTestSamplerGui;
+import org.apache.jmeter.protocol.ftp.sampler.FTPSampler;
+import org.apache.jmeter.protocol.http.config.gui.HttpDefaultsGui;
+import org.apache.jmeter.protocol.http.control.*;
+import org.apache.jmeter.protocol.http.control.gui.*;
+import org.apache.jmeter.protocol.http.gui.*;
+import org.apache.jmeter.protocol.http.modifier.AnchorModifier;
+import org.apache.jmeter.protocol.http.modifier.URLRewritingModifier;
+import org.apache.jmeter.protocol.http.modifier.gui.AnchorModifierGui;
+import org.apache.jmeter.protocol.http.modifier.gui.URLRewritingModifierGui;
+import org.apache.jmeter.protocol.http.sampler.HTTPSamplerFull;
+import org.apache.jmeter.protocol.http.sampler.SoapSampler;
+import org.apache.jmeter.protocol.java.config.JavaConfig;
+import org.apache.jmeter.protocol.java.config.gui.JavaConfigGui;
+import org.apache.jmeter.protocol.java.control.gui.JavaTestSamplerGui;
+import org.apache.jmeter.protocol.java.sampler.JavaSampler;
+import org.apache.jmeter.protocol.java.test.SleepTest;
+import org.apache.jmeter.protocol.jdbc.control.gui.JdbcTestSampleGui;
+import org.apache.jmeter.protocol.jdbc.sampler.JDBCSampler;
+import org.apache.jmeter.reporters.AbstractListenerElement;
+import org.apache.jmeter.reporters.ResultCollector;
+import org.apache.jmeter.samplers.AbstractSampler;
+import org.apache.jmeter.save.SaveService;
+import org.apache.jmeter.testelement.*;
+import org.apache.jmeter.threads.gui.ThreadGroupGui;
+import org.apache.jmeter.timers.*;
+import org.apache.jmeter.timers.gui.*;
+import org.apache.jmeter.util.JMeterUtils;
 
 
 /**
  * @author mstover
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  *
  * To change this generated comment edit the template variable "typecomment":
  * Window>Preferences>Java>Templates.
@@ -199,7 +219,7 @@ public class JMeter implements JMeterPlugin
     {
 
         PluginManager.install(this, true);
-        JMeterTreeModel treeModel = new JMeterTreeModel();
+        TestPlanTreeModel treeModel = new TestPlanTreeModel();
         JMeterTreeListener treeLis = new JMeterTreeListener(treeModel);
         treeLis.setActionHandler(ActionRouter.getInstance());
         GuiPackage guiPack = GuiPackage.getInstance(treeLis, treeModel);
@@ -456,17 +476,103 @@ public class JMeter implements JMeterPlugin
 
     public String[][] getIconMappings()
     {
-        return new String[][]{
-            {TestPlanGui.class.getName(), "org/apache/jmeter/images/beaker.gif"},
-            {AbstractTimerGui.class.getName(), "org/apache/jmeter/images/timer.gif"},
-            {ThreadGroupGui.class.getName(), "org/apache/jmeter/images/thread.gif"},
-            {AbstractVisualizer.class.getName(), "org/apache/jmeter/images/meter.png"},
-            {AbstractConfigGui.class.getName(), "org/apache/jmeter/images/testtubes.png"},
-            {AbstractModifierGui.class.getName(), "org/apache/jmeter/images/testtubes.gif"},
-            {AbstractResponseBasedModifierGui.class.getName(), "org/apache/jmeter/images/testtubes.gif"},
-            {AbstractControllerGui.class.getName(), "org/apache/jmeter/images/knob.gif"},
-            {WorkBenchGui.class.getName(), "org/apache/jmeter/images/clipboard.gif"},
-            {AbstractSamplerGui.class.getName(), "org/apache/jmeter/images/pipet.png"}
+        return new String[][] {
+            { TestPlan.class.getName(), "org/apache/jmeter/images/beaker.gif"},
+            { ConstantTimer.class.getName(), "org/apache/jmeter/images/timer.gif"},
+            { org.apache.jmeter.threads.ThreadGroup.class.getName(), "org/apache/jmeter/images/thread.gif"},
+            { AbstractListenerElement.class.getName(), "org/apache/jmeter/images/meter.png"},
+            { ConfigTestElement.class.getName(), "org/apache/jmeter/images/testtubes.png"},
+            { GenericController.class.getName(), "org/apache/jmeter/images/knob.gif"},
+            { WorkBench.class.getName(), "org/apache/jmeter/images/clipboard.gif"},
+            { AbstractSampler.class.getName(), "org/apache/jmeter/images/pipet.png"}
+        };
+    }
+
+    public Class[][] getGuiMappings() {
+        return new Class[][] {
+            {TestPlan.class, TestPlanGui.class},
+            {org.apache.jmeter.threads.ThreadGroup.class, ThreadGroupGui.class},
+            // controller
+            {GenericController.class, LogicControllerGui.class},
+            {LoopController.class, LoopControlPanel.class},
+            {OnceOnlyController.class, OnceOnlyControllerGui.class},
+            {InterleaveControl.class, InterleaveControlGui.class},
+            {RandomController.class, RandomControlGui.class},
+            {RecordingController.class, RecordController.class},
+            // sampler
+            {JavaSampler.class, JavaTestSamplerGui.class},
+            {FTPSampler.class, FtpTestSamplerGui.class},
+            {JDBCSampler.class, JdbcTestSampleGui.class},
+            {SoapSampler.class, SoapSamplerGui.class},
+            {HTTPSamplerFull.class, HttpTestSampleGui.class},
+            // timer
+            {ConstantTimer.class, ConstantTimerGui.class},
+            {GaussianRandomTimer.class, GaussianRandomTimerGui.class},
+            {UniformRandomTimer.class, UniformRandomTimerGui.class},
+            // config
+            {CounterConfig.class, CounterConfigGui.class},
+            {UserParameters.class, UserParametersGui.class},
+            {FtpConfig.class, FtpConfigGui.class},
+            {JavaConfig.class, JavaConfigGui.class},
+            {JDBCConfig.class, JDBCConfigGui.class},
+            {HTTPDefaults.class, HttpDefaultsGui.class},
+            {AuthManager.class, AuthPanel.class},
+            {CookieManager.class, CookiePanel.class},
+            {HeaderManager.class, HeaderPanel.class},
+            // assertion
+            {DurationAssertion.class, DurationAssertionGui.class},
+            {ResponseAssertion.class, AssertionGui.class},
+            // response-based modifier
+            {AnchorModifier.class, AnchorModifierGui.class},
+            {URLRewritingModifier.class, URLRewritingModifierGui.class}
+        };
+    }
+
+    public Class[] getElementClasses() {
+        return new Class[] {
+            TestPlan.class,
+            org.apache.jmeter.threads.ThreadGroup.class,
+            // controller
+            GenericController.class,
+            LoopController.class,
+            OnceOnlyController.class,
+            InterleaveControl.class,
+            RandomController.class,
+            RecordingController.class,
+            // sampler
+            JavaSampler.class,
+            FTPSampler.class,
+            JDBCSampler.class,
+            SoapSampler.class,
+            HTTPSamplerFull.class,
+            // timer
+            ConstantTimer.class,
+            GaussianRandomTimer.class,
+            UniformRandomTimer.class,
+            // config
+            CounterConfig.class,
+            UserParameters.class,
+            FtpConfig.class,
+            JavaConfig.class,
+            JDBCConfig.class,
+            HTTPDefaults.class,
+            AuthManager.class,
+            CookieManager.class,
+            HeaderManager.class,
+            // assertions
+            DurationAssertion.class,
+            ResponseAssertion.class,
+            // response-based modifier
+            AnchorModifier.class,
+            URLRewritingModifier.class
+        };
+    }
+
+
+    public Class[] getJavaSamplerClientClasses()
+    {
+        return new Class[] {
+            SleepTest.class
         };
     }
 
