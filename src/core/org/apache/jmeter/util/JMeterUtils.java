@@ -251,6 +251,7 @@ public class JMeterUtils implements UnitTestManager
 			return null;
 		}
 		key = key.replace(' ', '_');
+        key = key.replace('.', '_');
 		key = key.toLowerCase();
 		String resString = null;
 		try
