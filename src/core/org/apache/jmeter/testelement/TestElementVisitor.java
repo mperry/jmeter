@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,83 +55,12 @@
 
 package org.apache.jmeter.testelement;
 
-
-import java.util.*;
-import java.io.*;
-import java.awt.datatransfer.*;
-
-
-/****************************************
- * <p>
+/**
+ * Interface for test element visitors.
  *
- * Title: Jakarta JMeter</p> <p>
- *
- * Description: Load testing software</p> <p>
- *
- * Copyright: Copyright (c) 2002</p> <p>
- *
- * Company: Apache Foundation</p>
- *
- * @author    Michael Stover
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created   $Date$
- * @version   1.0
- ***************************************/
-
-public interface TestElement extends Serializable, Cloneable, Transferable
+ */
+public interface TestElementVisitor
 {
-
-    public final static String NAME = "name";
-    // todo: remove them
-    public final static String GUI_CLASS = "gui_class";
-    public final static String TEST_CLASS = "test_class";
-
-    public static final DataFlavor DATAFLAVOR = new DataFlavor(TestElement.class, "TestElement");
-
-
-    public void addChildElement(TestElement child);
-
-    public void removeChildElement(TestElement child);
-
-    public List getChildren();
-
-    public Collection getPropertyNames();
-
-    public Object getProperty(String key);
-
-    public String getPropertyAsString(String key);
-
-    public void setProperty(String key, Object property);
-
-    public Object clone();
-
-    public String getName();
-
-    public void setName(String name);
-
-
-    /**
-     * Answer the set of valid subelement types.
-     *
-     * @return set of Class objects
-     */
-    public Set getValidSubelementTypes();
-
-    public boolean isValidSubelementType(TestElement element);
-
-    public String getFunctionalGroup();
-
-    /**
-     * Answer the unique id of this test element in the system.
-     *
-     * @return
-     */
-    // todo: is this required?
-    public long getId();
-
-    public TestElement getParentElement();
-
-    public void setParent(TestElement parent);
-
-    public void accept(TestElementVisitor visitor);
+    public void visit(TestElement element);
 }
