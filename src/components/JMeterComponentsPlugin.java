@@ -59,6 +59,14 @@ import org.apache.jmeter.timers.*;
 import org.apache.jmeter.timers.gui.*;
 import org.apache.jmeter.control.gui.*;
 import org.apache.jmeter.control.*;
+import org.apache.jmeter.modifiers.gui.UserParametersGui;
+import org.apache.jmeter.modifiers.gui.CounterConfigGui;
+import org.apache.jmeter.modifiers.UserParameters;
+import org.apache.jmeter.modifiers.CounterConfig;
+import org.apache.jmeter.assertions.DurationAssertion;
+import org.apache.jmeter.assertions.ResponseAssertion;
+import org.apache.jmeter.assertions.gui.AssertionGui;
+import org.apache.jmeter.assertions.gui.DurationAssertionGui;
 
 
 /**
@@ -83,8 +91,11 @@ public class JMeterComponentsPlugin implements JMeterPlugin
             {UniformRandomTimer.class, UniformRandomTimerGui.class},
             {OnceOnlyController.class, OnceOnlyControllerGui.class},
             {InterleaveControl.class, InterleaveControlGui.class},
-            {RandomController.class, RandomControlGui.class}
-
+            {RandomController.class, RandomControlGui.class},
+            {CounterConfig.class, CounterConfigGui.class},
+            {UserParameters.class, UserParametersGui.class},
+            {DurationAssertion.class, DurationAssertionGui.class},
+            {ResponseAssertion.class, AssertionGui.class}
         };
     }
 
@@ -96,7 +107,11 @@ public class JMeterComponentsPlugin implements JMeterPlugin
             UniformRandomTimer.class,
             OnceOnlyController.class,
             InterleaveControl.class,
-            RandomController.class
+            RandomController.class,
+            CounterConfig.class,
+            UserParameters.class,
+            DurationAssertion.class,
+            ResponseAssertion.class
         };
     }
 

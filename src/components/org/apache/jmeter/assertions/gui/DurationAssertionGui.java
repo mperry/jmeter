@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,160 +54,112 @@
  */
 package org.apache.jmeter.assertions.gui;
 
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
-import org.apache.jmeter.assertions.DurationAssertion;
-import org.apache.jmeter.testelement.TestElement;
-import org.apache.jmeter.util.JMeterUtils;
+import javax.swing.*;
+
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
-import org.apache.jorphan.gui.layout.VerticalLayout;
+
+import org.apache.jmeter.assertions.DurationAssertion;
+import org.apache.jmeter.gui.GUIFactory;
+import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
+import org.apache.jmeter.gui.util.LongFieldDocumentListener;
+import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jmeter.util.LocaleChangeEvent;
 
 
 /****************************************
  * Title: Jakarta-JMeter Description: Copyright: Copyright (c) 2001 Company:
  * Apache
  *
- *@author    Michael Stover
- *@created   $Date$
- *@version   1.0
+ * @author    Michael Stover
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   $Date$
+ * @version   1.0
  ***************************************/
 
-public class DurationAssertionGui extends AbstractAssertionGui implements FocusListener
+public class DurationAssertionGui extends AbstractAssertionGui
 {
-	transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor(
-			"jmeter.elements");
 
-	private JTextField duration;
+    transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor("jmeter.elements");
 
-	/****************************************
-	 * !ToDo (Constructor description)
-	 ***************************************/
-	public DurationAssertionGui()
-	{
-		init();
-	}
+    private JLabel durationLabel;
+    private JTextField durationInput;
+    private JLabel millisecondsLabel;
 
-	/**
-	 * Returns the label to be shown within the JTree-Component.
-	 */
-	public String getStaticLabel()
-	{
-		return JMeterUtils.getResString("duration_assertion_title");
-	}
 
-	public String getDurationAttributesTitle()
-	{
-		return JMeterUtils.getResString("duration_assertion_duration_test");
-	}
+    public DurationAssertionGui()
+    {
+    }
 
-	public TestElement createTestElement()
-	{
-		//ResponseAssertion el = new ResponseAssertion();
-		DurationAssertion el = new DurationAssertion();
-		configureTestElement(el);
-		String durationString = duration.getText();
-		long assertionDuration = 0;
-		try {
-			assertionDuration = Long.parseLong(durationString);
-		}
-		catch (NumberFormatException e) {
-			assertionDuration = Long.MAX_VALUE;
-		}
-		el.setAllowedDuration(assertionDuration);
-		return el;
-	}
+    /**
+     * Returns the label to be shown within the JTree-Component.
+     */
+    public String getStaticLabel()
+    {
+        return "duration_assertion_title";
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 ***************************************/
-	public void configure(TestElement el)
-	{
-		super.configure(el);
-		DurationAssertion assertion = (DurationAssertion)el;
-		duration.setText(String.valueOf(assertion.getAllowedDuration()));
-	}
+    public TestElement createTestElement()
+    {
+        //ResponseAssertion el = new ResponseAssertion();
+        DurationAssertion el = new DurationAssertion();
+//		configureTestElement(el);
+//		String durationString = duration.getText();
+//		long assertionDuration = 0;
+//		try {
+//			assertionDuration = Long.parseLong(durationString);
+//		}
+//		catch (NumberFormatException e) {
+//			assertionDuration = Long.MAX_VALUE;
+//		}
+//		el.setDuration(assertionDuration);
+        return el;
+    }
 
-	private void init()
-	{
-		this.setLayout(new VerticalLayout(5, VerticalLayout.LEFT, VerticalLayout.TOP));
 
-		// MAIN PANEL
-		JPanel mainPanel = new JPanel();
-		Border margin = new EmptyBorder(10, 10, 5, 10);
-		mainPanel.setBorder(margin);
-		mainPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
+    public void configure(TestElement element)
+    {
+        super.configure(element);
+        durationInput.setText(String.valueOf(element.getProperty(DurationAssertion.DURATION)));
+    }
 
-		// TITLE
-		JLabel panelTitleLabel = new JLabel(getStaticLabel());
-		Font curFont = panelTitleLabel.getFont();
-		int curFontSize = curFont.getSize();
-		curFontSize += 4;
-		panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
-		mainPanel.add(panelTitleLabel);
+    protected void initComponents()
+    {
+        super.initComponents();
 
-		// NAME
-		mainPanel.add(getNamePanel());
+        JPanel durationPanel = GUIFactory.createPanel();
+        durationPanel.setLayout(new GridBagLayout());
+        JMeterGridBagConstraints constraints = new JMeterGridBagConstraints();
 
-		// USER_INPUT
-		JPanel durationPanel = new JPanel();
-		durationPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getDurationAttributesTitle()));
-		FlowLayout layout = new FlowLayout();
-		durationPanel.setLayout(layout);
+        durationLabel = new JLabel(JMeterUtils.getResString("duration_assertion_label"));
+        durationLabel.setName("duration_assertion_label");
+        durationPanel.add(durationLabel, constraints);
+        durationInput = new JTextField(6);
+        durationInput.setHorizontalAlignment(JTextField.RIGHT);
+        durationInput.getDocument().addDocumentListener(new LongFieldDocumentListener(DurationAssertion.DURATION, durationInput, this));
+        constraints = constraints.incrementX();
+        durationPanel.add(durationInput, constraints);
+        millisecondsLabel = new JLabel(JMeterUtils.getResString("milliseconds"));
+        millisecondsLabel.setName("milliseconds");
+        constraints = constraints.incrementX();
+        durationPanel.add(millisecondsLabel, constraints);
+        Component filler = Box.createHorizontalGlue();
+        constraints = constraints.incrementX();
+        constraints.fillHorizontal(1.0);
+        durationPanel.add(filler, constraints);
 
-		durationPanel.add(new JLabel(JMeterUtils.getResString("duration_assertion_label")));
-		duration = new JTextField(5);
-		duration.addFocusListener(this);
-		durationPanel.add(duration);
+        add(durationPanel);
+    }
 
-		mainPanel.add(durationPanel);
-		this.add(mainPanel);
 
-	}
+    public void localeChanged(LocaleChangeEvent event)
+    {
+        super.localeChanged(event);
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void focusLost(FocusEvent e)
-	{
-		boolean isInvalid = false;
-		String durationString = duration.getText();
-		if (durationString != null) {
-			try {
-				long assertionDuration = Long.parseLong(durationString);
-				if (assertionDuration < 0) {
-					isInvalid = true;
-				}
-			}
-			catch (NumberFormatException ex) {
-				isInvalid = true;
-			}
-			if (isInvalid) {
-				log.warn("DurationAssertionGui: Not a valid number!");
-				JOptionPane.showMessageDialog(null, JMeterUtils.getResString("duration_assertion_input_error"), "Error", JOptionPane.ERROR_MESSAGE);
-			}
-		}
-	}
-
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void focusGained(FocusEvent e) {
-	}
-
+        updateLocalizedStrings(new JComponent[]{durationLabel, millisecondsLabel});
+    }
 }

@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,76 +54,77 @@
  */
 package org.apache.jmeter.assertions;
 
-import java.io.Serializable;
+
+import java.io.*;
 import java.text.MessageFormat;
-import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jmeter.testelement.AbstractTestElement;
+
 import org.apache.jmeter.samplers.SampleResult;
+import org.apache.jmeter.testelement.AbstractTestElement;
+import org.apache.jmeter.testelement.category.AssertionCategory;
+import org.apache.jmeter.util.JMeterUtils;
+
 
 /**
  * Checks if an Sample is sampled within a specified time-frame. If the
  * duration is larger than the timeframe the Assertion is considered
  * a failure.
  *
- Copyright: Copyright (c) 2001
- * Company: Apache
- *
  * @author <a href="mailto:wolfram.rittmeyer@web.de">Wolfram Rittmeyer</a>
- *
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$, $Date$
  */
-public class DurationAssertion extends AbstractTestElement implements Serializable, Assertion {
+public class DurationAssertion extends AbstractTestElement implements Serializable, Assertion, AssertionCategory
+{
 
-	/** Key for storing assertion-informations in the jmx-file. */
-	private static final String DURATION_KEY = "DurationAssertion.duration";
-
-	/**
-	 * Returns the result of the Assertion. Here it checks wether the
-	 * Sample took to long to be considered successful. If so an AssertionResult
-	 * containing a FailureMessage will be returned. Otherwise the returned
-	 * AssertionResult will reflect the success of the Sample.
-	 */
-	public AssertionResult getResult(SampleResult response) {
-		AssertionResult result = new AssertionResult();
-		result.setFailure(false);
-
-		// has the Sample lasted to long?
-		if (((response.getTime() > getAllowedDuration()) && (getAllowedDuration() > 0))) {
-			result.setFailure(true);
-			Object[] arguments = { new Long(response.getTime()), new Long(getAllowedDuration())};
-			String message = MessageFormat.format(JMeterUtils.getResString("duration_assertion_failure"), arguments);
-			result.setFailureMessage(message);
-		}
-		return result;
-	}
-
-	/**
-	 * Returns the duration to be asserted. A duration of 0 indicates this assertion is to 
-	 * be ignored.
-	 */
-	public long getAllowedDuration() {
-		return getPropertyAsLong(DURATION_KEY);
-	}
-
-	/**
-	 * Set the duration that shall be asserted.
-	 *
-	 * @param duration A period of time in milliseconds. Is not allowed to be negative. Use Double.MAX_VALUE to indicate illegal or empty inputs. This will result to not checking the assertion.
-	 *
-	 * @throws IllegalArgumentException If <code>duration</code> is negative.
-	 */
-	public void setAllowedDuration(long duration) throws IllegalArgumentException {
-		if (duration < 0L) {
-			throw new IllegalArgumentException(JMeterUtils.getResString("argument_must_not_be_negative"));
-		}
-		if (duration == Long.MAX_VALUE) {
-			setProperty(DURATION_KEY, new Long(0));
-		}
-		else {
-			setProperty(DURATION_KEY, new Long(duration));
-		}
-	}
+    public static final String DURATION = "duration";
 
 
+    private long duration = 0L;
 
+    /**
+     * Returns the result of the Assertion. Here it checks wether the
+     * Sample took to long to be considered successful. If so an AssertionResult
+     * containing a FailureMessage will be returned. Otherwise the returned
+     * AssertionResult will reflect the success of the Sample.
+     */
+    public AssertionResult getResult(SampleResult response)
+    {
+        AssertionResult result = new AssertionResult();
+        result.setFailure(false);
+
+        // has the Sample lasted to long?
+        if (((response.getTime() > getDuration()) && (getDuration() > 0)))
+        {
+            result.setFailure(true);
+            Object[] arguments = {new Long(response.getTime()), new Long(getDuration())};
+            String message = MessageFormat.format(JMeterUtils.getResString("duration_assertion_failure"), arguments);
+            result.setFailureMessage(message);
+        }
+        return result;
+    }
+
+    /**
+     * Returns the duration to be asserted. A duration of 0 indicates this assertion is to
+     * be ignored.
+     */
+    public long getDuration()
+    {
+        return duration;
+    }
+
+    /**
+     * Set the duration that shall be asserted.
+     *
+     * @param duration A period of time in milliseconds. Is not allowed to be negative. Use Double.MAX_VALUE to indicate illegal or empty inputs. This will result to not checking the assertion.
+     *
+     * @throws IllegalArgumentException If <code>duration</code> is negative.
+     */
+    public void setDuration(long duration) throws IllegalArgumentException
+    {
+        if (duration < 0L)
+        {
+            throw new IllegalArgumentException(JMeterUtils.getResString("argument_must_not_be_negative"));
+        }
+        this.duration = duration;
+    }
 }

@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -514,7 +514,7 @@ public class JMeter implements JMeterPlugin
             return null;
         } catch (IOException e)
         {
-            e.printStackTrace();  //To change body of catch statement use Options | File Templates.
+            e.printStackTrace();  
             return null;
         }
     }
@@ -537,26 +537,8 @@ public class JMeter implements JMeterPlugin
         return new Class[][] {
             {TestPlan.class, TestPlanGui.class},
             {org.apache.jmeter.threads.ThreadGroup.class, ThreadGroupGui.class},
-            // controller
             {GenericController.class, LogicControllerGui.class},
             {LoopController.class, LoopControlPanel.class}
-//            {RecordingController.class, RecordController.class},
-            // sampler
-//            {JavaSampler.class, JavaTestSamplerGui.class},
-//            {JDBCSampler.class, JdbcTestSampleGui.class},
-//            // timer
-//            // config
-//            {CounterConfig.class, CounterConfigGui.class},
-//            {UserParameters.class, UserParametersGui.class},
-//            {FtpConfig.class, FtpConfigGui.class},
-//            {JavaConfig.class, JavaConfigGui.class},
-//            {JDBCConfig.class, JDBCConfigGui.class},
-//            // assertion
-//            {DurationAssertion.class, DurationAssertionGui.class},
-//            {ResponseAssertion.class, AssertionGui.class},
-//            // response-based modifier
-//            {AnchorModifier.class, AnchorModifierGui.class},
-//            {URLRewritingModifier.class, URLRewritingModifierGui.class}
         };
     }
 
@@ -564,22 +546,8 @@ public class JMeter implements JMeterPlugin
         return new Class[] {
             TestPlan.class,
             org.apache.jmeter.threads.ThreadGroup.class,
-            // controller
             GenericController.class,
             LoopController.class,
-//            // sampler
-//            JavaSampler.class,
-//            JDBCSampler.class,
-//            // timer
-//            // config
-//            CounterConfig.class,
-//            UserParameters.class,
-//            JavaConfig.class,
-//            JDBCConfig.class,
-//            // assertions
-//            DurationAssertion.class,
-//            ResponseAssertion.class,
-//            // response-based modifier
         };
     }
 
@@ -587,7 +555,6 @@ public class JMeter implements JMeterPlugin
     public Class[] getJavaSamplerClientClasses()
     {
         return new Class[] {
-//            SleepTest.class
         };
     }
 
