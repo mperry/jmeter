@@ -53,6 +53,8 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.gui;
+
+
 import java.awt.FlowLayout;
 import java.util.Collection;
 
@@ -68,6 +70,8 @@ import org.apache.jmeter.testelement.WorkBench;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
 import org.apache.jmeter.gui.tree.JMeterTreeNode;
+
+
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
@@ -78,96 +82,98 @@ import org.apache.jmeter.gui.tree.JMeterTreeNode;
 
 public class NamePanel extends JPanel implements JMeterGUIComponent
 {
+
     private JTextField nameField = new JTextField(30);
     private JLabel nameLabel;
     private JMeterTreeNode node;
 
 
-        /****************************************
-	 * !ToDo (Constructor description)
-	 ***************************************/
-	public NamePanel()
-	{
-		setName(getStaticLabel());
-		init();
-	}
+    /****************************************
+     * !ToDo (Constructor description)
+     ***************************************/
+    public NamePanel()
+    {
+        setName(getStaticLabel());
+        init();
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param name  !ToDo (Parameter description)
-	 ***************************************/
-	public void setName(String name)
-	{
-		super.setName(name);
-		nameField.setText(name);
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@param name  !ToDo (Parameter description)
+     ***************************************/
+    public void setName(String name)
+    {
+        super.setName(name);
+        nameField.setText(name);
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@param testElement  !ToDo (Parameter description)
-	 ***************************************/
-	public void configure(TestElement testElement)
-	{
-		setName((String)testElement.getProperty(TestElement.NAME));
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@param testElement  !ToDo (Parameter description)
+     ***************************************/
+    public void configure(TestElement testElement)
+    {
+        setName((String)testElement.getProperty(TestElement.NAME));
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public JPopupMenu createPopupMenu()
-	{
-		return null;
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public JPopupMenu createPopupMenu()
+    {
+        return null;
+    }
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public String getStaticLabel()
-	{
-		return JMeterUtils.getResString("root");
-	}
+    /****************************************
+     * !ToDoo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public String getStaticLabel()
+    {
+        return JMeterUtils.getResString("root");
+    }
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public Collection getMenuCategories()
-	{
-		return null;
-	}
+    /****************************************
+     * !ToDoo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public Collection getMenuCategories()
+    {
+        return null;
+    }
 
-	/****************************************
-	 * !ToDo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public TestElement createTestElement()
-	{
-		WorkBench wb = new WorkBench();
-		wb.setProperty(TestElement.NAME, getName());
-		wb.setProperty(TestElement.GUI_CLASS, this.getClass().getName());
-		wb.setProperty(TestElement.TEST_CLASS, WorkBench.class.getName());
-		return wb;
-	}
+    /****************************************
+     * !ToDo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public TestElement createTestElement()
+    {
+        WorkBench wb = new WorkBench();
+        wb.setProperty(TestElement.NAME, getName());
+        wb.setProperty(TestElement.GUI_CLASS, this.getClass().getName());
+        wb.setProperty(TestElement.TEST_CLASS, WorkBench.class.getName());
+        return wb;
+    }
 
-	/****************************************
-	 * !ToDoo (Method description)
-	 *
-	 *@return   !ToDo (Return description)
-	 ***************************************/
-	public String getName()
-	{
-		return nameField.getText();
-	}
+    /****************************************
+     * !ToDoo (Method description)
+     *
+     *@return   !ToDo (Return description)
+     ***************************************/
+    public String getName()
+    {
+        return nameField.getText();
+    }
 
-    private void init() {
+    private void init()
+    {
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
         nameLabel = new JLabel(JMeterUtils.getResString("name"));
         nameLabel.setName("name");
@@ -176,32 +182,39 @@ public class NamePanel extends JPanel implements JMeterGUIComponent
         this.add(nameField);
         nameLabel.setLabelFor(nameField);
         nameField.setName("name");
-        nameField.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) {
+        nameField.getDocument().addDocumentListener(new DocumentListener()
+        {
+            public void insertUpdate(DocumentEvent e)
+            {
                 updateName(nameField.getText());
             }
 
 
-            public void removeUpdate(DocumentEvent e) {
+            public void removeUpdate(DocumentEvent e)
+            {
                 updateName(nameField.getText());
             }
 
 
-            public void changedUpdate(DocumentEvent e) {
+            public void changedUpdate(DocumentEvent e)
+            {
                 // not for text fields
             }
         });
     }
 
 
-    private void updateName(String newValue) {
-        if (getNode() != null) {
+    private void updateName(String newValue)
+    {
+        if (getNode() != null)
+        {
             getNode().nameChanged();
         }
     }
 
 
-    public void localeChanged(LocaleChangeEvent event) {
+    public void localeChanged(LocaleChangeEvent event)
+    {
         nameLabel.setText(JMeterUtils.getResString(nameLabel.getName()));
     }
 
