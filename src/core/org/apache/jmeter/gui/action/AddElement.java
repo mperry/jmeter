@@ -66,6 +66,7 @@ import org.apache.log.Logger;
 
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.JMeterGUIComponent;
+import org.apache.jmeter.gui.document.JMeterDocumentManager;
 import org.apache.jmeter.gui.tree.JMeterTreeNode;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
@@ -75,31 +76,43 @@ import org.apache.jmeter.JMeterClassLoader;
 /**
  * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  */
-public class AddElement implements ActionListener
+public class AddElement extends JMeterAction
 {
 
     transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor(
         "jmeter.gui");
 
-
-    private TestElement element;
-
-
-    public AddElement(TestElement element)
+    public AddElement(String resourceKey)
     {
-        this.element = element;
+        super(resourceKey);
     }
 
+    public AddElement(String resourceKey, int mnemonic)
+    {
+        super(resourceKey, mnemonic);
+    }
+
+    public AddElement(String resourceKey, int mnemonic, KeyStroke accelerator)
+    {
+        super(resourceKey, mnemonic, accelerator);
+    }
 
     public void actionPerformed(ActionEvent e)
     {
-        try {
+        try
+        {
             String className = ((JComponent)e.getSource()).getName();
             // todo: use correct classloader
             TestElement newElement = (TestElement)JMeterClassLoader.classForName(className).newInstance();
             newElement.setName(JMeterUtils.getResString(className));
-            element.addChildElement(newElement);
-        } catch (Exception err) {
+            TestElement element = JMeterDocumentManager.getInstance().getCurrentTestElement();
+
+            if (element != null)
+            {
+                element.addChildElement(newElement);
+            }
+        } catch (Exception err)
+        {
             log.error("", err);
         }
     }

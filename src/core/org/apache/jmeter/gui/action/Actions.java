@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,54 +54,22 @@
  */
 package org.apache.jmeter.gui.action;
 
-import java.awt.event.ActionEvent;
-import java.util.*;
+
+import java.awt.event.*;
+
 import javax.swing.*;
 
-import org.apache.jmeter.gui.tree.*;
-import org.apache.jmeter.gui.*;
-import org.apache.jmeter.gui.document.JMeterDocumentManager;
-import org.apache.jmeter.testelement.WorkBench;
-import org.apache.jmeter.testelement.TestPlan;
-import org.apache.jmeter.util.JMeterUtils;
 
 /**
- *  Title: JMeter Description: Copyright: Copyright (c) 2002 Company: Apache
- * This command clears the existing test plan, 
- * allowing the creation of a New test plan
+ * Action holder.
  *
- * @author     <a href="mramshaw@alumni.concordia.ca">Martin Ramshaw</a>
- * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created    June 6, 2002
- * @version    1.0
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @version $Revision$
  */
+public class Actions {
 
-public class New extends JMeterAction
-{
+    public static final Action addElement = new AddElement("add", 'A');
+    public static final Action loadDocument = new Load("open", 'O', KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
+    public static final Action newDocument = new New("new", 'N', KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK));
 
-    public New(String resourceKey)
-    {
-        super(resourceKey);
-    }
-
-    public New(String resourceKey, int mnemonic)
-    {
-        super(resourceKey, mnemonic);
-    }
-
-    public New(String resourceKey, int mnemonic, KeyStroke accelerator)
-    {
-        super(resourceKey, mnemonic, accelerator);
-    }
-
-    /**
-	 *  This method performs the actual command processing.
-	 *
-	 *@param  e  This is the generic UI action event.
-	 */
-	public void actionPerformed(ActionEvent e)
-	{
-        JMeterDocumentManager.getInstance().newTestPlanDocument();
-	}
 }
-

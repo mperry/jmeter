@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,56 +52,66 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.gui.action;
+package org.apache.jmeter.gui.panel;
 
-import java.awt.event.ActionEvent;
-import java.util.*;
+
 import javax.swing.*;
+import javax.swing.event.*;
 
-import org.apache.jmeter.gui.tree.*;
-import org.apache.jmeter.gui.*;
-import org.apache.jmeter.gui.document.JMeterDocumentManager;
-import org.apache.jmeter.testelement.WorkBench;
+import org.apache.jmeter.gui.document.*;
+import org.apache.jmeter.gui.tree.TestPlanTreeModel;
 import org.apache.jmeter.testelement.TestPlan;
-import org.apache.jmeter.util.JMeterUtils;
+
 
 /**
- *  Title: JMeter Description: Copyright: Copyright (c) 2002 Company: Apache
- * This command clears the existing test plan, 
- * allowing the creation of a New test plan
+ * TabbedPane to display JMeter documents.
  *
- * @author     <a href="mramshaw@alumni.concordia.ca">Martin Ramshaw</a>
- * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created    June 6, 2002
- * @version    1.0
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @version $Revision$
  */
-
-public class New extends JMeterAction
+public class TabbedMainPanel extends JTabbedPane implements JMeterDocumentManagerListener, ChangeListener
 {
 
-    public New(String resourceKey)
+    public TabbedMainPanel()
     {
-        super(resourceKey);
+       JMeterDocumentManager.getInstance().addListener(this);
+        getModel().addChangeListener(this);
     }
 
-    public New(String resourceKey, int mnemonic)
+
+
+    public void documentAdded(JMeterDocument document)
     {
-        super(resourceKey, mnemonic);
+        addDocument(document);
     }
 
-    public New(String resourceKey, int mnemonic, KeyStroke accelerator)
+    public void documentRemoved(JMeterDocument document)
     {
-        super(resourceKey, mnemonic, accelerator);
     }
 
-    /**
-	 *  This method performs the actual command processing.
-	 *
-	 *@param  e  This is the generic UI action event.
-	 */
-	public void actionPerformed(ActionEvent e)
-	{
-        JMeterDocumentManager.getInstance().newTestPlanDocument();
-	}
+    private void addDocument(org.apache.jmeter.gui.document.JMeterDocument document)
+    {
+
+        if (document.getRootElement() instanceof TestPlan)
+        {
+            addTestPlanTab(document);
+        }
+    }
+
+    private void addTestPlanTab(org.apache.jmeter.gui.document.JMeterDocument document)
+    {
+        TestPlanPanel panel = new TestPlanPanel(document);
+        Icon icon = document.getIcon();
+
+        addTab(document.getFileName(), icon, panel, document.getAbsolutePath());
+        setSelectedComponent(panel);
+    }
+
+
+    public void stateChanged(ChangeEvent e)
+    {
+        DocumentPanel panel = (DocumentPanel)getSelectedComponent();
+
+        JMeterDocumentManager.getInstance().setCurrentDocument(panel.getDocument());
+    }
 }
-

@@ -95,6 +95,7 @@ import org.apache.jmeter.gui.tree.JMeterCellRenderer;
 import org.apache.jmeter.gui.tree.JMeterTreeListener;
 import org.apache.jmeter.gui.util.JMeterMenuBar;
 import org.apache.jmeter.gui.panel.TestPlanPanel;
+import org.apache.jmeter.gui.panel.TabbedMainPanel;
 import org.apache.jmeter.samplers.Remoteable;
 import org.apache.jmeter.testelement.TestListener;
 import org.apache.jmeter.util.JMeterUtils;
@@ -110,7 +111,8 @@ import org.apache.jorphan.gui.ComponentUtil;
 
 public class MainFrame extends JFrame implements TestListener,Remoteable
 {
-	JPanel all, mainPanel;
+	JPanel all;
+    TabbedMainPanel mainPanel;
 	Box toolPanel;
 	JScrollPane treePanel;
 	JMeterMenuBar menuBar;
@@ -410,7 +412,7 @@ public class MainFrame extends JFrame implements TestListener,Remoteable
 
 	private void createMainPanel()
 	{
-        mainPanel = new TestPlanPanel(treeModel, treeListener);
+        mainPanel = new TabbedMainPanel();
     }
 
 	private JTree makeTree()

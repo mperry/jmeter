@@ -58,7 +58,7 @@ package org.apache.jmeter.gui.tree;
 
 import java.util.*;
 
-import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.*;
 
 import org.apache.jmeter.testelement.*;
 
@@ -72,17 +72,18 @@ public class TestPlanTreeModel extends DefaultTreeModel
 
     public TestPlanTreeModel()
     {
-        super(new TestPlanTreeNode(new RootElement("JMeter")));
-        ((TestPlanTreeNode)getRoot()).setTreeModel(this);
-        RootElement root = (RootElement)((TestPlanTreeNode)getRoot()).getElement();
-        TestPlan testplan = new TestPlan("Test Plan");
-        root.addChildElement(testplan);
-        this.insertNodeInto(new TestPlanTreeNode(testplan, this), (TestPlanTreeNode)getRoot(), 0);
-        testplan = new WorkBench("Workbench");
-        root.addChildElement(testplan);
-        this.insertNodeInto(new TestPlanTreeNode(testplan, this), (TestPlanTreeNode)getRoot(), 1);
+        this(new TestPlan("Test Plan"));
+        WorkBench workbench = new WorkBench("Workbench");
+        ((TestPlanTreeNode)getRoot()).getElement().addChildElement(workbench);
+        this.insertNodeInto(new TestPlanTreeNode(workbench, this), (TestPlanTreeNode)getRoot(), 1);
     }
 
+    public TestPlanTreeModel(TestPlan testplan)
+    {
+        super(new TestPlanTreeNode(new RootElement("JMeter")));
+        ((TestPlanTreeNode)getRoot()).setTreeModel(this);
+        addChild((TestPlanTreeNode)getRoot(), testplan);
+    }
 
     public TestPlanTreeNode addChild(TestPlanTreeNode node, TestElement element)
     {

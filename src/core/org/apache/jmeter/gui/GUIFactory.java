@@ -90,6 +90,10 @@ public class GUIFactory
         return null;
     }
 
+    public static ImageIcon getIcon(String key)
+    {
+        return (ImageIcon)iconMap.get(key);
+    }
 
     public static synchronized JComponent getGUI(TestElement element)
     {

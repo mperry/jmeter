@@ -69,20 +69,21 @@ import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
 
 import org.apache.jmeter.config.ConfigTestElement;
+import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.control.*;
 import org.apache.jmeter.control.gui.*;
 import org.apache.jmeter.engine.*;
 import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
+import org.apache.jmeter.gui.document.JMeterDocumentManager;
 import org.apache.jmeter.gui.action.*;
 import org.apache.jmeter.gui.tree.JMeterTreeListener;
 import org.apache.jmeter.gui.tree.TestPlanTreeModel;
-import org.apache.jmeter.plugin.JMeterPlugin;
-import org.apache.jmeter.plugin.PluginManager;
+import org.apache.jmeter.plugin.*;
 import org.apache.jmeter.reporters.AbstractListenerElement;
 import org.apache.jmeter.reporters.ResultCollector;
 import org.apache.jmeter.samplers.AbstractSampler;
-import org.apache.jmeter.save.SaveService;
+import org.apache.jmeter.save.*;
 import org.apache.jmeter.testelement.*;
 import org.apache.jmeter.threads.gui.ThreadGroupGui;
 import org.apache.jmeter.util.JMeterUtils;
@@ -95,7 +96,7 @@ import org.apache.jmeter.util.JMeterUtils;
  * To change this generated comment edit the template variable "typecomment":
  * Window>Preferences>Java>Templates.
  */
-public class JMeter implements JMeterPlugin
+public class JMeter implements JMeterPlugin, TranslationTableProvider
 {
 
     transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor(
@@ -215,12 +216,11 @@ public class JMeter implements JMeterPlugin
         {
             try
             {
-                File f = new File(testFile.getArgument());
-                FileInputStream reader = new FileInputStream(f);
-                HashTree tree = SaveService.loadSubTree(reader);
-                new Load().insertLoadedTree(1, tree);
+                File file = new File(testFile.getArgument());
+                JMeterDocumentManager.getInstance().loadDocument(file);
             } catch (Exception e)
             {
+// todo: show error dialog
                 log.error("Failure loading test file", e);
             }
         }
@@ -380,17 +380,19 @@ public class JMeter implements JMeterPlugin
 
             reader = new FileInputStream(f);
 
-            HashTree tree = SaveService.loadSubTree(reader);
+            TestElement tree = SaveService.loadSubTree(reader);
             if (logFile != null)
             {
                 ResultCollector logger = new ResultCollector();
                 logger.setFilename(logFile);
-                tree.add(tree.getArray()[0], logger);
+                tree.addChildElement(logger);
             }
-            tree.add(tree.getArray()[0], new ListenToTest());
+            // todo: make ListenToTest a test element?
+//            tree.addChildElement(new ListenToTest());
             println("Created the tree successfully");
             StandardJMeterEngine engine = new StandardJMeterEngine();
-            engine.configure(tree);
+// todo: implement
+//            engine.configure(tree);
             println("Starting the test");
             engine.runTest();
 
@@ -520,6 +522,7 @@ public class JMeter implements JMeterPlugin
     public String[][] getIconMappings()
     {
         return new String[][] {
+            { TestPlan.class.getName() + "_TAB", "org/apache/jmeter/images/beaker_tab.png"},
             { TestPlan.class.getName(), "org/apache/jmeter/images/beaker.gif"},
             { org.apache.jmeter.threads.ThreadGroup.class.getName(), "org/apache/jmeter/images/thread.gif"},
             { AbstractListenerElement.class.getName(), "org/apache/jmeter/images/meter.png"},
@@ -559,5 +562,25 @@ public class JMeter implements JMeterPlugin
     public String[][] getResourceBundles()
     {
         return new String[0][];
+    }
+
+
+    public Map getTranslationTable()
+    {
+        Map translationTable = new HashMap();
+
+        translationTable.put("TestElement.gui_class", null);
+        translationTable.put("TestElement.test_class", null);
+        translationTable.put("TestElement.name", new PropertyNameTranslator(TestElement.NAME));
+        translationTable.put("Arguments.arguments", new PropertyNameTranslator(Arguments.ARGUMENTS));
+        translationTable.put("TestPlan.thread_groups", null);
+        translationTable.put("TestPlan.functional_mode", new BooleanPropertyTranslator(TestPlan.FUNCTIONAL_MODE));
+        translationTable.put("TestPlan.user_defined_variables", new PropertyNameTranslator(TestPlan.USER_DEFINED_VARIABLES));
+        translationTable.put("ThreadGroup.num_threads", new IntegerPropertyTranslator(org.apache.jmeter.threads.ThreadGroup.NUMBER_OF_THREADS));
+        translationTable.put("ThreadGroup.ramp_time", new IntegerPropertyTranslator(org.apache.jmeter.threads.ThreadGroup.RAMP_UP_PERIOD));
+        translationTable.put("ThreadGroup.main_controller", new PropertyNameTranslator(org.apache.jmeter.threads.ThreadGroup.CONTROLLER));
+        translationTable.put("LoopController.loops", new IntegerPropertyTranslator(LoopController.LOOP_COUNT));
+        translationTable.put("LoopController.continue_forever", new BooleanPropertyTranslator(LoopController.LOOP_FOREVER));
+        return translationTable;
     }
 }

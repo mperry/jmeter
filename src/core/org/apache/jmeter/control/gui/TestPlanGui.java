@@ -66,6 +66,7 @@ import org.apache.jmeter.config.gui.ArgumentsPanel;
 import org.apache.jmeter.gui.AbstractJMeterGuiComponent;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.action.AddElement;
+import org.apache.jmeter.gui.action.Actions;
 import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.gui.util.MenuFactory;
 import org.apache.jmeter.testelement.TestElement;
@@ -101,7 +102,7 @@ public class TestPlanGui extends AbstractJMeterGuiComponent implements LocaleCha
     public JPopupMenu createPopupMenu(TestElement testElement)
     {
 //        if (popup == null) {
-        ActionListener addListener = new AddElement(testElement);
+        ActionListener addListener = Actions.addElement;
             JPopupMenu popup = new JPopupMenu();
             JMenu addMenu = new JMenu(JMeterUtils.getResString("add"));
             addMenu.add(MenuFactory.makeMenuItem(JMeterUtils.getResString("threadgroup"),

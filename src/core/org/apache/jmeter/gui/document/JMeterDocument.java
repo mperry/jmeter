@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,56 +52,97 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.jmeter.gui.action;
+package org.apache.jmeter.gui.document;
 
-import java.awt.event.ActionEvent;
-import java.util.*;
+
+import java.io.*;
+
 import javax.swing.*;
 
-import org.apache.jmeter.gui.tree.*;
-import org.apache.jmeter.gui.*;
-import org.apache.jmeter.gui.document.JMeterDocumentManager;
-import org.apache.jmeter.testelement.WorkBench;
-import org.apache.jmeter.testelement.TestPlan;
-import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.gui.GUIFactory;
+
 
 /**
- *  Title: JMeter Description: Copyright: Copyright (c) 2002 Company: Apache
- * This command clears the existing test plan, 
- * allowing the creation of a New test plan
+ * Represents a JMeter file and holds all relevant information.
  *
- * @author     <a href="mramshaw@alumni.concordia.ca">Martin Ramshaw</a>
- * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created    June 6, 2002
- * @version    1.0
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @version $Revision$
  */
+public class JMeterDocument {
 
-public class New extends JMeterAction
-{
+    private File file;
+    private TestElement rootElement;
+    private String name;
+    private TestElement currentTestElement;
 
-    public New(String resourceKey)
+
+    public JMeterDocument(String name, TestElement rootElement)
     {
-        super(resourceKey);
+        this(name, null, rootElement);
     }
 
-    public New(String resourceKey, int mnemonic)
+    public JMeterDocument(String name, File file, TestElement rootElement)
     {
-        super(resourceKey, mnemonic);
+        this.file = file;
+        this.rootElement = rootElement;
+        this.name = name;
     }
 
-    public New(String resourceKey, int mnemonic, KeyStroke accelerator)
+
+    public File getFile()
     {
-        super(resourceKey, mnemonic, accelerator);
+        return file;
     }
 
-    /**
-	 *  This method performs the actual command processing.
-	 *
-	 *@param  e  This is the generic UI action event.
-	 */
-	public void actionPerformed(ActionEvent e)
-	{
-        JMeterDocumentManager.getInstance().newTestPlanDocument();
-	}
+    public void setFile(File file)
+    {
+        this.file = file;
+    }
+
+    public TestElement getRootElement()
+    {
+        return rootElement;
+    }
+
+    public void setRootElement(TestElement rootElement)
+    {
+        this.rootElement = rootElement;
+    }
+
+    public String getFileName()
+    {
+        if (getFile() != null) {
+            return getFile().getName();
+        } else {
+            // todo: i18n
+            return "New";
+        }
+    }
+
+    public Icon getIcon()
+    {
+        return GUIFactory.getIcon(getRootElement().getClass().getName() + "_TAB");
+    }
+
+
+    public TestElement getCurrentTestElement()
+    {
+        return currentTestElement;
+    }
+
+    public void setCurrentTestElement(TestElement currentTestElement)
+    {
+        this.currentTestElement = currentTestElement;
+    }
+
+    public String getAbsolutePath()
+    {
+        if (getFile() == null) {
+            // todo: i18n
+            return "new file";
+        } else {
+            return getFile().getAbsolutePath();
+        }
+    }
 }
-

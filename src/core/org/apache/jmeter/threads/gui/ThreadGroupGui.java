@@ -66,6 +66,7 @@ import org.apache.jorphan.gui.layout.VerticalLayout;
 import org.apache.jmeter.gui.AbstractJMeterGuiComponent;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.gui.action.AddElement;
+import org.apache.jmeter.gui.action.Actions;
 import org.apache.jmeter.gui.util.*;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.*;
@@ -119,12 +120,11 @@ public class ThreadGroupGui extends AbstractJMeterGuiComponent implements Locale
 
     public JPopupMenu createPopupMenu(TestElement element)
     {
-        ActionListener addListener = new AddElement(element);
         JPopupMenu pop = new JPopupMenu();
         pop.add(MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
                                                    MenuFactory.LISTENERS, MenuFactory.SAMPLERS, MenuFactory.TIMERS,
                                                    MenuFactory.CONFIG_ELEMENTS}, JMeterUtils.getResString("Add"),
-                                      addListener));
+                                      Actions.addElement));
 //        MenuFactory.addEditMenu(pop, true);
 //        MenuFactory.addFileMenu(pop);
         return pop;

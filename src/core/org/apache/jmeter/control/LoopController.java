@@ -95,6 +95,9 @@ public class LoopController extends GenericController implements Serializable
     public void setLoopCount(int loopCount)
     {
         this.loopCount = loopCount;
+        if (loopCount < 0) {
+            this.loopCount = 0;
+        }
     }
 
 

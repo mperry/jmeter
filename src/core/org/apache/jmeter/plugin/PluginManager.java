@@ -67,6 +67,7 @@ import org.apache.log.Hierarchy;
 import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.util.Resources;
 import org.apache.jmeter.JMeterClassLoader;
+import org.apache.jmeter.save.PropertyTranslationTable;
 
 
 /**
@@ -144,6 +145,11 @@ public class PluginManager
         for (i = 0; i < guiMappings.length; i++)
         {
             GUIFactory.registerGUI(guiMappings[i][0], guiMappings[i][1]);
+        }
+
+
+        if (plugin instanceof TranslationTableProvider) {
+            PropertyTranslationTable.addTranslations(((TranslationTableProvider)plugin).getTranslationTable());
         }
     }
 

@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,54 +54,36 @@
  */
 package org.apache.jmeter.gui.action;
 
-import java.awt.event.ActionEvent;
-import java.util.*;
+
 import javax.swing.*;
 
-import org.apache.jmeter.gui.tree.*;
-import org.apache.jmeter.gui.*;
-import org.apache.jmeter.gui.document.JMeterDocumentManager;
-import org.apache.jmeter.testelement.WorkBench;
-import org.apache.jmeter.testelement.TestPlan;
 import org.apache.jmeter.util.JMeterUtils;
 
+
 /**
- *  Title: JMeter Description: Copyright: Copyright (c) 2002 Company: Apache
- * This command clears the existing test plan, 
- * allowing the creation of a New test plan
- *
- * @author     <a href="mramshaw@alumni.concordia.ca">Martin Ramshaw</a>
- * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
- * @created    June 6, 2002
- * @version    1.0
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @version $Revision$
  */
+public abstract class JMeterAction extends javax.swing.AbstractAction {
 
-public class New extends JMeterAction
-{
+    private String resourceKey;
 
-    public New(String resourceKey)
+    public JMeterAction(String resourceKey)
     {
-        super(resourceKey);
+        super(JMeterUtils.getResString(resourceKey));
+        this.resourceKey = resourceKey;
     }
 
-    public New(String resourceKey, int mnemonic)
+    public JMeterAction(String resourceKey, int mnemonic)
     {
-        super(resourceKey, mnemonic);
+        this(resourceKey);
+        putValue(MNEMONIC_KEY, new Integer(mnemonic));
     }
 
-    public New(String resourceKey, int mnemonic, KeyStroke accelerator)
+    public JMeterAction(String resourceKey, int mnemonic, KeyStroke accelerator)
     {
-        super(resourceKey, mnemonic, accelerator);
+        this(resourceKey, mnemonic);
+        putValue(ACCELERATOR_KEY, accelerator);
     }
 
-    /**
-	 *  This method performs the actual command processing.
-	 *
-	 *@param  e  This is the generic UI action event.
-	 */
-	public void actionPerformed(ActionEvent e)
-	{
-        JMeterDocumentManager.getInstance().newTestPlanDocument();
-	}
 }
-

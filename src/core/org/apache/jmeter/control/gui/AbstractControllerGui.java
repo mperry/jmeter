@@ -9,6 +9,7 @@ import javax.swing.JPopupMenu;
 
 import org.apache.jmeter.gui.AbstractJMeterGuiComponent;
 import org.apache.jmeter.gui.action.AddElement;
+import org.apache.jmeter.gui.action.Actions;
 import org.apache.jmeter.gui.util.MenuFactory;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
@@ -38,7 +39,6 @@ public abstract class AbstractControllerGui extends AbstractJMeterGuiComponent
 
     public JPopupMenu createPopupMenu(TestElement element)
     {
-        ActionListener addListener = new AddElement(element);
         JPopupMenu pop = new JPopupMenu();
 
         pop.add(MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS,
@@ -47,7 +47,7 @@ public abstract class AbstractControllerGui extends AbstractJMeterGuiComponent
                                                    MenuFactory.TIMERS,
                                                    MenuFactory.LISTENERS},
                                       JMeterUtils.getResString("Add"),
-                                      addListener));
+                                      Actions.addElement));
         pop.add(MenuFactory.makeMenus(new String[]{MenuFactory.CONTROLLERS},
                                       JMeterUtils.getResString("insert_parent"), "Add Parent"));
 //		MenuFactory.addEditMenu(pop, true);

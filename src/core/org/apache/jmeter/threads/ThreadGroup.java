@@ -91,8 +91,7 @@ public class ThreadGroup
     public final static String RAMP_UP_PERIOD = "rampUpPeriod";
     public final static String LOOP_COUNT = "loopCount";
     public final static String LOOP_FOREVER = "loopForever";
-
-    public final static String MAIN_CONTROLLER = "ThreadGroup.main_controller";
+    public final static String CONTROLLER = "controller";
 
     private final int DEFAULT_NUM_THREADS = 1;
     private final int DEFAULT_RAMP_UP = 0;
@@ -105,7 +104,7 @@ public class ThreadGroup
     private int loopCount = 1;
     private int numberOfThreads = 1;
     private int rampUpPeriod = 1;
-
+    private LoopController controller;
 
     /**
      * No-arg constructor.
@@ -161,6 +160,19 @@ public class ThreadGroup
     public void setRampUpPeriod(int rampUpPeriod)
     {
         this.rampUpPeriod = rampUpPeriod;
+    }
+
+
+    public LoopController getController()
+    {
+        return null;
+    }
+
+    // required for legacy load
+    public void setController(LoopController controller)
+    {
+        setLoopCount(controller.getLoopCount());
+        setLoopForever(controller.getLoopForever());
     }
 
 
@@ -221,7 +233,7 @@ public class ThreadGroup
      */
     public Controller getSamplerController()
     {
-        return (Controller) getProperty(MAIN_CONTROLLER);
+        return (Controller) getProperty(CONTROLLER);
     }
 
     /**
@@ -233,7 +245,7 @@ public class ThreadGroup
     {
         // todo: uncomment
 //        c.setLoopForever(false);
-        setProperty(MAIN_CONTROLLER, c);
+        setProperty(CONTROLLER, c);
     }
 
     /**

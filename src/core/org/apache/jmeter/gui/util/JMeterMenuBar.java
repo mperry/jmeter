@@ -67,8 +67,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 
-import org.apache.jmeter.gui.action.ActionRouter;
-import org.apache.jmeter.gui.action.ChangeLanguage;
+import org.apache.jmeter.gui.action.*;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.LocaleChangeEvent;
 import org.apache.jmeter.util.LocaleChangeListener;
@@ -415,19 +414,21 @@ public class JMeterMenuBar extends JMenuBar implements LocaleChangeListener
 		file_save_all.setActionCommand("save_all");
 		file_save_all.addActionListener(ActionRouter.getInstance());
 		file_save_all.setEnabled(true);
-		file_load = new JMenuItem(JMeterUtils.getResString("open"), 'O');
-		file_load.setAccelerator(
-			KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
-		file_load.addActionListener(ActionRouter.getInstance());
-		// Set default SAVE menu item to disabled since the default node that is selected
-		// is ROOT, which does not allow items to be inserted.
-		file_load.setEnabled(false);
-		file_load.setActionCommand("open");
-		file_new = new JMenuItem(JMeterUtils.getResString("new"), 'N');
-		file_new.setAccelerator(
-			KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK));
-		file_new.setActionCommand("new");
-		file_new.addActionListener(ActionRouter.getInstance());
+        file_load = new JMenuItem(Actions.loadDocument);
+//		file_load = new JMenuItem(JMeterUtils.getResString("open"), 'O');
+//		file_load.setAccelerator(
+//			KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
+//		file_load.addActionListener(ActionRouter.getInstance());
+//		// Set default SAVE menu item to disabled since the default node that is selected
+//		// is ROOT, which does not allow items to be inserted.
+////		file_load.setEnabled(false);
+//		file_load.setActionCommand("open");
+        file_new = new JMenuItem(Actions.newDocument);
+//		file_new = new JMenuItem(JMeterUtils.getResString("new"), 'N');
+//		file_new.setAccelerator(
+//			KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK));
+//		file_new.setActionCommand("new");
+//		file_new.addActionListener(ActionRouter.getInstance());
 		file_exit = new JMenuItem(JMeterUtils.getResString("exit"), 'X');
 		file_exit.setAccelerator(
 			KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_MASK));

@@ -464,6 +464,8 @@ public abstract class AbstractTestElement implements TestElement, Transferable
         } catch (NoSuchMethodException e)
         {
             throw new IllegalArgumentException("Invalid property name or value " + property + "/" + value);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid property name or value " + property + "/" + value);
         }
     }
 

@@ -23,34 +23,25 @@ package org.apache.jmeter.gui.panel;
 
 
 import java.awt.*;
-import java.awt.dnd.DnDConstants;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.*;
 import java.util.*;
-import java.io.*;
 
 import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeModelEvent;
+import javax.swing.event.*;
 import javax.swing.tree.*;
 
-import org.apache.jmeter.gui.tree.*;
 import org.apache.jmeter.gui.JMeterGUIComponent;
-import org.apache.jmeter.testelement.AbstractTestElement;
+import org.apache.jmeter.gui.document.JMeterDocument;
+import org.apache.jmeter.gui.tree.*;
+import org.apache.jmeter.testelement.TestPlan;
 
 /**
  * @author  <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  */
-public class TestPlanPanel extends JPanel implements TreeSelectionListener, TreeModelListener, FocusListener
+public class TestPlanPanel extends DocumentPanel implements TreeSelectionListener, TreeModelListener, FocusListener
 {
 
     private TreeModel treeModel;
-    private JMeterTreeListener treeListener;
     private JSplitPane treeAndMain;
     private JTree tree;
     private JPanel mainPanel;
@@ -58,13 +49,12 @@ public class TestPlanPanel extends JPanel implements TreeSelectionListener, Tree
     private Collection availableGuis = new HashSet();
 
 
-    public TestPlanPanel(TreeModel treeModel, JMeterTreeListener treeListener)
+    public TestPlanPanel(JMeterDocument document)
     {
-        this.treeModel = treeModel;
-        this.treeListener = treeListener;
+        super(document);
+        treeModel = new TestPlanTreeModel((TestPlan)document.getRootElement());
         init();
     }
-
 
     private void init()
     {
@@ -111,7 +101,7 @@ public class TestPlanPanel extends JPanel implements TreeSelectionListener, Tree
         tree.setRootVisible(false);
         tree.setShowsRootHandles(true);
         tree.setExpandsSelectedPaths(true);
-        treeListener.setJTree(tree);
+//        treeListener.setJTree(tree);
         tree.addTreeSelectionListener(this);
 
 //        tree.addTreeSelectionListener(treeListener);
@@ -156,7 +146,9 @@ public class TestPlanPanel extends JPanel implements TreeSelectionListener, Tree
     // TreeSelectionListener
     public void valueChanged(TreeSelectionEvent e)
     {
-        activateGUI((TestPlanTreeNode)tree.getLastSelectedPathComponent());
+        TestPlanTreeNode current = (TestPlanTreeNode)tree.getLastSelectedPathComponent();
+        activateGUI(current);
+        getDocument().setCurrentTestElement(current);
     }
 
 
