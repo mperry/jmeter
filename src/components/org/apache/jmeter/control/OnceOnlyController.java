@@ -108,7 +108,7 @@ public class OnceOnlyController extends GenericController implements Serializabl
 			controller.addTestElement(sub_1);
 			controller.addTestElement(makeSampler("three"));
 			LoopController sub_2 = new LoopController();
-			sub_2.setLoops(3);
+			sub_2.setLoopCount(3);
 			GenericController sub_3 = new GenericController();
 			sub_2.addTestElement(makeSampler("four"));
 			sub_3.addTestElement(makeSampler("five"));

@@ -463,8 +463,8 @@ public class JMeter implements JMeterPlugin
             {TestPlan.class, TestPlanGui.class},
             {org.apache.jmeter.threads.ThreadGroup.class, ThreadGroupGui.class},
             // controller
-            {GenericController.class, LogicControllerGui.class}
-//            {LoopController.class, LoopControlPanel.class},
+            {GenericController.class, LogicControllerGui.class},
+            {LoopController.class, LoopControlPanel.class},
 //            {OnceOnlyController.class, OnceOnlyControllerGui.class},
 //            {InterleaveControl.class, InterleaveControlGui.class},
 //            {RandomController.class, RandomControlGui.class}
@@ -503,8 +503,8 @@ public class JMeter implements JMeterPlugin
             TestPlan.class,
             org.apache.jmeter.threads.ThreadGroup.class,
             // controller
-            GenericController.class
-//            LoopController.class,
+            GenericController.class,
+            LoopController.class,
 //            OnceOnlyController.class,
 //            InterleaveControl.class,
 //            RandomController.class

@@ -55,240 +55,211 @@
 package org.apache.jmeter.control.gui;
 
 
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
+import javax.swing.*;
 
 import org.apache.jmeter.control.LoopController;
-import org.apache.jmeter.gui.util.FocusRequester;
+import org.apache.jmeter.gui.GUIFactory;
+import org.apache.jmeter.gui.util.IntegerFieldDocumentListener;
+import org.apache.jmeter.gui.util.JMeterGridBagConstraints;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jorphan.gui.layout.VerticalLayout;
+import org.apache.jmeter.util.LocaleChangeEvent;
 
 
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
- *@author    Michael Stover
- *@created   $Date$
- *@version   1.0
+ * @author    Michael Stover
+ * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
+ * @created   $Date$
+ * @version   1.0
  ***************************************/
-
-public class LoopControlPanel extends AbstractControllerGui implements KeyListener, ActionListener {
-
-
-  JCheckBox infinite;
-  JTextField loops;
-
-  private boolean displayName = true;
-  private static String INFINITE = "Infinite Field";
-  private static String LOOPS = "Loops Field";
+// todo: rename to LoopControllerGui
+public class LoopControlPanel extends AbstractControllerGui implements KeyListener, ActionListener
+{
 
 
-  /****************************************
-   * !ToDo (Constructor description)
-   ***************************************/
-  public LoopControlPanel() {
-    this(true);
-  }
+	private static String INFINITE = "Infinite Field";
+	private static String LOOPS = "Loops Field";
 
 
-  /****************************************
-   * !ToDo (Constructor description)
-   *
-   *@param displayName  !ToDo (Parameter description)
-   ***************************************/
-  public LoopControlPanel(boolean displayName) {
-    this.displayName = displayName;
-    init();
-    setState(1);
-  }
+
+    private JLabel loopsLabel;
+    private JRadioButton rbForever;
+    private JRadioButton rbCount;
+    private JTextField loopInput;
+    private JLabel timesLabel;
 
 
-  /****************************************
-   * !ToDo (Method description)
-   *
-   *@param element  !ToDo (Parameter description)
-   ***************************************/
-  public void configure(TestElement element) {
-    setName((String)element.getProperty(TestElement.NAME));
-    if (element instanceof LoopController) {
-      setState(((LoopController)element).getLoops());
-    } else {
-      setState(1);
-    }
-  }
+	public LoopControlPanel()
+	{
+	}
 
 
-  /****************************************
-   * !ToDo (Method description)
-   *
-   *@return   !ToDo (Return description)
-   ***************************************/
-  public TestElement createTestElement() {
-    LoopController lc = new LoopController();
-    configureTestElement(lc);
-    if (loops.getText().length() > 0) {
-      lc.setLoops(Integer.parseInt(loops.getText()));
-    } else {
-      lc.setLoops(-1);
-    }
-    return lc;
-  }
+    public void configure(org.apache.jmeter.testelement.TestElement element)
+    {
+        loopInput.setText(String.valueOf(element.getProperty(LoopController.LOOP_COUNT)));
+        boolean forever = ((Boolean)element.getProperty(LoopController.LOOP_FOREVER)).booleanValue();
 
-
-  /****************************************
-   * !ToDo (Method description)
-   *
-   *@param event  !ToDo (Parameter description)
-   ***************************************/
-  public void actionPerformed(ActionEvent event) {
-    if (infinite.isSelected()) {
-      loops.setText("");
-      loops.setEnabled(false);
-    } else {
-      loops.setEnabled(true);
-      new FocusRequester(loops);
-    }
-  }
-
-
-  /****************************************
-   * Description of the Method
-   *
-   *@param e  Description of Parameter
-   ***************************************/
-  public void keyPressed(KeyEvent e) {
-  }
-
-
-  /****************************************
-   * Description of the Method
-   *
-   *@param e  Description of Parameter
-   ***************************************/
-  public void keyTyped(KeyEvent e) {
-  }
-
-
-  /****************************************
-   * Description of the Method
-   *
-   *@param e  Description of Parameter
-   ***************************************/
-  public void keyReleased(KeyEvent e) {
-    String temp = e.getComponent().getName();
-    if (temp.equals(LOOPS)) {
-      try {
-        Integer.parseInt(loops.getText());
-      } catch (NumberFormatException ex) {
-        if (loops.getText().length() > 0) {
-          // We need a standard warning/error dialog. The problem with
-          // having it here is that the dialog is centered over this
-          // LoopControlPanel instead of begin centered in the entire
-          // JMeter GUI window.
-          JOptionPane.showMessageDialog(this, "You must enter a valid number",
-                                        "Invalid data", JOptionPane.WARNING_MESSAGE);
-          loops.setText("");
+        if (forever) {
+            rbForever.setSelected(true);
+            loopInput.setEnabled(false);
+        } else {
+            rbCount.setSelected(true);
+            loopInput.setEnabled(true);
         }
-      }
-    }
-  }
-
-
-  /****************************************
-   * !ToDoo (Method description)
-   *
-   *@return   !ToDo (Return description)
-   ***************************************/
-  public String getStaticLabel() {
-    return JMeterUtils.getResString("loop_controller_title");
-  }
-
-
-  private void init() {
-    // The Loop Controller panel can be displayed standalone or inside another panel.
-    // For standalone, we want to display the TITLE, NAME, etc. (everything). However,
-    // if we want to display it within another panel, we just display the Loop Count
-    // fields (not the TITLE and NAME).
-
-    // Standalone
-    if (displayName) {
-      this.setLayout(new VerticalLayout(5, VerticalLayout.LEFT, VerticalLayout.TOP));
-
-      // MAIN PANEL
-      JPanel mainPanel = new JPanel();
-      Border margin = new EmptyBorder(10, 10, 5, 10);
-      mainPanel.setBorder(margin);
-      mainPanel.setLayout(new VerticalLayout(5, VerticalLayout.LEFT));
-
-      // TITLE
-      JLabel panelTitleLabel = new JLabel(JMeterUtils.getResString("loop_controller_title"));
-      Font curFont = panelTitleLabel.getFont();
-      int curFontSize = curFont.getSize();
-      curFontSize += 4;
-      panelTitleLabel.setFont(new Font(curFont.getFontName(), curFont.getStyle(), curFontSize));
-      mainPanel.add(panelTitleLabel);
-
-      // NAME
-      mainPanel.add(getNamePanel());
-
-      // LOOP
-      mainPanel.add(createLoopCountPanel());
-
-      this.add(mainPanel);
     }
 
-    // Embedded
-    else {
-      this.add(createLoopCountPanel());
+
+	/****************************************
+	 * !ToDo (Method description)
+	 *
+	 *@return   !ToDo (Return description)
+	 ***************************************/
+	public TestElement createTestElement()
+	{
+		LoopController lc = new LoopController();
+//		configureTestElement(lc);
+//		if(loops.getText().length() > 0)
+//		{
+//			lc.setLoopCount(Integer.parseInt(loops.getText()));
+//		}
+//		else
+//		{
+//			lc.setLoopCount(-1);
+//		}
+		return lc;
+	}
+
+
+    public void actionPerformed(ActionEvent e)
+    {
+        if (e.getActionCommand().equals("infinite")) {
+            loopInput.setEnabled(false);
+            getElement().setProperty(LoopController.LOOP_FOREVER, Boolean.TRUE);
+        } else {
+            loopInput.setEnabled(true);
+            getElement().setProperty(LoopController.LOOP_FOREVER, Boolean.FALSE);
+        }
     }
-  }
+
+	/****************************************
+	 * Description of the Method
+	 *
+	 *@param e  Description of Parameter
+	 ***************************************/
+	public void keyPressed(KeyEvent e) { }
+
+	/****************************************
+	 * Description of the Method
+	 *
+	 *@param e  Description of Parameter
+	 ***************************************/
+	public void keyTyped(KeyEvent e) { }
+
+	/****************************************
+	 * Description of the Method
+	 *
+	 *@param e  Description of Parameter
+	 ***************************************/
+	public void keyReleased(KeyEvent e)
+	{
+        // todo: use special input field
+		String temp = e.getComponent().getName();
+		if(temp.equals(LOOPS))
+		{
+			try
+			{
+				Integer.parseInt(loopInput.getText());
+			}
+			catch(NumberFormatException ex)
+			{
+				if(loopInput.getText().length() > 0)
+				{
+					// We need a standard warning/error dialog. The problem with
+					// having it here is that the dialog is centered over this
+					// LoopControlPanel instead of begin centered in the entire
+					// JMeter GUI window.
+					JOptionPane.showMessageDialog(this, "You must enter a valid number",
+							"Invalid data", JOptionPane.WARNING_MESSAGE);
+					loopInput.setText("");
+				}
+			}
+		}
+	}
 
 
-  private JPanel createLoopCountPanel() {
-    JPanel loopPanel = new JPanel();
-
-    // LOOP LABEL
-    JLabel loopsLabel = new JLabel(JMeterUtils.getResString("iterator_num"));
-    loopPanel.add(loopsLabel);
-
-    // TEXT FIELD
-    loops = new JTextField(5);
-    loopPanel.add(loops);
-    loops.setName(LOOPS);
-    loops.addKeyListener(this);
-    loops.setText("1");
-
-    // FOREVER CHECKBOX
-    infinite = new JCheckBox(JMeterUtils.getResString("infinite"));
-    infinite.setActionCommand(INFINITE);
-    infinite.addActionListener(this);
-    loopPanel.add(infinite);
-
-    return loopPanel;
-  }
+	public String getStaticLabel()
+	{
+		return "loop_controller_title";
+	}
 
 
-  private void setState(int loopCount) {
-    if (loopCount <= -1) {
-      infinite.setSelected(true);
-      loops.setEnabled(false);
-      loops.setText("");
-    } else {
-      infinite.setSelected(false);
-      loops.setEnabled(true);
-      loops.setText("" + loopCount);
+    protected void initComponents()
+    {
+        super.initComponents();
+        JPanel panel = GUIFactory.createPanel();
+        panel.setLayout(new GridBagLayout());
+        JMeterGridBagConstraints constraints = new JMeterGridBagConstraints();
+
+        loopsLabel = new JLabel(JMeterUtils.getResString("iterator_num"));
+        loopsLabel.setName("iterator_num");
+        panel.add(loopsLabel, constraints);
+
+        ButtonGroup loopGroup = new ButtonGroup();
+        rbForever = new JRadioButton(JMeterUtils.getResString("infinite"), true);
+        rbForever.addActionListener(this);
+        rbForever.setActionCommand("infinite");
+        constraints = constraints.incrementX();
+        constraints.gridwidth = 3;
+        constraints.insets = new Insets(3, 3, 1, 3);
+        panel.add(rbForever, constraints);
+        rbForever.setName("infinite");
+
+        rbCount = new JRadioButton(JMeterUtils.getResString("iterator_loop"), false);
+        rbCount.addActionListener(this);
+        rbCount.setActionCommand("iterator_loop");
+        constraints = constraints.nextRow();
+        constraints.gridx++;
+        constraints.gridwidth = 1;
+        constraints.insets = new Insets(1, 3, 3, 3);
+        panel.add(rbCount, constraints);
+        rbCount.setName("iterator_loop");
+
+        loopGroup.add(rbForever);
+        loopGroup.add(rbCount);
+        loopInput = new JTextField(5);
+        constraints = constraints.incrementX();
+        panel.add(loopInput, constraints);
+        loopInput.setName("loopCount");
+        loopInput.setText("1");
+        loopInput.setEnabled(false);
+        loopInput.getDocument().addDocumentListener(new IntegerFieldDocumentListener(LoopController.LOOP_COUNT, loopInput, this));
+
+        timesLabel = new JLabel(JMeterUtils.getResString("iterator_times"));
+        timesLabel.setName("iterator_times");
+        constraints = constraints.incrementX();
+        panel.add(timesLabel, constraints);
+
+        Component filler = Box.createHorizontalGlue();
+        constraints = constraints.incrementX();
+        constraints.fillHorizontal(1.0);
+        panel.add(filler, constraints);
+
+        add(panel);
     }
-  }
+
+
+    public void localeChanged(LocaleChangeEvent event)
+    {
+        super.localeChanged(event);
+        updateLocalizedStrings(new JComponent[]{loopsLabel, timesLabel, rbCount, rbForever});
+    }
+
 }
