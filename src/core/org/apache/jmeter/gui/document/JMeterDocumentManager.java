@@ -28,6 +28,7 @@ import java.lang.ref.WeakReference;
 import org.apache.jmeter.testelement.NamedTestElement;
 import org.apache.jmeter.testelement.TestPlan;
 import org.apache.jmeter.save.SaveService;
+import org.apache.jmeter.save.JTPFileFormat;
 import org.apache.jmeter.util.*;
 
 
@@ -55,6 +56,24 @@ public class JMeterDocumentManager
     {
     }
 
+    public void saveCurrentDocument(File file) throws IOException {
+        JMeterDocument document = getCurrentDocument();
+
+        if (document != null) {
+            FileOutputStream out = new FileOutputStream(file);
+
+            try
+            {
+                new JTPFileFormat().store(document.getRootElement(), out);
+                document.setFile(file);
+            } finally
+            {
+                if (out != null) {
+                    out.close();
+                }
+            }
+        }
+    }
 
     public JMeterDocument loadDocument(File file) throws IOException
     {
@@ -65,7 +84,16 @@ public class JMeterDocumentManager
             singleDocument = (JMeterDocument)documents.values().iterator().next();
         }
         // todo: should never happen but what if the element is not a NamedTestElement?
-        NamedTestElement element = (NamedTestElement)SaveService.loadSubTree(in);
+        NamedTestElement element;
+        try
+        {
+            element = (NamedTestElement)SaveService.loadSubTree(in);
+        } finally
+        {
+            if (in != null) {
+                in.close();
+            }
+        }
         JMeterDocument document = createDocument(file, element);
 
         if (singleDocument != null && singleDocument.isNew() && !singleDocument.hasChanged())
@@ -75,6 +103,7 @@ public class JMeterDocumentManager
 
         return document;
     }
+
 
     private JMeterDocument createDocument(File file, NamedTestElement element)
     {

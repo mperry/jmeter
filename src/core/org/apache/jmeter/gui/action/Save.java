@@ -2,7 +2,7 @@
  * ====================================================================
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 - 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,6 +53,8 @@
  * <http://www.apache.org/>.
  */
 package org.apache.jmeter.gui.action;
+
+
 import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.HashSet;
@@ -77,6 +79,7 @@ import org.apache.log.Logger;
 import org.apache.jorphan.collections.HashTree;
 import org.apache.jorphan.collections.ListedHashTree;
 
+
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
@@ -87,14 +90,10 @@ import org.apache.jorphan.collections.ListedHashTree;
 
 public class Save extends JMeterAction
 {
-	transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor(
-			"jmeter.gui");
-	private final static String SAVE_ALL = "save_all";
-	private final static String SAVE = "save_as";
-	private final static String SAVE_TO_PREVIOUS = "save";
 
-	private String chosenFile;
-	private String testPlanFile;
+    transient private static Logger log = Hierarchy.getDefaultHierarchy().getLoggerFor(
+        "jmeter.gui");
+
 
     public Save(String resourceKey)
     {
@@ -112,82 +111,30 @@ public class Save extends JMeterAction
     }
 
 
-	public void setTestPlanFile(String f)
-	{
-		testPlanFile = f;
-	}
-
-
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param e  Description of Parameter
-	 ***************************************/
-	public void actionPerformed(ActionEvent e)
-	{
+    public void actionPerformed(ActionEvent event)
+    {
         JMeterDocument document = JMeterDocumentManager.getInstance().getCurrentDocument();
-        NamedTestElement element = document.getRootElement();
+        String fileName = "";
 
+        if (!document.isNew())
+        {
+            fileName = document.getFileName();
+        }
+        JFileChooser chooser = FileDialoger.promptToSaveFile(fileName);
+
+        if (chooser == null)
+        {
+            return;
+        }
         try
         {
-            new JTPFileFormat().store(element, null);
-        } catch (IOException e1)
+            JMeterDocumentManager.getInstance().saveCurrentDocument(chooser.getSelectedFile());
+        } catch (IOException e)
         {
-            e1.printStackTrace();  //To change body of catch statement use Options | File Templates.
+            // todo: display dialog
+            log.error("Save failed", e);
         }
-//		HashTree subTree = null;
-//		if(e.getActionCommand().equals(SAVE))
-//		{
-//			subTree = GuiPackage.getInstance().getCurrentSubTree();
-//		}
-//		else if(e.getActionCommand().equals(SAVE_ALL) || e.getActionCommand().equals(SAVE_TO_PREVIOUS))
-//		{
-//			subTree = GuiPackage.getInstance().getTreeModel().getTestPlan();
-//		}
-//		try
-//		{
-//			convertSubTree(subTree);
-//		}catch(Exception err)
-//		{}
-//		if(!SAVE_TO_PREVIOUS.equals(e.getActionCommand()) || testPlanFile == null)
-//		{
-//			JFileChooser chooser = FileDialoger.promptToSaveFile(
-//					GuiPackage.getInstance().getTreeListener().getCurrentNode().getTagName() + ".jmx");
-//			if(chooser == null)
-//			{
-//				return;
-//			}
-//			if(e.getActionCommand().equals(SAVE_ALL) || e.getActionCommand().equals(SAVE_TO_PREVIOUS))
-//			{
-//				testPlanFile = chooser.getSelectedFile().getAbsolutePath();
-//				chosenFile = testPlanFile;
-//			}
-//			else
-//			{
-//				chosenFile = chooser.getSelectedFile().getAbsolutePath();
-//			}
-//		}
-//		else
-//		{
-//			chosenFile = testPlanFile;
-//		}
-//
-//		OutputStream writer = null;
-//		try
-//		{
-//			writer = new FileOutputStream(chosenFile);
-//			SaveService.saveSubTree(subTree,writer);
-//		}
-//		catch(Throwable ex)
-//		{
-//			log.error("",ex);
-//		}
-//		finally
-//		{
-//			closeWriter(writer);
-//			GuiPackage.getInstance().getMainFrame().repaint();
-//		}
-	}
+    }
 
 
     protected ImageIcon createIcon()
@@ -201,65 +148,66 @@ public class Save extends JMeterAction
     }
 
 
-	private void convertSubTree(HashTree tree)
-	{
-		Iterator iter = new LinkedList(tree.list()).iterator();
-		while (iter.hasNext())
-		{
-			JMeterGUIComponent item = (JMeterGUIComponent)iter.next();
-			convertSubTree(tree.getTree(item));
-			NamedTestElement testElement = item.createTestElement();
-			tree.replace(item,testElement);
-		}
-	}
+    private void convertSubTree(HashTree tree)
+    {
+        Iterator iter = new LinkedList(tree.list()).iterator();
+        while (iter.hasNext())
+        {
+            JMeterGUIComponent item = (JMeterGUIComponent)iter.next();
+            convertSubTree(tree.getTree(item));
+            NamedTestElement testElement = item.createTestElement();
+            tree.replace(item, testElement);
+        }
+    }
 
-	public static class Test extends junit.framework.TestCase
-	{
-		Save save;
-		public Test(String name)
-		{
-			super(name);
-		}
+    public static class Test extends junit.framework.TestCase
+    {
 
-		public void setUp()
-		{
-			save = new Save("", ' ');
-		}
+        Save save;
 
-		public void testTreeConversion() throws Exception
-		{
-			HashTree tree = new ListedHashTree();
-			JMeterGUIComponent root = new org.apache.jmeter.config.gui.ArgumentsPanel();
-			tree.add(root,root);
-			tree.getTree(root).add(root,root);
-			save.convertSubTree(tree);
-			assertEquals(tree.getArray()[0].getClass().getName(),root.createTestElement().getClass().getName());
-			tree = tree.getTree(tree.getArray()[0]);
-			assertEquals(tree.getArray()[0].getClass().getName(),
-					root.createTestElement().getClass().getName());
-			assertEquals(tree.getTree(tree.getArray()[0]).getArray()[0].getClass().getName(),
-					root.createTestElement().getClass().getName());
-		}
-	}
+        public Test(String name)
+        {
+            super(name);
+        }
+
+        public void setUp()
+        {
+            save = new Save("", ' ');
+        }
+
+        public void testTreeConversion() throws Exception
+        {
+            HashTree tree = new ListedHashTree();
+            JMeterGUIComponent root = new org.apache.jmeter.config.gui.ArgumentsPanel();
+            tree.add(root, root);
+            tree.getTree(root).add(root, root);
+            save.convertSubTree(tree);
+            assertEquals(tree.getArray()[0].getClass().getName(), root.createTestElement().getClass().getName());
+            tree = tree.getTree(tree.getArray()[0]);
+            assertEquals(tree.getArray()[0].getClass().getName(),
+                         root.createTestElement().getClass().getName());
+            assertEquals(tree.getTree(tree.getArray()[0]).getArray()[0].getClass().getName(),
+                         root.createTestElement().getClass().getName());
+        }
+    }
 
 
-	/****************************************
-	 * Description of the Method
-	 *
-	 *@param writer  Description of Parameter
-	 ***************************************/
-	private void closeWriter(OutputStream writer)
-	{
-		if(writer != null)
-		{
-			try
-			{
-				writer.close();
-			}
-			catch(Exception ex)
-			{
-				log.error("",ex);
-			}
-		}
-	}
+    /****************************************
+     * Description of the Method
+     *
+     *@param writer  Description of Parameter
+     ***************************************/
+    private void closeWriter(OutputStream writer)
+    {
+        if (writer != null)
+        {
+            try
+            {
+                writer.close();
+            } catch (Exception ex)
+            {
+                log.error("", ex);
+            }
+        }
+    }
 }

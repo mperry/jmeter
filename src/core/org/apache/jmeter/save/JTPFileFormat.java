@@ -82,10 +82,7 @@ public class JTPFileFormat implements FileFormat
 
     public void store(NamedTestElement element, OutputStream out) throws IOException
     {
-        SaveService.saveSubTree(element, System.out);
-
-
-        write(element, System.out);
+        write(element, out);
     }
 
     public NamedTestElement load(InputStream in) throws IOException

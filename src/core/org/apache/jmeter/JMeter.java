@@ -543,6 +543,7 @@ public class JMeter implements JMeterPlugin, TranslationTableProvider
     public String[][] getIconMappings()
     {
         return new String[][]{
+            {"DIRTY_TAB", "org/apache/jmeter/images/dirty_tab.png"},
             {TestPlan.class.getName() + "_TAB", "org/apache/jmeter/images/beaker_tab.png"},
             {TestPlan.class.getName(), "org/apache/jmeter/images/beaker.gif"},
             {org.apache.jmeter.threads.ThreadGroup.class.getName(), "org/apache/jmeter/images/thread.gif"},

@@ -57,12 +57,14 @@ package org.apache.jmeter.gui.panel;
 
 import java.util.*;
 import java.awt.*;
+import java.awt.image.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
 
 import org.apache.jmeter.gui.document.*;
 import org.apache.jmeter.gui.tree.TestPlanTreeModel;
+import org.apache.jmeter.gui.GUIFactory;
 import org.apache.jmeter.testelement.TestPlan;
 
 
@@ -72,18 +74,18 @@ import org.apache.jmeter.testelement.TestPlan;
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$
  */
-public class TabbedMainPanel extends JTabbedPane implements JMeterDocumentManagerListener, ChangeListener
+public class TabbedMainPanel extends JTabbedPane implements JMeterDocumentManagerListener, JMeterDocumentListener, ChangeListener
 {
 
     private Map documentPanels = new HashMap();
+    private ImageIcon dirtyIcon = GUIFactory.getIcon("DIRTY_TAB");
 
 
     public TabbedMainPanel()
     {
-       JMeterDocumentManager.getInstance().addListener(this);
+        JMeterDocumentManager.getInstance().addListener(this);
         getModel().addChangeListener(this);
     }
-
 
 
     public void documentAdded(JMeterDocument document)
@@ -93,11 +95,13 @@ public class TabbedMainPanel extends JTabbedPane implements JMeterDocumentManage
 
     public void documentRemoved(JMeterDocument document)
     {
-        Component documentComponent = (Component)documentPanels.get(document.getName());
+        Component documentComponent = getPanelForDocument(document);
 
-        if (documentComponent != null) {
+        if (documentComponent != null)
+        {
             remove(documentComponent);
             documentPanels.remove(document.getName());
+            document.removeListener(this);
         }
     }
 
@@ -113,11 +117,17 @@ public class TabbedMainPanel extends JTabbedPane implements JMeterDocumentManage
     private void addTestPlanTab(org.apache.jmeter.gui.document.JMeterDocument document)
     {
         TestPlanPanel panel = new TestPlanPanel(document);
-        Icon icon = document.getIcon();
+        ImageIcon icon = document.getIcon();
+
+        if (document.hasChanged())
+        {
+            icon = mergeIcons(icon, dirtyIcon);
+        }
 
         addTab(document.getFileName(), icon, panel, document.getAbsolutePath());
         setSelectedComponent(panel);
         documentPanels.put(document.getName(), panel);
+        document.addListener(this);
     }
 
 
@@ -126,5 +136,38 @@ public class TabbedMainPanel extends JTabbedPane implements JMeterDocumentManage
         DocumentPanel panel = (DocumentPanel)getSelectedComponent();
 
         JMeterDocumentManager.getInstance().setCurrentDocument(panel.getDocument());
+    }
+
+
+    public void documentChanged(JMeterDocument document)
+    {
+        Component panel = getPanelForDocument(document);
+        int index = indexOfComponent(panel);
+        ImageIcon icon = document.getIcon();
+
+        if (document.hasChanged())
+        {
+            icon = mergeIcons(icon, dirtyIcon);
+        }
+        setTitleAt(index, document.getFileName());
+        setToolTipTextAt(index, document.getAbsolutePath());
+        setIconAt(index, icon);
+    }
+
+    private ImageIcon mergeIcons(ImageIcon icon, ImageIcon top)
+    {
+        Image img = icon.getImage();
+        BufferedImage buffered = new BufferedImage(img.getWidth(this), img.getHeight(this), BufferedImage.TYPE_INT_ARGB_PRE);
+
+        Graphics2D g = buffered.createGraphics();
+
+        g.drawImage(img, 0, 0, this);
+        g.drawImage(top.getImage(), 0, 0, this);
+        return new ImageIcon(buffered);
+    }
+
+    private Component getPanelForDocument(JMeterDocument document)
+    {
+        return (Component)documentPanels.get(document.getName());
     }
 }

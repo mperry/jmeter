@@ -56,6 +56,8 @@ package org.apache.jmeter.gui.document;
 
 
 import java.io.*;
+import java.util.*;
+import java.lang.ref.WeakReference;
 
 import javax.swing.*;
 
@@ -69,12 +71,14 @@ import org.apache.jmeter.gui.GUIFactory;
  * @author <a href="mailto:oliver@tuxerra.com">Oliver Rossmueller</a>
  * @version $Revision$
  */
-public class JMeterDocument {
+public class JMeterDocument
+{
 
     private File file;
     private NamedTestElement rootElement;
     private String name;
     private NamedTestElement currentTestElement;
+    private Collection listeners = new HashSet();
 
 
     public JMeterDocument(String name, NamedTestElement rootElement)
@@ -90,13 +94,15 @@ public class JMeterDocument {
     }
 
 
-    public boolean isNew() {
+    public boolean isNew()
+    {
         return getFile() == null;
     }
 
-    public boolean hasChanged() {
-    // todo: implement
-        return false;
+    public boolean hasChanged()
+    {
+        // todo: implement
+        return isNew();
     }
 
     public File getFile()
@@ -107,6 +113,7 @@ public class JMeterDocument {
     public void setFile(File file)
     {
         this.file = file;
+        notifyListeners();
     }
 
     public NamedTestElement getRootElement()
@@ -121,15 +128,17 @@ public class JMeterDocument {
 
     public String getFileName()
     {
-        if (getFile() != null) {
+        if (getFile() != null)
+        {
             return getFile().getName();
-        } else {
+        } else
+        {
             // todo: i18n
             return "New";
         }
     }
 
-    public Icon getIcon()
+    public ImageIcon getIcon()
     {
         return GUIFactory.getIcon(getRootElement().getClass().getName() + "_TAB");
     }
@@ -147,10 +156,12 @@ public class JMeterDocument {
 
     public String getAbsolutePath()
     {
-        if (getFile() == null) {
+        if (getFile() == null)
+        {
             // todo: i18n
             return "new file";
-        } else {
+        } else
+        {
             return getFile().getAbsolutePath();
         }
     }
@@ -159,4 +170,52 @@ public class JMeterDocument {
     {
         return name;
     }
+
+
+    public synchronized void addListener(JMeterDocumentListener listener)
+    {
+        listeners.add(new WeakReference(listener));
+    }
+
+    /**
+     * Unregister a listener.
+     */
+    public synchronized void removeListener(JMeterDocumentListener listener)
+    {
+        Iterator iterator = listeners.iterator();
+
+        while (iterator.hasNext())
+        {
+            WeakReference reference = (WeakReference)iterator.next();
+            if (reference.get() == listener)
+            {
+                iterator.remove();
+                return;
+            }
+        }
+    }
+
+    /**
+     * Notify all listeners
+     *
+     */
+    private synchronized void notifyListeners()
+    {
+        Iterator iterator = listeners.iterator();
+
+        while (iterator.hasNext())
+        {
+            WeakReference reference = (WeakReference)iterator.next();
+            JMeterDocumentListener listener = (JMeterDocumentListener)reference.get();
+
+            if (listener != null)
+            {
+                listener.documentChanged(this);
+            } else
+            {
+                iterator.remove();
+            }
+        }
+    }
+
 }
