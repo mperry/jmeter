@@ -1,4 +1,6 @@
 package org.apache.jmeter.testelement;
+
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,6 +10,7 @@ import java.util.Map;
 import org.apache.log.Hierarchy;
 import org.apache.log.Logger;
 
+
 /****************************************
  * Title: JMeter Description: Copyright: Copyright (c) 2000 Company: Apache
  *
@@ -16,11 +19,12 @@ import org.apache.log.Logger;
  *@version   1.0
  ***************************************/
 
-public abstract class AbstractTestElement implements TestElement,Serializable
+public abstract class AbstractTestElement implements TestElement, Serializable
 {
+
     private Map testInfo = new HashMap();
     transient private static Logger log =
-            Hierarchy.getDefaultHierarchy().getLoggerFor("jmeter.elements");
+        Hierarchy.getDefaultHierarchy().getLoggerFor("jmeter.elements");
 
     /****************************************
      * !ToDo (Method description)
@@ -34,10 +38,9 @@ public abstract class AbstractTestElement implements TestElement,Serializable
             TestElement newObject = (TestElement)this.getClass().newInstance();
             configureClone(newObject);
             return newObject;
-        }
-        catch(Exception e)
+        } catch (Exception e)
         {
-            log.error("",e);
+            log.error("", e);
         }
         return null;
     }
@@ -49,11 +52,10 @@ public abstract class AbstractTestElement implements TestElement,Serializable
 
     public boolean equals(Object o)
     {
-        if(o instanceof AbstractTestElement)
+        if (o instanceof AbstractTestElement)
         {
             return ((AbstractTestElement)o).testInfo.equals(testInfo);
-        }
-        else
+        } else
         {
             return false;
         }
@@ -66,7 +68,7 @@ public abstract class AbstractTestElement implements TestElement,Serializable
      ***************************************/
     public void addTestElement(TestElement el)
     {
-        if(el.getClass().equals(this.getClass()))
+        if (el.getClass().equals(this.getClass()))
         {
             mergeIn(el);
         }
@@ -132,26 +134,23 @@ public abstract class AbstractTestElement implements TestElement,Serializable
     protected void configureClone(TestElement newObject)
     {
         Iterator iter = getPropertyNames().iterator();
-        while(iter.hasNext())
+        while (iter.hasNext())
         {
             String key = (String)iter.next();
             Object value = getProperty(key);
-            if(value instanceof TestElement)
+            if (value instanceof TestElement)
             {
                 newObject.setProperty(key, ((TestElement)value).clone());
-            }
-            else if(value instanceof Collection)
+            } else if (value instanceof Collection)
             {
                 try
                 {
-                    newObject.setProperty(key,cloneCollection(value));
-                }
-                catch(Exception e)
+                    newObject.setProperty(key, cloneCollection(value));
+                } catch (Exception e)
                 {
-                    log.error("",e);
+                    log.error("", e);
                 }
-            }
-            else
+            } else
             {
                 newObject.setProperty(key, value);
             }
@@ -159,26 +158,24 @@ public abstract class AbstractTestElement implements TestElement,Serializable
     }
 
     protected Collection cloneCollection(Object value)
-            throws InstantiationException,
-                   IllegalAccessException,
-                   ClassNotFoundException
+        throws InstantiationException,
+        IllegalAccessException,
+        ClassNotFoundException
     {
         Iterator collIter = ((Collection)value).iterator();
         Collection newColl = (Collection)value.getClass().newInstance();
-        while(collIter.hasNext())
+        while (collIter.hasNext())
         {
             Object val = collIter.next();
-            if(val instanceof TestElement)
+            if (val instanceof TestElement)
             {
                 val = ((TestElement)val).clone();
-            }
-            else if(val instanceof Collection)
+            } else if (val instanceof Collection)
             {
                 try
                 {
                     val = cloneCollection(val);
-                }
-                catch(Exception e)
+                } catch (Exception e)
                 {
                     continue;
                 }
@@ -193,14 +190,12 @@ public abstract class AbstractTestElement implements TestElement,Serializable
         if (bound == null)
         {
             return (long)0;
-        }
-        else if (bound instanceof Long)
+        } else if (bound instanceof Long)
         {
-            return ((Long) bound).longValue();
-        }
-        else
+            return ((Long)bound).longValue();
+        } else
         {
-            return Long.parseLong((String) bound);
+            return Long.parseLong((String)bound);
         }
     }
 
@@ -208,15 +203,13 @@ public abstract class AbstractTestElement implements TestElement,Serializable
     {
         if (bound == null)
         {
-                return (float)0;
-        }
-        else if (bound instanceof Float)
+            return (float)0;
+        } else if (bound instanceof Float)
         {
-            return ((Float) bound).floatValue();
-        }
-        else
+            return ((Float)bound).floatValue();
+        } else
         {
-            return Float.parseFloat((String) bound);
+            return Float.parseFloat((String)bound);
         }
     }
 
@@ -225,14 +218,12 @@ public abstract class AbstractTestElement implements TestElement,Serializable
         if (bound == null)
         {
             return (double)0;
-        }
-        else if (bound instanceof Double)
+        } else if (bound instanceof Double)
         {
-            return ((Double) bound).doubleValue();
-        }
-        else
+            return ((Double)bound).doubleValue();
+        } else
         {
-            return Double.parseDouble((String) bound);
+            return Double.parseDouble((String)bound);
         }
     }
 
@@ -241,8 +232,8 @@ public abstract class AbstractTestElement implements TestElement,Serializable
         if (bound == null)
         {
             return "";
-        }
-        else {
+        } else
+        {
             return bound.toString();
         }
     }
@@ -252,18 +243,15 @@ public abstract class AbstractTestElement implements TestElement,Serializable
         if (bound == null)
         {
             return (int)0;
-        }
-        else if (bound instanceof Integer)
+        } else if (bound instanceof Integer)
         {
-            return ((Integer) bound).intValue();
-        }
-        else
+            return ((Integer)bound).intValue();
+        } else
         {
             try
             {
-                return Integer.parseInt((String) bound);
-            }
-            catch(NumberFormatException e)
+                return Integer.parseInt((String)bound);
+            } catch (NumberFormatException e)
             {
                 return 0;
             }
@@ -275,14 +263,12 @@ public abstract class AbstractTestElement implements TestElement,Serializable
         if (bound == null)
         {
             return false;
-        }
-        else if (bound instanceof Boolean)
+        } else if (bound instanceof Boolean)
         {
-            return ((Boolean) bound).booleanValue();
-        }
-        else
+            return ((Boolean)bound).booleanValue();
+        } else
         {
-            return new Boolean((String) bound).booleanValue();
+            return new Boolean((String)bound).booleanValue();
         }
     }
 
@@ -324,48 +310,45 @@ public abstract class AbstractTestElement implements TestElement,Serializable
     protected void mergeIn(TestElement element)
     {
         Iterator iter = element.getPropertyNames().iterator();
-        while(iter.hasNext())
+        while (iter.hasNext())
         {
             String key = (String)iter.next();
             Object value = element.getProperty(key);
-            if(getProperty(key) == null || getProperty(key).equals(""))
+            if (getProperty(key) == null || getProperty(key).equals(""))
             {
                 setProperty(key, value);
                 continue;
             }
-            if(value instanceof TestElement)
+            if (value instanceof TestElement)
             {
-                if(getProperty(key) == null)
+                if (getProperty(key) == null)
                 {
-                    setProperty(key,value);
-                }
-                else if(getProperty(key) instanceof TestElement)
+                    setProperty(key, value);
+                } else if (getProperty(key) instanceof TestElement)
                 {
                     ((TestElement)getProperty(key)).addTestElement((TestElement)value);
                 }
-            }
-            else if(value instanceof Collection)
+            } else if (value instanceof Collection)
             {
                 Collection localCollection = (Collection)getProperty(key);
-                if(localCollection == null)
+                if (localCollection == null)
                 {
-                    setProperty(key,value);
-                }
-                else
+                    setProperty(key, value);
+                } else
                 {
                     // Remove any repeated elements:
                     Iterator iter2 = ((Collection)value).iterator();
-                    while(iter2.hasNext())
+                    while (iter2.hasNext())
                     {
                         Object item = iter2.next();
-                        if(!localCollection.contains(item))
+                        if (!localCollection.contains(item))
                         {
                             localCollection.remove(item);
                         }
                     }
                     // Add all elements now:
                     iter2 = ((Collection)value).iterator();
-                    while(iter2.hasNext())
+                    while (iter2.hasNext())
                     {
                         localCollection.add(iter2.next());
                     }
