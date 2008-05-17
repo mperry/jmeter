@@ -24,21 +24,18 @@ import org.apache.bsf.BSFEngine;
 import org.apache.bsf.BSFException;
 import org.apache.bsf.BSFManager;
 import org.apache.commons.io.IOUtils;
-import org.apache.jmeter.samplers.AbstractSampler;
 import org.apache.jmeter.samplers.Entry;
 import org.apache.jmeter.samplers.SampleResult;
-import org.apache.jmeter.threads.JMeterContext;
-import org.apache.jmeter.threads.JMeterContextService;
-import org.apache.jmeter.threads.JMeterVariables;
+import org.apache.jmeter.samplers.Sampler;
+import org.apache.jmeter.util.BSFTestElement;
 import org.apache.jorphan.logging.LoggingManager;
-import org.apache.jorphan.util.JOrphanUtils;
 import org.apache.log.Logger;
 
 /**
  * A sampler which understands BSF
  * 
  */
-public class BSFSampler extends AbstractSampler {
+public class BSFSampler extends BSFTestElement implements Sampler {
 
 	private static final Logger log = LoggingManager.getLoggerForClass();
 
@@ -53,6 +50,7 @@ public class BSFSampler extends AbstractSampler {
 	//- JMX file attributes
 
 	public BSFSampler() {
+	    super();
 	}
 
 	public String getFilename() {
@@ -118,28 +116,15 @@ public class BSFSampler extends AbstractSampler {
         res.setSuccessful(true);
         res.setDataType(SampleResult.TEXT); // Default (can be overridden by the script)
 
-        JMeterContext jmctx = JMeterContextService.getContext();
-        JMeterVariables vars = jmctx.getVariables();
-
         res.sampleStart();
 		try {
-			
-			mgr.declareBean("log", log, log.getClass()); // $NON-NLS-1$
-			mgr.declareBean("Label",label, String.class); // $NON-NLS-1$
-			mgr.declareBean("FileName",fileName, String.class); // $NON-NLS-1$
-			mgr.declareBean("Parameters", getParameters(), String.class); // $NON-NLS-1$
-			String [] args=JOrphanUtils.split(getParameters(), " ");//$NON-NLS-1$
-			mgr.declareBean("args",args,args.getClass());//$NON-NLS-1$
+			initManager(mgr);
 			mgr.declareBean("SampleResult", res, res.getClass()); // $NON-NLS-1$
 			
 			// These are not useful yet, as have not found how to get updated values back
 			//mgr.declareBean("ResponseCode", "200", String.class); // $NON-NLS-1$
 			//mgr.declareBean("ResponseMessage", "OK", String.class); // $NON-NLS-1$
 			//mgr.declareBean("IsSuccess", Boolean.TRUE, Boolean.class); // $NON-NLS-1$
-
-			// Add variables for access to context and variables
-			mgr.declareBean("ctx", jmctx, jmctx.getClass()); // $NON-NLS-1$
-			mgr.declareBean("vars", vars, vars.getClass()); // $NON-NLS-1$
 
 			// N.B. some engines (e.g. Javascript) cannot handle certain declareBean() calls
 			// after the engine has been initialised, so create the engine last
@@ -151,7 +136,7 @@ public class BSFSampler extends AbstractSampler {
 				is = new FileInputStream(fileName);
 				bsfOut = bsfEngine.eval(fileName, 0, 0, IOUtils.toString(is));
 			} else {
-				res.setSamplerData("[script]");
+				res.setSamplerData(request);
 			    bsfOut = bsfEngine.eval("script", 0, 0, request);
 			}
 
@@ -171,9 +156,10 @@ public class BSFSampler extends AbstractSampler {
 		} finally {
 			res.sampleEnd();
 			IOUtils.closeQuietly(is);
-			if (bsfEngine != null) {
-			    bsfEngine.terminate();
-			}
+// Will be done by mgr.terminate() anyway
+//			if (bsfEngine != null) {
+//			    bsfEngine.terminate();
+//			}
 	        mgr.terminate();
 		}
 

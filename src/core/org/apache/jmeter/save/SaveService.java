@@ -139,7 +139,7 @@ public class SaveService {
 
     // Internal information only
     private static String fileVersion = ""; // read from properties file// $NON-NLS-1$
-	private static final String FILEVERSION = "654389"; // Expected value $NON-NLS-1$
+	private static final String FILEVERSION = "656027"; // Expected value $NON-NLS-1$
 	private static String fileEncoding = ""; // read from properties file// $NON-NLS-1$
 
     static {
@@ -397,7 +397,7 @@ public class SaveService {
 			wrapper = (ScriptWrapper) saver.fromXML(inputStreamReader);
 			inputStreamReader.close();
 			if (wrapper == null){
-				log.warn("Problem loading new style: see above.");
+				log.error("Problem loading new style: see above.");
 				return null;
 			}
 			return wrapper.testPlan;
@@ -406,8 +406,11 @@ public class SaveService {
 			reader.reset();
 			return OldSaveService.loadSubTree(reader);
 		} catch (NoClassDefFoundError e) {
-			log.warn("Missing class ", e);
+			log.error("Missing class "+e);
 			return null;
+		} catch (ConversionException e) {
+            log.error("Conversion error "+e);
+            return null;		    
 		}
 	}
 	

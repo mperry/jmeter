@@ -55,9 +55,9 @@ public class BeanShell extends AbstractFunction implements Serializable {
 		desc.add(JMeterUtils.getResString("function_name_paropt"));// $NON-NLS1$
 	}
 
-	transient private Object[] values;
+	private transient Object[] values;
 
-	transient private BeanShellInterpreter bshInterpreter = null;
+	private transient BeanShellInterpreter bshInterpreter = null;
 
 	public BeanShell() {
 	}
@@ -106,6 +106,7 @@ public class BeanShell extends AbstractFunction implements Serializable {
 			// Allow access to context and variables directly
 			bshInterpreter.set("ctx", jmctx); //$NON-NLS-1$
 			bshInterpreter.set("vars", vars); //$NON-NLS-1$
+            bshInterpreter.set("props", JMeterUtils.getJMeterProperties()); //$NON-NLS-1$
 			bshInterpreter.set("threadName", Thread.currentThread().getName()); //$NON-NLS-1$
 
 			// Execute the script
