@@ -1008,7 +1008,9 @@ run JMeter unless all the JMeter jars are added.
     <include name="NOTICE"/>
     <include name="README"/>
     <include name="${src.dir}/**"/>
-    <exclude name="${src.dir}/**/images/**"/>
+    <exclude name="${src.dir}/**/*.gif"/>
+    <exclude name="${src.dir}/**/*.jpg"/>
+    <exclude name="${src.dir}/**/*.png"/>
     <include name="${src.docs}/**"/>
     <exclude name="${src.docs}/images/**"/>
     <exclude name="${src.docs}/**/*.jmx"/>
@@ -1023,6 +1025,7 @@ run JMeter unless all the JMeter jars are added.
     <exclude name="${dest.jar.jmeter}/testfiles/*.jtl"/>
   	<!-- Ignore unit test output -->
     <exclude name="${dest.jar.jmeter}/testfiles/*.out"/>
+    <exclude name="${dest.jar.jmeter}/testfiles/Sample_*.png"/>
     <include name="eclipse.classpath"/>
     <include name="eclipse.readme"/>
     <include name="${lib.dir}/aareadme.txt"/>
@@ -1034,7 +1037,9 @@ run JMeter unless all the JMeter jars are added.
   <patternset id="dist.sources.non.native">
     <include name="${velocity.jar}"/>
     <include name="${lib.api}/*.jar"/>
-    <include name="${src.dir}/**/images/**"/>
+    <include name="${src.dir}/**/*.gif"/>
+    <include name="${src.dir}/**/*.jpg"/>
+    <include name="${src.dir}/**/*.png"/>
     <include name="${src.docs}/images/**"/>
     <include name="${src.docs}/**/*.jmx"/>
     <include name="${src.docs}/**/*.pdf"/>
@@ -1055,23 +1060,7 @@ run JMeter unless all the JMeter jars are added.
 			</fileset>
 		</copy>
         <echo>Converting work files to eol=${eoltype}</echo>
-		<fixcrlf eol="${eoltype}" srcdir="${workdir}">
-            <include name="*"/>
-            <include name="eclipse.classpath"/>
-            <include name="**/*.all"/>
-            <include name="**/*.bsh"/>
-            <include name="**/testfiles/*.csv"/>
-            <include name="**/testfiles/*.tsv"/>
-            <include name="**/*.properties"/>
-            <include name="**/*.html"/>
-			<include name="**/*.java"/>
-            <include name="**/*.readme"/>
-            <include name="**/*.set"/>
-            <include name="**/*.txt"/>
-            <include name="**/*.vsl"/>
-            <include name="**/*.xml"/>
-            <include name="**/*.xsd"/>
-            <include name="**/*.xsl"/>
+		<fixcrlf fixlast="false" eol="${eoltype}" srcdir="${workdir}">
 		</fixcrlf>
 	</target>
 	
@@ -1080,12 +1069,14 @@ run JMeter unless all the JMeter jars are added.
   		<patternset refid="dist.binaries.native"/>
         <patternset refid="external.jars.notices"/>
 		<!-- We don't need the site docs, but we do want Javadoc (e.g. for BeanShell) -->
-  		<include name="${dest.docs}/api/**"/>
+  		<include name="${dest.docs.api}/**"/>
+  		<exclude name="${dest.docs.api}/resources/**"/>
   	</patternset>
 
     <patternset id="dist_bin_files_non_native">
         <patternset refid="dist.binaries.non.native"/>
         <patternset refid="external.jars"/>
+  		<include name="${dest.docs.api}/resources/**"/>
     </patternset>
 
 	<!-- NOTE: the site documents are not included in either archive -->
@@ -1150,7 +1141,6 @@ run JMeter unless all the JMeter jars are added.
     </antcall>
 
 	<tar destfile="${dist.dir}/${pack.name}.tar" longfile="gnu">
-      <tarfileset dir="." includes="${build.dir}/MANIFEST_BIN.MF" fullpath="${dist.name}/MANIFEST.MF"/>
       <tarfileset dir="." prefix="${dist.name}" excludes="${dist.executables}" defaultexcludes="yes">
          <patternset refid="dist_bin_files_non_native"/>
       </tarfileset>
@@ -1175,7 +1165,6 @@ run JMeter unless all the JMeter jars are added.
         <param name="fileset" value="dist_bin_files_native"/>
     </antcall>
     <zip  zipfile="${dist.dir}/${pack.name}.zip">
-      <zipfileset dir="." includes="${build.dir}/MANIFEST_BIN.MF" fullpath="${dist.name}/MANIFEST.MF"/>
       <zipfileset dir="." prefix="${dist.name}" defaultexcludes="yes">
         <patternset refid="dist_bin_files_non_native"/>
       </zipfileset>
@@ -1195,7 +1184,6 @@ run JMeter unless all the JMeter jars are added.
         <param name="fileset" value="dist.sources.native"/>
     </antcall>
     <tar destfile="${dist.dir}/${pack.name}_src.tar" longfile="gnu">
-      <tarfileset dir="." includes="${build.dir}/MANIFEST_SRC.MF" fullpath="${dist.name}/MANIFEST.MF"/>
       <tarfileset dir="${native.dir.lf}" prefix="${dist.name}">
          <patternset refid="dist.sources.native"/>
       </tarfileset>
@@ -1219,7 +1207,6 @@ run JMeter unless all the JMeter jars are added.
     </antcall>
 
 	<zip  zipfile="${dist.dir}/${pack.name}_src.zip">
-	  <zipfileset dir="." includes="${build.dir}/MANIFEST_SRC.MF" fullpath="${dist.name}/MANIFEST.MF"/>
       <zipfileset dir="${native.dir.crlf}" prefix="${dist.name}">
          <patternset refid="dist.sources.native"/>
       </zipfileset>
@@ -1331,7 +1318,6 @@ run JMeter unless all the JMeter jars are added.
     <property name="pack.name" value="${dist.name}_bin"/>
     <mkdir dir="${dist.dir}"/>
     <tar destfile="${dist.dir}/${pack.name}.tar" longfile="gnu">
-      <tarfileset dir="." includes="${build.dir}/MANIFEST_BIN.MF" fullpath="${dist.name}/MANIFEST.MF"/>
       <tarfileset dir="." prefix="${dist.name}" excludes="${dist.executables}" defaultexcludes="yes">
         <patternset refid="dist.binaries.native"/>
       </tarfileset>
@@ -1344,7 +1330,6 @@ run JMeter unless all the JMeter jars are added.
 	<!-- no longer needed -->
 	<delete file="${dist.dir}/${pack.name}.tar"/>
     <zip  zipfile="${dist.dir}/${pack.name}.zip">
-      <zipfileset dir="." includes="${build.dir}/MANIFEST_BIN.MF" fullpath="${dist.name}/MANIFEST.MF"/>
       <zipfileset dir="." prefix="${dist.name}" defaultexcludes="yes">
         <patternset refid="dist.binaries.native"/>
       </zipfileset>
@@ -1358,7 +1343,6 @@ run JMeter unless all the JMeter jars are added.
     <property name="pack.name" value="${dist.name}_lib"/>
     <mkdir dir="${dist.dir}"/>
     <tar destfile="${dist.dir}/${pack.name}.tar" longfile="gnu">
-      <tarfileset dir="." includes="${build.dir}/MANIFEST_BIN.MF" fullpath="${dist.name}/MANIFEST.MF"/>
       <tarfileset dir="." prefix="${dist.name}" defaultexcludes="yes">
         <patternset refid="external.jars.notices"/>
       </tarfileset>
@@ -1370,7 +1354,6 @@ run JMeter unless all the JMeter jars are added.
 	<!-- no longer needed -->
 	<delete file="${dist.dir}/${pack.name}.tar"/>
     <zip  zipfile="${dist.dir}/${pack.name}.zip">
-      <zipfileset dir="." includes="${build.dir}/MANIFEST_BIN.MF" fullpath="${dist.name}/MANIFEST.MF"/>
       <zipfileset dir="." prefix="${dist.name}" defaultexcludes="yes">
         <patternset refid="external.jars.notices"/>
       </zipfileset>
@@ -1384,15 +1367,13 @@ run JMeter unless all the JMeter jars are added.
     <property name="pack.name" value="${dist.name}_api"/>
     <mkdir dir="${dist.dir}"/>
     <tar destfile="${dist.dir}/${pack.name}.tar" longfile="gnu">
-      <tarfileset dir="." includes="${build.dir}/MANIFEST_BIN.MF" fullpath="${dist.name}/MANIFEST.MF"/>
-      <tarfileset includes="${dest.docs.api}/" dir="." prefix="${dist.name}" defaultexcludes="yes"/>
+      <tarfileset includes="${dest.docs.api}" dir="." prefix="${dist.name}" defaultexcludes="yes"/>
     </tar>
     <gzip zipfile="${dist.dir}/${pack.name}.tgz" src="${dist.dir}/${pack.name}.tar" />
 	<!-- no longer needed -->
 	<delete file="${dist.dir}/${pack.name}.tar"/>
     <zip  zipfile="${dist.dir}/${pack.name}.zip">
-       <zipfileset dir="." includes="${build.dir}/MANIFEST_BIN.MF" fullpath="${dist.name}/MANIFEST.MF"/>
-       <zipfileset includes="${dest.docs.api}/" dir="." prefix="${dist.name}" defaultexcludes="yes"/>
+       <zipfileset includes="${dest.docs.api}" dir="." prefix="${dist.name}" defaultexcludes="yes"/>
     </zip>
     </target>
 
@@ -1400,7 +1381,6 @@ run JMeter unless all the JMeter jars are added.
     <property name="pack.name" value="${dist.name}_src"/>
     <mkdir dir="${dist.dir}"/>
     <tar destfile="${dist.dir}/${pack.name}.tar" longfile="gnu">
-      <tarfileset dir="." includes="${build.dir}/MANIFEST_SRC.MF" fullpath="${dist.name}/MANIFEST.MF"/>
       <tarfileset dir="." prefix="${dist.name}" defaultexcludes="yes">
         <patternset refid="dist.sources.native"/>
       </tarfileset>
@@ -1412,7 +1392,6 @@ run JMeter unless all the JMeter jars are added.
 	<!-- no longer needed -->
 	<delete file="${dist.dir}/${pack.name}.tar"/>
     <zip  zipfile="${dist.dir}/${pack.name}.zip">
-      <zipfileset dir="." includes="${build.dir}/MANIFEST_SRC.MF" fullpath="${dist.name}/MANIFEST.MF"/>
       <zipfileset dir="." prefix="${dist.name}" defaultexcludes="yes">
         <patternset refid="dist.sources.native"/>
       </zipfileset>
@@ -1451,7 +1430,7 @@ run JMeter unless all the JMeter jars are added.
 
   <target name="clean-apidocs">
     <delete> 
-    	<fileset dir="${dest.docs}/api" excludes=".svn/**"/>
+    	<fileset dir="${dest.docs.api}" excludes=".svn/**"/>
     </delete>
   </target>
 
@@ -1512,7 +1491,9 @@ run JMeter unless all the JMeter jars are added.
   		         flags="g" byline="true">
   	   <fileset dir="${dest.docs.api}" includes="**/*.html" />
   	</replaceregexp>
-
+    <!-- Javadoc on Windows creates mixed line endings -->
+  	<echo level="info">Fixing Javadoc line endings</echo>
+    <fixcrlf srcdir="${dest.docs.api}" includes="**/*.html" fixlast="false"/>
   </target>
 
 <!--
