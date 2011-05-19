@@ -233,6 +233,7 @@
   <property name="build.report" value="build/reports"/>
   <property name="build.test" value="build/test"/>
 
+	
   <!-- Path prefix to allow Anakia to find stylesheets if running under Eclipse -->
   <!--
   Anakia looks for stylesheets relative to the java launch directory.
@@ -775,8 +776,14 @@
     </java>
   </target>
 
-  <target name="package" depends="compile, package-only"
+  <target name="package" depends="compile, package-only, zip"
      description="Compile everything and create the jars"/>
+
+	<target name="zip" depends="package-only">
+		<zip destfile="${zip.file}">
+			<zipfileset dir="${lib.dir}" prefix="jmeter/lib"/>
+		</zip>
+	</target>
 
 <!--
 N.B. Eclipse (and perhaps other Java IDEs) copies all files to the build directory, unless
