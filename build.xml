@@ -780,7 +780,11 @@
      description="Compile everything and create the jars"/>
 
 	<target name="zip" depends="package-only">
-		<zip destfile="${zip.file}">
+		<delete includeemptydirs="true">
+		    <fileset dir="${build.zip.dir}" includes="**/*"/>
+		</delete>
+		<buildnumber/>
+		<zip destfile="${build.zip.dir}/${zip.base.name}${build.number}.zip">
 			<zipfileset dir="${lib.dir}" prefix="jmeter/lib"/>
 		</zip>
 	</target>
