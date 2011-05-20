@@ -189,6 +189,11 @@ public final class MenuFactory {
         menu.add(makeMenuItemRes("reset_gui", ActionNames.RESET_GUI )); //$NON-NLS-1$
     }
 
+    public static void addCorrelateMenu(JPopupMenu menu) {
+        addSeparator(menu);
+        menu.add(makeMenuItem("correlate", "correlate", ActionNames.CORRELATE));
+    }
+    
     public static void addFileMenu(JPopupMenu menu) {
         addSeparator(menu);
         menu.add(makeMenuItemRes("open", ActionNames.OPEN));// $NON-NLS-1$

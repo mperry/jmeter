@@ -98,6 +98,7 @@ public class WorkBenchGui extends AbstractJMeterGuiComponent {
                 ActionNames.ADD);
         menu.add(addMenu);
         MenuFactory.addPasteResetMenu(menu);
+        MenuFactory.addCorrelateMenu(menu);
         MenuFactory.addFileMenu(menu);
         return menu;
     }

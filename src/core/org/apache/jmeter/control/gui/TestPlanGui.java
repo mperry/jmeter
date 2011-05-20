@@ -95,6 +95,7 @@ public class TestPlanGui extends AbstractJMeterGuiComponent {
         addMenu.add(MenuFactory.makeMenu(MenuFactory.LISTENERS, ActionNames.ADD));
         pop.add(addMenu);
         MenuFactory.addPasteResetMenu(pop);
+        MenuFactory.addCorrelateMenu(pop);
         MenuFactory.addFileMenu(pop);
         return pop;
     }
